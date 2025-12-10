@@ -2,25 +2,31 @@
   "cards": {
     "CAT-GAMES": {
       "id": "CAT-GAMES",
-      "text": "Игры",
-      "emoji": "🎮",
+      "text": "Играть",
+      "emoji": "🎲",
       "type": "category",
       "category": null,
       "forms": {},
-      "tags": ["категория", "игры"],
+      "tags": [
+        "категория",
+        "игры",
+        "играть"
+      ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 125,
       "created": "2025-11-28T11:42:07.593Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#E8F5E9",
-	  "borderColor": "#4CAF50",
-      "sections": ["Главная"],
+      "borderColor": "#4CAF50",
+      "sections": [
+        "Главная"
+      ],
       "metadata": {
         "isCategory": true,
-        "description": "Игры и игрушки"
+        "description": "Игры, игрушки и игровые действия"
       }
     },
     "CAT-BOOKS": {
@@ -109,29 +115,31 @@
     "CAT-PETS": {
       "id": "CAT-PETS",
       "text": "Питомцы",
-      "emoji": "🐾",
+      "emoji": "🐕",
       "type": "category",
       "category": null,
       "forms": {},
       "tags": [
         "категория",
-        "животные"
+        "животные",
+        "питомцы"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 65,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
       ],
       "metadata": {
         "isCategory": true,
-        "description": "Домашние животные"
-      }
+        "description": "Домашние животные и уход за ними"
+      },
+      "borderColor": "#FF9800"
     },
     "CAT-PLACES": {
       "id": "CAT-PLACES",
@@ -163,29 +171,31 @@
     "CAT-FOOD": {
       "id": "CAT-FOOD",
       "text": "Еда",
-      "emoji": "🍽️",
+      "emoji": "🍎",
       "type": "category",
       "category": null,
       "forms": {},
       "tags": [
         "категория",
-        "еда"
+        "еда",
+        "продукты"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 98,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFEBEE",
       "sections": [
         "Главная"
       ],
       "metadata": {
         "isCategory": true,
-        "description": "Различные виды еды"
-      }
+        "description": "Различные виды еды и продуктов"
+      },
+      "borderColor": "#FF5252"
     },
     "CAT-DRINK": {
       "id": "CAT-DRINK",
@@ -196,50 +206,54 @@
       "forms": {},
       "tags": [
         "категория",
-        "питье"
+        "пить",
+        "напитки"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 76,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
-      "color": "#E0F2F1",
+      "version": 2,
+      "color": "#E0F7FA",
       "sections": [
         "Главная"
       ],
       "metadata": {
         "isCategory": true,
-        "description": "Различные напитки"
-      }
+        "description": "Различные напитки и действия с ними"
+      },
+      "borderColor": "#00BCD4"
     },
     "CAT-HYGIENE": {
       "id": "CAT-HYGIENE",
       "text": "Гигиена",
-      "emoji": "🧼",
+      "emoji": "🧴",
       "type": "category",
       "category": null,
       "forms": {},
       "tags": [
         "категория",
-        "гигиена"
+        "гигиена",
+        "чистота"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 65,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#E8EAF6",
       "sections": [
         "Главная"
       ],
       "metadata": {
         "isCategory": true,
-        "description": "Гигиенические процедуры"
-      }
+        "description": "Гигиенические процедуры и уход за собой"
+      },
+      "borderColor": "#5C6BC0"
     },
     "CAT-EMOTIONS": {
       "id": "CAT-EMOTIONS",
@@ -261,7 +275,8 @@
       "version": 1,
       "color": "#FCE4EC",
       "sections": [
-        "Главная", "Эмоции" 
+        "Главная",
+        "Эмоции"
       ],
       "metadata": {
         "isCategory": true,
@@ -304,23 +319,25 @@
       "forms": {},
       "tags": [
         "категория",
-        "боль"
+        "боль",
+        "тело"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 40,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFEBEE",
       "sections": [
         "Главная"
       ],
       "metadata": {
         "isCategory": true,
-        "description": "Части тела, которые болят"
-      }
+        "description": "Части тела, которые могут болеть"
+      },
+      "borderColor": "#F44336"
     },
     "CAT-SPORT": {
       "id": "CAT-SPORT",
@@ -533,9 +550,9 @@
       "status": "active",
       "usageCount": 65,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -552,7 +569,12 @@
           "GAME-BALL",
           "GAME-DOLL",
           "GAME-CAR",
-          "GAME-PUZZLE"
+          "GAME-PUZZLE",
+          "GAME-BLOCKS",
+          "GAME-LEGO",
+          "GAME-TRAIN",
+          "GAME-ANIMALS",
+          "GAME-ROBOT"
         ],
         "maxPeople": 2,
         "maxPets": 1,
@@ -578,9 +600,9 @@
       "status": "active",
       "usageCount": 45,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -593,7 +615,9 @@
         ],
         "allowedObjects": [
           "GAME-CUBES",
-          "GAME-BLOCKS"
+          "GAME-BLOCKS",
+          "GAME-LEGO",
+          "GAME-TRAIN"
         ],
         "maxPeople": 2,
         "maxPets": 0,
@@ -619,9 +643,9 @@
       "status": "active",
       "usageCount": 30,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -877,22 +901,23 @@
     },
     "ACT-EAT": {
       "id": "ACT-EAT",
-      "text": "есть",
-      "emoji": "🍴",
+      "text": "кушать",
+      "emoji": "🍽️",
       "type": "action",
       "category": "CAT-FOOD",
       "forms": {},
       "tags": [
         "действие",
-        "еда"
+        "еда",
+        "прием пищи"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 48,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -904,11 +929,35 @@
         ],
         "allowedObjects": [
           "FOOD-APPLE",
-          "FOOD-SOUP",
+          "FOOD-BANANA",
+          "FOOD-PEAR",
+          "FOOD-ORANGE",
           "FOOD-BREAD",
-          "FOOD-CANDY",
+          "FOOD-SANDWICH",
+          "FOOD-PORRIDGE",
+          "FOOD-SOUP",
+          "FOOD-PASTA",
+          "FOOD-RICE",
+          "FOOD-POTATO",
+          "FOOD-CARROT",
+          "FOOD-CUCUMBER",
+          "FOOD-TOMATO",
+          "FOOD-CHEESE",
+          "FOOD-YOGURT",
+          "FOOD-CURD",
+          "FOOD-SAUSAGE",
+          "FOOD-FISH",
+          "FOOD-MEATBALL",
+          "FOOD-EGG",
+          "FOOD-OMELETTE",
+          "FOOD-PANCAKE",
           "FOOD-COOKIE",
-          "FOOD-PIZZA"
+          "FOOD-CANDY",
+          "FOOD-ICECREAM",
+          "FOOD-CAKE",
+          "FOOD-PIZZA",
+          "FOOD-BURGER",
+          "FOOD-FRIES"
         ],
         "maxPeople": 0,
         "maxPets": 0,
@@ -934,9 +983,9 @@
       "status": "active",
       "usageCount": 22,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -949,8 +998,19 @@
         ],
         "allowedObjects": [
           "FOOD-APPLE",
+          "FOOD-BANANA",
+          "FOOD-PEAR",
+          "FOOD-ORANGE",
           "FOOD-BREAD",
-          "FOOD-PIZZA"
+          "FOOD-POTATO",
+          "FOOD-CARROT",
+          "FOOD-CUCUMBER",
+          "FOOD-TOMATO",
+          "FOOD-CHEESE",
+          "FOOD-EGG",
+          "FOOD-FISH",
+          "FOOD-MEATBALL",
+          "FOOD-PANCAKE"
         ],
         "maxPeople": 2,
         "maxPets": 0,
@@ -967,16 +1027,17 @@
       "forms": {},
       "tags": [
         "действие",
+        "пить",
         "питье"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 42,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
-      "color": "#E0F2F1",
+      "version": 2,
+      "color": "#E0F7FA",
       "sections": [
         "Главная"
       ],
@@ -986,11 +1047,18 @@
           "objects"
         ],
         "allowedObjects": [
-          "DRINK-COMPOTE",
-          "DRINK-JUICE",
           "DRINK-WATER",
+          "DRINK-MILK",
+          "DRINK-JUICE",
+          "DRINK-COMPOTE",
           "DRINK-TEA",
-          "DRINK-MILK"
+          "DRINK-COCOA",
+          "DRINK-KISSEL",
+          "DRINK-MORSE",
+          "DRINK-SMOOTHIE",
+          "DRINK-LEMONADE",
+          "DRINK-SODA",
+          "DRINK-JUICE-BOX"
         ],
         "maxPeople": 0,
         "maxPets": 0,
@@ -3188,21 +3256,20 @@
       "type": "action",
       "category": "CAT-PETS",
       "forms": {
-        "with": "с",
-        "in": "в"
+        "with": "с"
       },
       "tags": [
         "действие",
         "прогулка",
-        "питомцы"
+        "питомец"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 54,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#E8F5E9",
       "sections": [
         "Главная"
@@ -3210,46 +3277,62 @@
       "metadata": {
         "allowedWith": [
           "pets",
+          "objects",
           "places"
         ],
-        "allowedObjects": [],
+        "allowedObjects": [
+          "PET-DOG",
+          "PET-CAT",
+          "PET-PUPPY",
+          "PET-KITTEN"
+        ],
         "maxPeople": 0,
         "maxPets": 1,
         "maxPlaces": 1,
-        "maxObjects": 0
+        "maxObjects": 1
       }
     },
     "ACT-PET": {
       "id": "ACT-PET",
       "text": "гладить",
-      "emoji": "🐕",
+      "emoji": "🤲",
       "type": "action",
       "category": "CAT-PETS",
       "forms": {},
       "tags": [
         "действие",
-        "питомцы"
+        "питомец",
+        "ласка"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 28,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
       ],
       "metadata": {
         "allowedWith": [
-          "pets"
+          "pets",
+          "objects"
         ],
-        "allowedObjects": [],
+        "allowedObjects": [
+          "PET-DOG",
+          "PET-CAT",
+          "PET-RABBIT",
+          "PET-HAMSTER",
+          "PET-GUINEA-PIG",
+          "PET-PUPPY",
+          "PET-KITTEN"
+        ],
         "maxPeople": 0,
         "maxPets": 1,
         "maxPlaces": 0,
-        "maxObjects": 0
+        "maxObjects": 1
       }
     },
     "ACT-FEED-PET": {
@@ -3261,29 +3344,41 @@
       "forms": {},
       "tags": [
         "действие",
-        "питомцы",
+        "питомец",
         "кормление"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 25,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
       ],
       "metadata": {
         "allowedWith": [
-          "pets"
+          "pets",
+          "objects"
         ],
-        "allowedObjects": [],
+        "allowedObjects": [
+          "PET-DOG",
+          "PET-CAT",
+          "PET-RABBIT",
+          "PET-HAMSTER",
+          "PET-GUINEA-PIG",
+          "PET-FISH",
+          "PET-BIRD",
+          "PET-TURTLE",
+          "PET-PUPPY",
+          "PET-KITTEN"
+        ],
         "maxPeople": 0,
         "maxPets": 1,
         "maxPlaces": 0,
-        "maxObjects": 0
+        "maxObjects": 1
       }
     },
     "ACT-PUT-ON": {
@@ -3598,15 +3693,16 @@
       "forms": {},
       "tags": [
         "действие",
-        "гигиена"
+        "гигиена",
+        "руки"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 35,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#E8EAF6",
       "sections": [
         "Главная"
@@ -3625,21 +3721,22 @@
     "ACT-BRUSH-TEETH": {
       "id": "ACT-BRUSH-TEETH",
       "text": "чистить зубы",
-      "emoji": "🦷",
+      "emoji": "🪥",
       "type": "action",
       "category": "CAT-HYGIENE",
       "forms": {},
       "tags": [
         "действие",
-        "гигиена"
+        "гигиена",
+        "зубы"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 32,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#E8EAF6",
       "sections": [
         "Главная"
@@ -3658,21 +3755,22 @@
     "ACT-WASH-FACE": {
       "id": "ACT-WASH-FACE",
       "text": "умываться",
-      "emoji": "💧",
+      "emoji": "💦",
       "type": "action",
       "category": "CAT-HYGIENE",
       "forms": {},
       "tags": [
         "действие",
-        "гигиена"
+        "гигиена",
+        "лицо"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 28,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#E8EAF6",
       "sections": [
         "Главная"
@@ -3699,15 +3797,16 @@
       },
       "tags": [
         "действие",
-        "гигиена"
+        "гигиена",
+        "ванна"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 30,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#E8EAF6",
       "sections": [
         "Главная"
@@ -3732,15 +3831,16 @@
       "forms": {},
       "tags": [
         "действие",
-        "гигиена"
+        "гигиена",
+        "душ"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 25,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#E8EAF6",
       "sections": [
         "Главная"
@@ -3774,9 +3874,9 @@
       "status": "active",
       "usageCount": 40,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#E8EAF6",
       "sections": [
         "Главная"
@@ -3812,7 +3912,8 @@
       "version": 1,
       "color": "#FCE4EC",
       "sections": [
-        "Главная", "Эмоции" 
+        "Главная",
+        "Эмоции"
       ],
       "metadata": {
         "allowedWith": [],
@@ -3843,7 +3944,8 @@
       "version": 1,
       "color": "#FCE4EC",
       "sections": [
-        "Главная", "Эмоции" 
+        "Главная",
+        "Эмоции"
       ],
       "metadata": {
         "allowedWith": [],
@@ -3874,7 +3976,8 @@
       "version": 1,
       "color": "#FCE4EC",
       "sections": [
-        "Главная", "Эмоции" 
+        "Главная",
+        "Эмоции"
       ],
       "metadata": {
         "allowedWith": [],
@@ -3905,7 +4008,8 @@
       "version": 1,
       "color": "#FCE4EC",
       "sections": [
-        "Главная", "Эмоции" 
+        "Главная",
+        "Эмоции"
       ],
       "metadata": {
         "allowedWith": [],
@@ -3936,7 +4040,8 @@
       "version": 1,
       "color": "#FCE4EC",
       "sections": [
-        "Главная", "Эмоции" 
+        "Главная",
+        "Эмоции"
       ],
       "metadata": {
         "allowedWith": [],
@@ -3967,7 +4072,8 @@
       "version": 1,
       "color": "#FCE4EC",
       "sections": [
-        "Главная", "Эмоции" 
+        "Главная",
+        "Эмоции"
       ],
       "metadata": {
         "allowedWith": [],
@@ -4106,23 +4212,24 @@
     "PAIN-HEAD": {
       "id": "PAIN-HEAD",
       "text": "голова",
-      "emoji": "🧠",
+      "emoji": "👤",
       "type": "pain",
       "category": "CAT-PAIN",
       "forms": {
-        "accusative": "голова"
+        "phrase": "У меня болит голова"
       },
       "tags": [
         "боль",
-        "тело"
+        "тело",
+        "голова"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 25,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFEBEE",
       "sections": [
         "Главная"
@@ -4136,19 +4243,20 @@
       "type": "pain",
       "category": "CAT-PAIN",
       "forms": {
-        "accusative": "живот"
+        "phrase": "У меня болит живот"
       },
       "tags": [
         "боль",
-        "тело"
+        "тело",
+        "живот"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 22,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFEBEE",
       "sections": [
         "Главная"
@@ -4162,19 +4270,20 @@
       "type": "pain",
       "category": "CAT-PAIN",
       "forms": {
-        "accusative": "рука"
+        "phrase": "У меня болит рука"
       },
       "tags": [
         "боль",
-        "тело"
+        "тело",
+        "рука"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 18,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFEBEE",
       "sections": [
         "Главная"
@@ -4188,19 +4297,20 @@
       "type": "pain",
       "category": "CAT-PAIN",
       "forms": {
-        "accusative": "нога"
+        "phrase": "У меня болит нога"
       },
       "tags": [
         "боль",
-        "тело"
+        "тело",
+        "нога"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 16,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFEBEE",
       "sections": [
         "Главная"
@@ -4214,19 +4324,20 @@
       "type": "pain",
       "category": "CAT-PAIN",
       "forms": {
-        "accusative": "зуб"
+        "phrase": "У меня болит зуб"
       },
       "tags": [
         "боль",
-        "тело"
+        "тело",
+        "зуб"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 15,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFEBEE",
       "sections": [
         "Главная"
@@ -4445,23 +4556,23 @@
       "id": "PET-PUPPY",
       "text": "щенок",
       "emoji": "🐶",
-      "type": "pet",
+      "type": "object",
       "category": "CAT-PETS",
       "forms": {
         "with": "с щенком",
         "accusative": "щенка"
       },
       "tags": [
-        "животное",
-        "питомец"
+        "питомец",
+        "животное"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 25,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -4472,23 +4583,23 @@
       "id": "PET-KITTEN",
       "text": "котенок",
       "emoji": "🐱",
-      "type": "pet",
+      "type": "object",
       "category": "CAT-PETS",
       "forms": {
         "with": "с котенком",
         "accusative": "котенка"
       },
       "tags": [
-        "животное",
-        "питомец"
+        "питомец",
+        "животное"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 22,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -4499,23 +4610,23 @@
       "id": "PET-HAMSTER",
       "text": "хомяк",
       "emoji": "🐹",
-      "type": "pet",
+      "type": "object",
       "category": "CAT-PETS",
       "forms": {
         "with": "с хомяком",
         "accusative": "хомяка"
       },
       "tags": [
-        "животное",
-        "питомец"
+        "питомец",
+        "животное"
       ],
       "difficulty": 2,
       "status": "active",
       "usageCount": 12,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -4868,15 +4979,16 @@
       },
       "tags": [
         "игрушка",
-        "игра"
+        "игра",
+        "кубики"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 45,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -4894,15 +5006,16 @@
       },
       "tags": [
         "игрушка",
-        "игра"
+        "игра",
+        "мяч"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 40,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -4912,7 +5025,7 @@
     "GAME-DOLL": {
       "id": "GAME-DOLL",
       "text": "кукла",
-      "emoji": "👶",
+      "emoji": "🧸",
       "type": "object",
       "category": "CAT-GAMES",
       "forms": {
@@ -4920,15 +5033,16 @@
       },
       "tags": [
         "игрушка",
-        "игра"
+        "игра",
+        "кукла"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 32,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FCE4EC",
       "sections": [
         "Главная"
@@ -4946,15 +5060,16 @@
       },
       "tags": [
         "игрушка",
-        "игра"
+        "игра",
+        "машинка"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 38,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#E3F2FD",
       "sections": [
         "Главная"
@@ -4972,15 +5087,16 @@
       },
       "tags": [
         "игрушка",
-        "игра"
+        "игра",
+        "пазл"
       ],
       "difficulty": 2,
       "status": "active",
       "usageCount": 20,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -4998,15 +5114,16 @@
       },
       "tags": [
         "игрушка",
-        "игра"
+        "игра",
+        "конструктор"
       ],
       "difficulty": 2,
       "status": "active",
       "usageCount": 22,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -5212,9 +5329,9 @@
       "status": "active",
       "usageCount": 35,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFEBEE",
       "sections": [
         "Главная"
@@ -5232,15 +5349,16 @@
       },
       "tags": [
         "еда",
+        "блюдо",
         "обед"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 30,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -5264,9 +5382,9 @@
       "status": "active",
       "usageCount": 28,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -5290,9 +5408,9 @@
       "status": "active",
       "usageCount": 32,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFEBEE",
       "sections": [
         "Главная"
@@ -5316,9 +5434,9 @@
       "status": "active",
       "usageCount": 25,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFEBEE",
       "sections": [
         "Главная"
@@ -5336,15 +5454,16 @@
       },
       "tags": [
         "еда",
+        "блюдо",
         "ужин"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 22,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
+      "version": 2,
       "color": "#FFF3E0",
       "sections": [
         "Главная"
@@ -5362,16 +5481,17 @@
       },
       "tags": [
         "питье",
-        "напиток"
+        "напиток",
+        "фруктовый"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 28,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
-      "color": "#E8F5E9",
+      "version": 2,
+      "color": "#FFF3E0",
       "sections": [
         "Главная"
       ],
@@ -5388,16 +5508,17 @@
       },
       "tags": [
         "питье",
-        "напиток"
+        "напиток",
+        "фруктовый"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 32,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
-      "color": "#E8F5E9",
+      "version": 2,
+      "color": "#FFF3E0",
       "sections": [
         "Главная"
       ],
@@ -5414,16 +5535,17 @@
       },
       "tags": [
         "питье",
-        "напиток"
+        "напиток",
+        "вода"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 30,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
-      "color": "#E8F5E9",
+      "version": 2,
+      "color": "#E0F7FA",
       "sections": [
         "Главная"
       ],
@@ -5440,16 +5562,17 @@
       },
       "tags": [
         "питье",
-        "напиток"
+        "напиток",
+        "горячий"
       ],
       "difficulty": 2,
       "status": "active",
       "usageCount": 25,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
-      "color": "#E8F5E9",
+      "version": 2,
+      "color": "#FFF3E0",
       "sections": [
         "Главная"
       ],
@@ -5466,16 +5589,17 @@
       },
       "tags": [
         "питье",
-        "напиток"
+        "напиток",
+        "молочный"
       ],
       "difficulty": 1,
       "status": "active",
       "usageCount": 22,
       "created": "2025-11-28T11:42:07.594Z",
-      "modified": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-12-10T14:11:26.842Z",
       "author": "user",
-      "version": 1,
-      "color": "#E8F5E9",
+      "version": 2,
+      "color": "#FFFDE7",
       "sections": [
         "Главная"
       ],
@@ -6637,108 +6761,3643 @@
         "maxObjects": 0
       }
     },
-	"CAT-DIALOG-BASIC": {
-          "id": "CAT-DIALOG-BASIC",
-          "text": "Основное",
-          "emoji": "💬",
-          "type": "category",
-          "category": null,
-          "forms": {},
-          "tags": ["категория", "диалог", "основное"],
-          "difficulty": 1,
-          "status": "active",
-          "usageCount": 0,
-          "created": "2025-11-28T11:42:07.594Z",
-          "modified": "2025-11-28T11:42:07.594Z",
-          "author": "system",
-          "version": 1,
-          "color": "#E3F2FD",
-          "borderColor": "#2196F3",
-          "sections": ["Диалог"],
-          "metadata": {
-            "isCategory": true,
-            "description": "Основные фразы для диалога"
-          }
-        },
-		"DIALOG-HELLO": {
-          "id": "DIALOG-HELLO",
-          "text": "привет",
-          "emoji": "👋",
-          "type": "dialog",
-          "category": "CAT-DIALOG-BASIC",
-          "forms": {},
-          "tags": ["диалог", "приветствие"],
-          "difficulty": 1,
-          "status": "active",
-          "usageCount": 0,
-          "created": "2025-11-28T11:42:07.594Z",
-          "modified": "2025-11-28T11:42:07.594Z",
-          "author": "system",
-          "version": 1,
-          "color": "#E3F2FD",
-          "borderColor": "#2196F3",
-          "sections": ["Диалог"],
-          "metadata": {}
-        },
-        "DIALOG-THANK": {
-          "id": "DIALOG-THANK",
-          "text": "спасибо",
-          "emoji": "🙏",
-          "type": "dialog",
-          "category": "CAT-DIALOG-BASIC",
-          "forms": {},
-          "tags": ["диалог", "благодарность"],
-          "difficulty": 1,
-          "status": "active",
-          "usageCount": 0,
-          "created": "2025-11-28T11:42:07.594Z",
-          "modified": "2025-11-28T11:42:07.594Z",
-          "author": "system",
-          "version": 1,
-          "color": "#E8F5E9",
-          "borderColor": "#4CAF50",
-          "sections": ["Диалог"],
-          "metadata": {}
-        },
-        "DIALOG-PLEASE": {
-          "id": "DIALOG-PLEASE",
-          "text": "пожалуйста",
-          "emoji": "🥺",
-          "type": "dialog",
-          "category": "CAT-DIALOG-BASIC",
-          "forms": {},
-          "tags": ["диалог", "вежливость"],
-          "difficulty": 1,
-          "status": "active",
-          "usageCount": 0,
-          "created": "2025-11-28T11:42:07.594Z",
-          "modified": "2025-11-28T11:42:07.594Z",
-          "author": "system",
-          "version": 1,
-          "color": "#FFF3E0",
-          "borderColor": "#FF9800",
-          "sections": ["Диалог"],
-          "metadata": {}
-        },
-        "DIALOG-GOODBYE": {
-          "id": "DIALOG-GOODBYE",
-          "text": "пока",
-          "emoji": "👋",
-          "type": "dialog",
-          "category": "CAT-DIALOG-BASIC",
-          "forms": {},
-          "tags": ["диалог", "прощание"],
-          "difficulty": 1,
-          "status": "active",
-          "usageCount": 0,
-          "created": "2025-11-28T11:42:07.594Z",
-          "modified": "2025-11-28T11:42:07.594Z",
-          "author": "system",
-          "version": 1,
-          "color": "#FCE4EC",
-          "borderColor": "#E91E63",
-          "sections": ["Диалог"],
-          "metadata": {}
-        }
+    "CAT-DIALOG-BASIC": {
+      "id": "CAT-DIALOG-BASIC",
+      "text": "Основное",
+      "emoji": "💬",
+      "type": "category",
+      "category": null,
+      "forms": {},
+      "tags": [
+        "категория",
+        "диалог",
+        "основное"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-11-28T11:42:07.594Z",
+      "author": "system",
+      "version": 1,
+      "color": "#E3F2FD",
+      "borderColor": "#2196F3",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {
+        "isCategory": true,
+        "description": "Основные фразы для диалога"
+      }
+    },
+    "DIALOG-HELLO": {
+      "id": "DIALOG-HELLO",
+      "text": "привет",
+      "emoji": "👋",
+      "type": "dialog",
+      "category": "CAT-DIALOG-BASIC",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "приветствие"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-11-28T11:42:07.594Z",
+      "author": "system",
+      "version": 1,
+      "color": "#E3F2FD",
+      "borderColor": "#2196F3",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DIALOG-THANK": {
+      "id": "DIALOG-THANK",
+      "text": "спасибо",
+      "emoji": "🙏",
+      "type": "dialog",
+      "category": "CAT-DIALOG-BASIC",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "благодарность"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-11-28T11:42:07.594Z",
+      "author": "system",
+      "version": 1,
+      "color": "#E8F5E9",
+      "borderColor": "#4CAF50",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DIALOG-PLEASE": {
+      "id": "DIALOG-PLEASE",
+      "text": "пожалуйста",
+      "emoji": "🥺",
+      "type": "dialog",
+      "category": "CAT-DIALOG-BASIC",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "вежливость"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-11-28T11:42:07.594Z",
+      "author": "system",
+      "version": 1,
+      "color": "#FFF3E0",
+      "borderColor": "#FF9800",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DIALOG-GOODBYE": {
+      "id": "DIALOG-GOODBYE",
+      "text": "пока",
+      "emoji": "👋",
+      "type": "dialog",
+      "category": "CAT-DIALOG-BASIC",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "прощание"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-11-28T11:42:07.594Z",
+      "modified": "2025-11-28T11:42:07.594Z",
+      "author": "system",
+      "version": 1,
+      "color": "#FCE4EC",
+      "borderColor": "#E91E63",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "ACT-WASH-FOOD": {
+      "id": "ACT-WASH-FOOD",
+      "text": "помыть",
+      "emoji": "🚿",
+      "type": "action",
+      "category": "CAT-FOOD",
+      "forms": {},
+      "tags": [
+        "действие",
+        "еда",
+        "гигиена"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E3F2FD",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "FOOD-APPLE",
+          "FOOD-BANANA",
+          "FOOD-PEAR",
+          "FOOD-ORANGE",
+          "FOOD-POTATO",
+          "FOOD-CARROT",
+          "FOOD-CUCUMBER",
+          "FOOD-TOMATO"
+        ],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 3
+      }
+    },
+    "ACT-CUT-FOOD": {
+      "id": "ACT-CUT-FOOD",
+      "text": "резать",
+      "emoji": "🔪",
+      "type": "action",
+      "category": "CAT-FOOD",
+      "forms": {},
+      "tags": [
+        "действие",
+        "еда",
+        "готовка"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "FOOD-APPLE",
+          "FOOD-BANANA",
+          "FOOD-PEAR",
+          "FOOD-ORANGE",
+          "FOOD-BREAD",
+          "FOOD-POTATO",
+          "FOOD-CARROT",
+          "FOOD-CUCUMBER",
+          "FOOD-TOMATO",
+          "FOOD-CHEESE",
+          "FOOD-SAUSAGE"
+        ],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 1
+      }
+    },
+    "ACT-FEED": {
+      "id": "ACT-FEED",
+      "text": "кормить",
+      "emoji": "🥄",
+      "type": "action",
+      "category": "CAT-FOOD",
+      "forms": {
+        "with": "с"
+      },
+      "tags": [
+        "действие",
+        "еда",
+        "помощь"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FCE4EC",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "people",
+          "pets"
+        ],
+        "allowedObjects": [
+          "FOOD-APPLE",
+          "FOOD-BANANA",
+          "FOOD-PORRIDGE",
+          "FOOD-SOUP",
+          "FOOD-YOGURT",
+          "FOOD-CURD",
+          "FOOD-EGG",
+          "FOOD-PANCAKE"
+        ],
+        "maxPeople": 1,
+        "maxPets": 1,
+        "maxPlaces": 1,
+        "maxObjects": 1
+      }
+    },
+    "ACT-BUY-FOOD": {
+      "id": "ACT-BUY-FOOD",
+      "text": "купить еду",
+      "emoji": "🛒",
+      "type": "action",
+      "category": "CAT-FOOD",
+      "forms": {
+        "with": "с"
+      },
+      "tags": [
+        "действие",
+        "еда",
+        "покупки"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8F5E9",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "people",
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 2,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-SET-TABLE": {
+      "id": "ACT-SET-TABLE",
+      "text": "накрыть стол",
+      "emoji": "🍽️",
+      "type": "action",
+      "category": "CAT-FOOD",
+      "forms": {
+        "with": "с"
+      },
+      "tags": [
+        "действие",
+        "еда",
+        "помощь"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "people",
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 2,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-WARM-FOOD": {
+      "id": "ACT-WARM-FOOD",
+      "text": "разогреть",
+      "emoji": "🔥",
+      "type": "action",
+      "category": "CAT-FOOD",
+      "forms": {},
+      "tags": [
+        "действие",
+        "еда",
+        "готовка"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "FOOD-SOUP",
+          "FOOD-PORRIDGE",
+          "FOOD-PASTA",
+          "FOOD-RICE",
+          "FOOD-MEATBALL",
+          "FOOD-OMELETTE",
+          "FOOD-PANCAKE"
+        ],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 1
+      }
+    },
+    "FOOD-BANANA": {
+      "id": "FOOD-BANANA",
+      "text": "банан",
+      "emoji": "🍌",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "банан"
+      },
+      "tags": [
+        "еда",
+        "фрукт"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-PEAR": {
+      "id": "FOOD-PEAR",
+      "text": "груша",
+      "emoji": "🍐",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "грушу"
+      },
+      "tags": [
+        "еда",
+        "фрукт"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-ORANGE": {
+      "id": "FOOD-ORANGE",
+      "text": "апельсин",
+      "emoji": "🍊",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "апельсин"
+      },
+      "tags": [
+        "еда",
+        "фрукт"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-SANDWICH": {
+      "id": "FOOD-SANDWICH",
+      "text": "бутерброд",
+      "emoji": "🥪",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "бутерброд"
+      },
+      "tags": [
+        "еда",
+        "блюдо"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-PORRIDGE": {
+      "id": "FOOD-PORRIDGE",
+      "text": "каша",
+      "emoji": "🥣",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "кашу"
+      },
+      "tags": [
+        "еда",
+        "блюдо",
+        "завтрак"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-PASTA": {
+      "id": "FOOD-PASTA",
+      "text": "макароны",
+      "emoji": "🍝",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "макароны"
+      },
+      "tags": [
+        "еда",
+        "блюдо"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-RICE": {
+      "id": "FOOD-RICE",
+      "text": "рис",
+      "emoji": "🍚",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "рис"
+      },
+      "tags": [
+        "еда",
+        "блюдо"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-POTATO": {
+      "id": "FOOD-POTATO",
+      "text": "картошка",
+      "emoji": "🥔",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "картошку"
+      },
+      "tags": [
+        "еда",
+        "овощ"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-CARROT": {
+      "id": "FOOD-CARROT",
+      "text": "морковка",
+      "emoji": "🥕",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "морковку"
+      },
+      "tags": [
+        "еда",
+        "овощ"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-CUCUMBER": {
+      "id": "FOOD-CUCUMBER",
+      "text": "огурец",
+      "emoji": "🥒",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "огурец"
+      },
+      "tags": [
+        "еда",
+        "овощ"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-TOMATO": {
+      "id": "FOOD-TOMATO",
+      "text": "помидор",
+      "emoji": "🍅",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "помидор"
+      },
+      "tags": [
+        "еда",
+        "овощ"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-CHEESE": {
+      "id": "FOOD-CHEESE",
+      "text": "сыр",
+      "emoji": "🧀",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "сыр"
+      },
+      "tags": [
+        "еда",
+        "молочный"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-YOGURT": {
+      "id": "FOOD-YOGURT",
+      "text": "йогурт",
+      "emoji": "🥛",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "йогурт"
+      },
+      "tags": [
+        "еда",
+        "молочный"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E3F2FD",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-CURD": {
+      "id": "FOOD-CURD",
+      "text": "творог",
+      "emoji": "🥣",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "творог"
+      },
+      "tags": [
+        "еда",
+        "молочный"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-SAUSAGE": {
+      "id": "FOOD-SAUSAGE",
+      "text": "колбаса",
+      "emoji": "🌭",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "колбасу"
+      },
+      "tags": [
+        "еда",
+        "мясо"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-FISH": {
+      "id": "FOOD-FISH",
+      "text": "рыба",
+      "emoji": "🐟",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "рыбу"
+      },
+      "tags": [
+        "еда",
+        "морепродукт"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E3F2FD",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-MEATBALL": {
+      "id": "FOOD-MEATBALL",
+      "text": "котлета",
+      "emoji": "🍖",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "котлету"
+      },
+      "tags": [
+        "еда",
+        "мясо",
+        "блюдо"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-EGG": {
+      "id": "FOOD-EGG",
+      "text": "яйцо",
+      "emoji": "🥚",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "яйцо"
+      },
+      "tags": [
+        "еда",
+        "продукт"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-OMELETTE": {
+      "id": "FOOD-OMELETTE",
+      "text": "омлет",
+      "emoji": "🍳",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "омлет"
+      },
+      "tags": [
+        "еда",
+        "блюдо",
+        "завтрак"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-PANCAKE": {
+      "id": "FOOD-PANCAKE",
+      "text": "блинчик",
+      "emoji": "🥞",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "блинчик"
+      },
+      "tags": [
+        "еда",
+        "блюдо",
+        "завтрак"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-ICECREAM": {
+      "id": "FOOD-ICECREAM",
+      "text": "мороженое",
+      "emoji": "🍦",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "мороженое"
+      },
+      "tags": [
+        "еда",
+        "сладости",
+        "десерт"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-CAKE": {
+      "id": "FOOD-CAKE",
+      "text": "торт",
+      "emoji": "🎂",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "торт"
+      },
+      "tags": [
+        "еда",
+        "сладости",
+        "десерт"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-BURGER": {
+      "id": "FOOD-BURGER",
+      "text": "бургер",
+      "emoji": "🍔",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "бургер"
+      },
+      "tags": [
+        "еда",
+        "блюдо",
+        "фастфуд"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "FOOD-FRIES": {
+      "id": "FOOD-FRIES",
+      "text": "картошка фри",
+      "emoji": "🍟",
+      "type": "object",
+      "category": "CAT-FOOD",
+      "forms": {
+        "accusative": "картошку фри"
+      },
+      "tags": [
+        "еда",
+        "блюдо",
+        "фастфуд"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:30:00.000Z",
+      "modified": "2025-12-10T07:30:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "ACT-POUR-DRINK": {
+      "id": "ACT-POUR-DRINK",
+      "text": "налить",
+      "emoji": "🧴",
+      "type": "action",
+      "category": "CAT-DRINK",
+      "forms": {},
+      "tags": [
+        "действие",
+        "пить",
+        "налить"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E0F7FA",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "DRINK-WATER",
+          "DRINK-MILK",
+          "DRINK-JUICE",
+          "DRINK-COMPOTE",
+          "DRINK-TEA",
+          "DRINK-COCOA",
+          "DRINK-KISSEL",
+          "DRINK-MORSE"
+        ],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 2
+      }
+    },
+    "ACT-WARM-DRINK": {
+      "id": "ACT-WARM-DRINK",
+      "text": "подогреть",
+      "emoji": "🔥",
+      "type": "action",
+      "category": "CAT-DRINK",
+      "forms": {},
+      "tags": [
+        "действие",
+        "пить",
+        "температура"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFECB3",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "DRINK-MILK",
+          "DRINK-TEA",
+          "DRINK-COCOA",
+          "DRINK-KISSEL"
+        ],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 1
+      }
+    },
+    "ACT-COOL-DRINK": {
+      "id": "ACT-COOL-DRINK",
+      "text": "охладить",
+      "emoji": "❄️",
+      "type": "action",
+      "category": "CAT-DRINK",
+      "forms": {},
+      "tags": [
+        "действие",
+        "пить",
+        "температура"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E1F5FE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "DRINK-WATER",
+          "DRINK-JUICE",
+          "DRINK-COMPOTE",
+          "DRINK-MORSE",
+          "DRINK-LEMONADE",
+          "DRINK-SODA"
+        ],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 1
+      }
+    },
+    "ACT-MIX-DRINKS": {
+      "id": "ACT-MIX-DRINKS",
+      "text": "смешать",
+      "emoji": "🫗",
+      "type": "action",
+      "category": "CAT-DRINK",
+      "forms": {},
+      "tags": [
+        "действие",
+        "пить",
+        "смешивание"
+      ],
+      "difficulty": 3,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#F3E5F5",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "DRINK-JUICE",
+          "DRINK-MILK",
+          "DRINK-WATER",
+          "DRINK-SMOOTHIE"
+        ],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 3
+      }
+    },
+    "ACT-OPEN-BOTTLE": {
+      "id": "ACT-OPEN-BOTTLE",
+      "text": "открыть бутылку",
+      "emoji": "🧃",
+      "type": "action",
+      "category": "CAT-DRINK",
+      "forms": {},
+      "tags": [
+        "действие",
+        "пить",
+        "открыть"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E0F7FA",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "DRINK-JUICE",
+          "DRINK-WATER",
+          "DRINK-SODA",
+          "DRINK-JUICE-BOX"
+        ],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 1
+      }
+    },
+    "ACT-USE-STRAW": {
+      "id": "ACT-USE-STRAW",
+      "text": "пить через трубочку",
+      "emoji": "🥤",
+      "type": "action",
+      "category": "CAT-DRINK",
+      "forms": {},
+      "tags": [
+        "действие",
+        "пить",
+        "трубочка"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E0F7FA",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "DRINK-JUICE",
+          "DRINK-MILK",
+          "DRINK-SMOOTHIE",
+          "DRINK-JUICE-BOX",
+          "DRINK-LEMONADE",
+          "DRINK-SODA"
+        ],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 1
+      }
+    },
+    "ACT-POUR-INTO-CUP": {
+      "id": "ACT-POUR-INTO-CUP",
+      "text": "налить в чашку",
+      "emoji": "☕",
+      "type": "action",
+      "category": "CAT-DRINK",
+      "forms": {},
+      "tags": [
+        "действие",
+        "пить",
+        "чашка"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "DRINK-WATER",
+          "DRINK-MILK",
+          "DRINK-JUICE",
+          "DRINK-TEA",
+          "DRINK-COCOA",
+          "DRINK-KISSEL",
+          "DRINK-COMPOTE"
+        ],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 2
+      }
+    },
+    "DRINK-COCOA": {
+      "id": "DRINK-COCOA",
+      "text": "какао",
+      "emoji": "☕",
+      "type": "object",
+      "category": "CAT-DRINK",
+      "forms": {
+        "accusative": "какао"
+      },
+      "tags": [
+        "питье",
+        "напиток",
+        "шоколадный"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "DRINK-KISSEL": {
+      "id": "DRINK-KISSEL",
+      "text": "кисель",
+      "emoji": "🫐",
+      "type": "object",
+      "category": "CAT-DRINK",
+      "forms": {
+        "accusative": "кисель"
+      },
+      "tags": [
+        "питье",
+        "напиток",
+        "густой"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#F3E5F5",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "DRINK-MORSE": {
+      "id": "DRINK-MORSE",
+      "text": "морс",
+      "emoji": "🫐",
+      "type": "object",
+      "category": "CAT-DRINK",
+      "forms": {
+        "accusative": "морс"
+      },
+      "tags": [
+        "питье",
+        "напиток",
+        "ягодный"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FCE4EC",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "DRINK-SMOOTHIE": {
+      "id": "DRINK-SMOOTHIE",
+      "text": "смузи",
+      "emoji": "🥤",
+      "type": "object",
+      "category": "CAT-DRINK",
+      "forms": {
+        "accusative": "смузи"
+      },
+      "tags": [
+        "питье",
+        "напиток",
+        "фруктовый"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8F5E9",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "DRINK-LEMONADE": {
+      "id": "DRINK-LEMONADE",
+      "text": "лимонад",
+      "emoji": "🍋",
+      "type": "object",
+      "category": "CAT-DRINK",
+      "forms": {
+        "accusative": "лимонад"
+      },
+      "tags": [
+        "питье",
+        "напиток",
+        "газированный"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF9C4",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "DRINK-SODA": {
+      "id": "DRINK-SODA",
+      "text": "газировка",
+      "emoji": "🥤",
+      "type": "object",
+      "category": "CAT-DRINK",
+      "forms": {
+        "accusative": "газировку"
+      },
+      "tags": [
+        "питье",
+        "напиток",
+        "газированный"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E0F7FA",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "DRINK-JUICE-BOX": {
+      "id": "DRINK-JUICE-BOX",
+      "text": "сок в пакете",
+      "emoji": "🧃",
+      "type": "object",
+      "category": "CAT-DRINK",
+      "forms": {
+        "accusative": "сок в пакете"
+      },
+      "tags": [
+        "питье",
+        "напиток",
+        "упаковка"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:40:00.000Z",
+      "modified": "2025-12-10T07:40:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "ACT-WASH-HAIR": {
+      "id": "ACT-WASH-HAIR",
+      "text": "мыть волосы",
+      "emoji": "🧖",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "волосы"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-BLOW-NOSE": {
+      "id": "ACT-BLOW-NOSE",
+      "text": "высморкаться",
+      "emoji": "🧻",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "нос"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-COMB-HAIR": {
+      "id": "ACT-COMB-HAIR",
+      "text": "причесаться",
+      "emoji": "💇",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "волосы"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-CUT-NAILS": {
+      "id": "ACT-CUT-NAILS",
+      "text": "подстричь ногти",
+      "emoji": "✂️",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "ногти"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-WASH-FEET": {
+      "id": "ACT-WASH-FEET",
+      "text": "помыть ноги",
+      "emoji": "🦶",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "ноги"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-USE-SOAP": {
+      "id": "ACT-USE-SOAP",
+      "text": "использовать мыло",
+      "emoji": "🧼",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "мыло"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-USE-SHAMPOO": {
+      "id": "ACT-USE-SHAMPOO",
+      "text": "использовать шампунь",
+      "emoji": "🧴",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "шампунь"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-DRY-HANDS": {
+      "id": "ACT-DRY-HANDS",
+      "text": "вытереть руки",
+      "emoji": "🧻",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "полотенце"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-WASH-EARS": {
+      "id": "ACT-WASH-EARS",
+      "text": "помыть уши",
+      "emoji": "👂",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "уши"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-CLEAN-EARS": {
+      "id": "ACT-CLEAN-EARS",
+      "text": "почистить уши",
+      "emoji": "🪮",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "уши"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-APPLY-CREAM": {
+      "id": "ACT-APPLY-CREAM",
+      "text": "нанести крем",
+      "emoji": "🧴",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "крем"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-BRUSH-HAIR": {
+      "id": "ACT-BRUSH-HAIR",
+      "text": "расчесать волосы",
+      "emoji": "💆",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "волосы"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-RINSE-MOUTH": {
+      "id": "ACT-RINSE-MOUTH",
+      "text": "прополоскать рот",
+      "emoji": "💧",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "рот"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-USE-DEODORANT": {
+      "id": "ACT-USE-DEODORANT",
+      "text": "использовать дезодорант",
+      "emoji": "🧴",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "дезодорант"
+      ],
+      "difficulty": 3,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-USE-TISSUE": {
+      "id": "ACT-USE-TISSUE",
+      "text": "использовать салфетку",
+      "emoji": "🧻",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "салфетка"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-WASH-BACK": {
+      "id": "ACT-WASH-BACK",
+      "text": "помыть спину",
+      "emoji": "🫧",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "спина"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-CLEAN-TEETH": {
+      "id": "ACT-CLEAN-TEETH",
+      "text": "почистить зубы",
+      "emoji": "🦷",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "зубы"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-DRY-HAIR": {
+      "id": "ACT-DRY-HAIR",
+      "text": "высушить волосы",
+      "emoji": "💨",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "волосы"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-WIPE-HANDS": {
+      "id": "ACT-WIPE-HANDS",
+      "text": "протереть руки",
+      "emoji": "👐",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "руки"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "ACT-WASH-UNDERARMS": {
+      "id": "ACT-WASH-UNDERARMS",
+      "text": "помыть подмышки",
+      "emoji": "💪",
+      "type": "action",
+      "category": "CAT-HYGIENE",
+      "forms": {},
+      "tags": [
+        "действие",
+        "гигиена",
+        "подмышки"
+      ],
+      "difficulty": 3,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "places"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "PAIN-EAR": {
+      "id": "PAIN-EAR",
+      "text": "ухо",
+      "emoji": "👂",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болит ухо"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "ухо"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-NOSE": {
+      "id": "PAIN-NOSE",
+      "text": "нос",
+      "emoji": "👃",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болит нос"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "нос"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-THROAT": {
+      "id": "PAIN-THROAT",
+      "text": "горло",
+      "emoji": "👄",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болит горло"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "горло"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-EYE": {
+      "id": "PAIN-EYE",
+      "text": "глаз",
+      "emoji": "👁️",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болит глаз"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "глаз"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-BACK": {
+      "id": "PAIN-BACK",
+      "text": "спина",
+      "emoji": "🔙",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болит спина"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "спина"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-NECK": {
+      "id": "PAIN-NECK",
+      "text": "шея",
+      "emoji": "🦒",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болит шея"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "шея"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-CHEST": {
+      "id": "PAIN-CHEST",
+      "text": "грудь",
+      "emoji": "👕",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болит грудь"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "грудь"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-HEART": {
+      "id": "PAIN-HEART",
+      "text": "сердце",
+      "emoji": "❤️",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болит сердце"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "орган",
+        "сердце"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-LUNGS": {
+      "id": "PAIN-LUNGS",
+      "text": "легкие",
+      "emoji": "🫁",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болят легкие"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "орган",
+        "легкие"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-KIDNEY": {
+      "id": "PAIN-KIDNEY",
+      "text": "почки",
+      "emoji": "🫘",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болят почки"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "орган",
+        "почки"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-FINGER": {
+      "id": "PAIN-FINGER",
+      "text": "палец",
+      "emoji": "👆",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болит палец"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "палец"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-KNEE": {
+      "id": "PAIN-KNEE",
+      "text": "колено",
+      "emoji": "🦵",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болит колено"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "колено"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-ELBOW": {
+      "id": "PAIN-ELBOW",
+      "text": "локоть",
+      "emoji": "🤏",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болит локоть"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "локоть"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-SHOULDER": {
+      "id": "PAIN-SHOULDER",
+      "text": "плечо",
+      "emoji": "💪",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болит плечо"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "плечо"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PAIN-ANKLE": {
+      "id": "PAIN-ANKLE",
+      "text": "лодыжка",
+      "emoji": "🦶",
+      "type": "pain",
+      "category": "CAT-PAIN",
+      "forms": {
+        "phrase": "У меня болит лодыжка"
+      },
+      "tags": [
+        "боль",
+        "тело",
+        "лодыжка"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:45:00.000Z",
+      "modified": "2025-12-10T07:45:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "ACT-PLAY-WITH-PET": {
+      "id": "ACT-PLAY-WITH-PET",
+      "text": "играть",
+      "emoji": "🎾",
+      "type": "action",
+      "category": "CAT-PETS",
+      "forms": {
+        "with": "с"
+      },
+      "tags": [
+        "действие",
+        "питомец",
+        "игра"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E1F5FE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "pets",
+          "objects",
+          "places"
+        ],
+        "allowedObjects": [
+          "PET-DOG",
+          "PET-CAT",
+          "PET-RABBIT",
+          "PET-PUPPY",
+          "PET-KITTEN"
+        ],
+        "maxPeople": 0,
+        "maxPets": 1,
+        "maxPlaces": 1,
+        "maxObjects": 1
+      }
+    },
+    "ACT-BATHE-PET": {
+      "id": "ACT-BATHE-PET",
+      "text": "купать",
+      "emoji": "🚿",
+      "type": "action",
+      "category": "CAT-PETS",
+      "forms": {},
+      "tags": [
+        "действие",
+        "питомец",
+        "гигиена"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8EAF6",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "pets",
+          "objects"
+        ],
+        "allowedObjects": [
+          "PET-DOG",
+          "PET-CAT",
+          "PET-PUPPY",
+          "PET-KITTEN"
+        ],
+        "maxPeople": 0,
+        "maxPets": 1,
+        "maxPlaces": 0,
+        "maxObjects": 1
+      }
+    },
+    "ACT-BRUSH-PET": {
+      "id": "ACT-BRUSH-PET",
+      "text": "чесать",
+      "emoji": "🪮",
+      "type": "action",
+      "category": "CAT-PETS",
+      "forms": {},
+      "tags": [
+        "действие",
+        "питомец",
+        "уход"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "pets",
+          "objects"
+        ],
+        "allowedObjects": [
+          "PET-DOG",
+          "PET-CAT",
+          "PET-RABBIT",
+          "PET-PUPPY",
+          "PET-KITTEN"
+        ],
+        "maxPeople": 0,
+        "maxPets": 1,
+        "maxPlaces": 0,
+        "maxObjects": 1
+      }
+    },
+    "ACT-CLEAN-CAGE": {
+      "id": "ACT-CLEAN-CAGE",
+      "text": "чистить клетку",
+      "emoji": "🧹",
+      "type": "action",
+      "category": "CAT-PETS",
+      "forms": {},
+      "tags": [
+        "действие",
+        "питомец",
+        "уход"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8F5E9",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "pets",
+          "objects"
+        ],
+        "allowedObjects": [
+          "PET-HAMSTER",
+          "PET-GUINEA-PIG",
+          "PET-RABBIT",
+          "PET-BIRD"
+        ],
+        "maxPeople": 0,
+        "maxPets": 1,
+        "maxPlaces": 0,
+        "maxObjects": 1
+      }
+    },
+    "ACT-TRAIN-PET": {
+      "id": "ACT-TRAIN-PET",
+      "text": "дрессировать",
+      "emoji": "🎓",
+      "type": "action",
+      "category": "CAT-PETS",
+      "forms": {
+        "with": "с"
+      },
+      "tags": [
+        "действие",
+        "питомец",
+        "обучение"
+      ],
+      "difficulty": 3,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "pets",
+          "people",
+          "objects"
+        ],
+        "allowedObjects": [
+          "PET-DOG",
+          "PET-PUPPY"
+        ],
+        "maxPeople": 1,
+        "maxPets": 1,
+        "maxPlaces": 0,
+        "maxObjects": 1
+      }
+    },
+    "ACT-VET-VISIT": {
+      "id": "ACT-VET-VISIT",
+      "text": "к ветеринару",
+      "emoji": "🏥",
+      "type": "action",
+      "category": "CAT-PETS",
+      "forms": {
+        "with": "с"
+      },
+      "tags": [
+        "действие",
+        "питомец",
+        "здоровье"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFEBEE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "pets",
+          "objects",
+          "people",
+          "places"
+        ],
+        "allowedObjects": [
+          "PET-DOG",
+          "PET-CAT",
+          "PET-RABBIT",
+          "PET-HAMSTER",
+          "PET-GUINEA-PIG",
+          "PET-BIRD",
+          "PET-TURTLE",
+          "PET-PUPPY",
+          "PET-KITTEN"
+        ],
+        "maxPeople": 2,
+        "maxPets": 1,
+        "maxPlaces": 1,
+        "maxObjects": 1
+      }
+    },
+    "PET-DOG": {
+      "id": "PET-DOG",
+      "text": "собака",
+      "emoji": "🐕",
+      "type": "object",
+      "category": "CAT-PETS",
+      "forms": {
+        "with": "с собакой",
+        "accusative": "собаку"
+      },
+      "tags": [
+        "питомец",
+        "животное"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PET-CAT": {
+      "id": "PET-CAT",
+      "text": "кошка",
+      "emoji": "🐈",
+      "type": "object",
+      "category": "CAT-PETS",
+      "forms": {
+        "with": "с кошкой",
+        "accusative": "кошку"
+      },
+      "tags": [
+        "питомец",
+        "животное"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PET-RABBIT": {
+      "id": "PET-RABBIT",
+      "text": "кролик",
+      "emoji": "🐇",
+      "type": "object",
+      "category": "CAT-PETS",
+      "forms": {
+        "with": "с кроликом",
+        "accusative": "кролика"
+      },
+      "tags": [
+        "питомец",
+        "животное"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PET-GUINEA-PIG": {
+      "id": "PET-GUINEA-PIG",
+      "text": "морская свинка",
+      "emoji": "🐹",
+      "type": "object",
+      "category": "CAT-PETS",
+      "forms": {
+        "with": "с морской свинкой",
+        "accusative": "морскую свинку"
+      },
+      "tags": [
+        "питомец",
+        "животное"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PET-FISH": {
+      "id": "PET-FISH",
+      "text": "рыбка",
+      "emoji": "🐠",
+      "type": "object",
+      "category": "CAT-PETS",
+      "forms": {
+        "with": "с рыбкой",
+        "accusative": "рыбку"
+      },
+      "tags": [
+        "питомец",
+        "животное"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E3F2FD",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PET-BIRD": {
+      "id": "PET-BIRD",
+      "text": "птичка",
+      "emoji": "🐦",
+      "type": "object",
+      "category": "CAT-PETS",
+      "forms": {
+        "with": "с птичкой",
+        "accusative": "птичку"
+      },
+      "tags": [
+        "питомец",
+        "животное"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8F5E9",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PET-TURTLE": {
+      "id": "PET-TURTLE",
+      "text": "черепаха",
+      "emoji": "🐢",
+      "type": "object",
+      "category": "CAT-PETS",
+      "forms": {
+        "with": "с черепахой",
+        "accusative": "черепаху"
+      },
+      "tags": [
+        "питомец",
+        "животное"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8F5E9",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PET-PARROT": {
+      "id": "PET-PARROT",
+      "text": "попугай",
+      "emoji": "🦜",
+      "type": "object",
+      "category": "CAT-PETS",
+      "forms": {
+        "with": "с попугаем",
+        "accusative": "попугая"
+      },
+      "tags": [
+        "питомец",
+        "животное"
+      ],
+      "difficulty": 3,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E8F5E9",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "PET-MOUSE": {
+      "id": "PET-MOUSE",
+      "text": "мышка",
+      "emoji": "🐭",
+      "type": "object",
+      "category": "CAT-PETS",
+      "forms": {
+        "with": "с мышкой",
+        "accusative": "мышку"
+      },
+      "tags": [
+        "питомец",
+        "животное"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T07:50:00.000Z",
+      "modified": "2025-12-10T07:50:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "ACT-THROW": {
+      "id": "ACT-THROW",
+      "text": "бросать",
+      "emoji": "🤾",
+      "type": "action",
+      "category": "CAT-GAMES",
+      "forms": {},
+      "tags": [
+        "действие",
+        "игра",
+        "мяч"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E1F5FE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "people",
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "GAME-BALL",
+          "GAME-FRISBEE",
+          "GAME-SOFTBALL"
+        ],
+        "maxPeople": 2,
+        "maxPets": 1,
+        "maxPlaces": 1,
+        "maxObjects": 1
+      }
+    },
+    "ACT-CATCH": {
+      "id": "ACT-CATCH",
+      "text": "ловить",
+      "emoji": "🤲",
+      "type": "action",
+      "category": "CAT-GAMES",
+      "forms": {},
+      "tags": [
+        "действие",
+        "игра",
+        "мяч"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E1F5FE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "people",
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "GAME-BALL",
+          "GAME-FRISBEE",
+          "GAME-SOFTBALL"
+        ],
+        "maxPeople": 2,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 1
+      }
+    },
+    "ACT-ROLL": {
+      "id": "ACT-ROLL",
+      "text": "катать",
+      "emoji": "🔄",
+      "type": "action",
+      "category": "CAT-GAMES",
+      "forms": {},
+      "tags": [
+        "действие",
+        "игра",
+        "мяч"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "people",
+          "pets",
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "GAME-BALL",
+          "GAME-CAR",
+          "GAME-TRAIN"
+        ],
+        "maxPeople": 2,
+        "maxPets": 1,
+        "maxPlaces": 1,
+        "maxObjects": 1
+      }
+    },
+    "ACT-STACK": {
+      "id": "ACT-STACK",
+      "text": "ставить друг на друга",
+      "emoji": "🪜",
+      "type": "action",
+      "category": "CAT-GAMES",
+      "forms": {},
+      "tags": [
+        "действие",
+        "игра",
+        "кубики"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "people",
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "GAME-CUBES",
+          "GAME-BLOCKS",
+          "GAME-LEGO"
+        ],
+        "maxPeople": 1,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 3
+      }
+    },
+    "ACT-KNOCK-DOWN": {
+      "id": "ACT-KNOCK-DOWN",
+      "text": "сбивать",
+      "emoji": "🎳",
+      "type": "action",
+      "category": "CAT-GAMES",
+      "forms": {},
+      "tags": [
+        "действие",
+        "игра",
+        "сбивать"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "people",
+          "places",
+          "objects"
+        ],
+        "allowedObjects": [
+          "GAME-CUBES",
+          "GAME-BLOCKS",
+          "GAME-BOWLING"
+        ],
+        "maxPeople": 1,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 1
+      }
+    },
+    "ACT-PRETEND": {
+      "id": "ACT-PRETEND",
+      "text": "представлять",
+      "emoji": "🎭",
+      "type": "action",
+      "category": "CAT-GAMES",
+      "forms": {
+        "with": "с"
+      },
+      "tags": [
+        "действие",
+        "игра",
+        "воображение"
+      ],
+      "difficulty": 3,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#F3E5F5",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "people",
+          "objects"
+        ],
+        "allowedObjects": [
+          "GAME-DOLL",
+          "GAME-CAR",
+          "GAME-ANIMALS",
+          "GAME-ROBOT"
+        ],
+        "maxPeople": 2,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 2
+      }
+    },
+    "ACT-IMITATE": {
+      "id": "ACT-IMITATE",
+      "text": "подражать",
+      "emoji": "👯",
+      "type": "action",
+      "category": "CAT-GAMES",
+      "forms": {
+        "with": "с"
+      },
+      "tags": [
+        "действие",
+        "игра",
+        "имитация"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FCE4EC",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {
+        "allowedWith": [
+          "people",
+          "animals"
+        ],
+        "allowedObjects": [],
+        "maxPeople": 2,
+        "maxPets": 0,
+        "maxPlaces": 1,
+        "maxObjects": 0
+      }
+    },
+    "GAME-LEGO": {
+      "id": "GAME-LEGO",
+      "text": "лего",
+      "emoji": "🧱",
+      "type": "object",
+      "category": "CAT-GAMES",
+      "forms": {
+        "accusative": "лего"
+      },
+      "tags": [
+        "игрушка",
+        "игра",
+        "конструктор"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "GAME-TRAIN": {
+      "id": "GAME-TRAIN",
+      "text": "поезд",
+      "emoji": "🚂",
+      "type": "object",
+      "category": "CAT-GAMES",
+      "forms": {
+        "accusative": "поезд"
+      },
+      "tags": [
+        "игрушка",
+        "игра",
+        "поезд"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E3F2FD",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "GAME-ANIMALS": {
+      "id": "GAME-ANIMALS",
+      "text": "игрушечные животные",
+      "emoji": "🐘",
+      "type": "object",
+      "category": "CAT-GAMES",
+      "forms": {
+        "accusative": "игрушечных животных"
+      },
+      "tags": [
+        "игрушка",
+        "игра",
+        "животные"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "GAME-ROBOT": {
+      "id": "GAME-ROBOT",
+      "text": "робот",
+      "emoji": "🤖",
+      "type": "object",
+      "category": "CAT-GAMES",
+      "forms": {
+        "accusative": "робота"
+      },
+      "tags": [
+        "игрушка",
+        "игра",
+        "робот"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "GAME-FRISBEE": {
+      "id": "GAME-FRISBEE",
+      "text": "летающая тарелка",
+      "emoji": "🥏",
+      "type": "object",
+      "category": "CAT-GAMES",
+      "forms": {
+        "accusative": "летающую тарелку"
+      },
+      "tags": [
+        "игрушка",
+        "игра",
+        "фрисби"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#E1F5FE",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "GAME-SOFTBALL": {
+      "id": "GAME-SOFTBALL",
+      "text": "мягкий мяч",
+      "emoji": "🎾",
+      "type": "object",
+      "category": "CAT-GAMES",
+      "forms": {
+        "accusative": "мягкий мяч"
+      },
+      "tags": [
+        "игрушка",
+        "игра",
+        "мяч"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "GAME-BOWLING": {
+      "id": "GAME-BOWLING",
+      "text": "кегли",
+      "emoji": "🎳",
+      "type": "object",
+      "category": "CAT-GAMES",
+      "forms": {
+        "accusative": "кегли"
+      },
+      "tags": [
+        "игрушка",
+        "игра",
+        "боулинг"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "GAME-DOMINO": {
+      "id": "GAME-DOMINO",
+      "text": "домино",
+      "emoji": "🀄",
+      "type": "object",
+      "category": "CAT-GAMES",
+      "forms": {
+        "accusative": "домино"
+      },
+      "tags": [
+        "игра",
+        "настольная игра"
+      ],
+      "difficulty": 3,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "GAME-LOTTO": {
+      "id": "GAME-LOTTO",
+      "text": "лото",
+      "emoji": "🎴",
+      "type": "object",
+      "category": "CAT-GAMES",
+      "forms": {
+        "accusative": "лото"
+      },
+      "tags": [
+        "игра",
+        "настольная игра"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T08:00:00.000Z",
+      "modified": "2025-12-10T08:00:00.000Z",
+      "author": "user",
+      "version": 1,
+      "color": "#FFF3E0",
+      "sections": [
+        "Главная"
+      ],
+      "metadata": {}
+    },
+    "CAT-COLORS": {
+      "id": "CAT-COLORS",
+      "text": "Цвета",
+      "emoji": "🤕",
+      "type": "category",
+      "category": null,
+      "forms": {},
+      "tags": [
+        "категория",
+        "боль",
+        "тело",
+        "копия"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 40,
+      "created": "2025-12-10T14:11:59.866Z",
+      "modified": "2025-12-10T14:17:54.493Z",
+      "author": "user",
+      "version": 4,
+      "color": "#ffebee",
+      "borderColor": "#f44336",
+      "sections": [
+        "Обучение"
+      ],
+      "metadata": {
+        "allowedWith": [],
+        "allowedObjects": [],
+        "maxPeople": 0,
+        "maxPets": 0,
+        "maxPlaces": 0,
+        "maxObjects": 0,
+        "description": "Части тела, которые могут болеть",
+        "metadataVersion": 1
+      }
+    }
   }
 }
