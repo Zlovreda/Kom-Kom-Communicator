@@ -10398,6 +10398,523 @@
         "description": "Части тела, которые могут болеть",
         "metadataVersion": 1
       }
+    },
+    "CAT-DIALOG": {
+      "id": "CAT-DIALOG",
+      "text": "Разговор",
+      "emoji": "💬",
+      "type": "category",
+      "category": null,
+      "forms": {},
+      "tags": [
+        "категория",
+        "диалог",
+        "общение"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#E3F2FD",
+      "borderColor": "#2196F3",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {
+        "isCategory": true,
+        "description": "Основные фразы для общения и разговора"
+      }
+    },
+    "DLG-HELLO": {
+      "id": "DLG-HELLO",
+      "text": "привет",
+      "emoji": "👋",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "приветствие"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#E3F2FD",
+      "borderColor": "#2196F3",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-BYE": {
+      "id": "DLG-BYE",
+      "text": "пока",
+      "emoji": "👋",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "прощание"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#FCE4EC",
+      "borderColor": "#E91E63",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-THANK": {
+      "id": "DLG-THANK",
+      "text": "спасибо",
+      "emoji": "😊",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "благодарность"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#E8F5E9",
+      "borderColor": "#4CAF50",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-PLEASE": {
+      "id": "DLG-PLEASE",
+      "text": "пожалуйста",
+      "emoji": "🙋",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "вежливость",
+        "просьба"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#FFF3E0",
+      "borderColor": "#FF9800",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-YES": {
+      "id": "DLG-YES",
+      "text": "да",
+      "emoji": "👍",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "согласие"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#E8F5E9",
+      "borderColor": "#4CAF50",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-NO": {
+      "id": "DLG-NO",
+      "text": "нет",
+      "emoji": "👎",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "отказ",
+        "несогласие"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#FFEBEE",
+      "borderColor": "#F44336",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-HELP": {
+      "id": "DLG-HELP",
+      "text": "помоги",
+      "emoji": "🆘",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "помощь",
+        "срочно"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#FCE4EC",
+      "borderColor": "#E91E63",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-WAIT": {
+      "id": "DLG-WAIT",
+      "text": "подожди",
+      "emoji": "✋",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "ожидание",
+        "пауза"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#FFF3E0",
+      "borderColor": "#FF9800",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-STOP": {
+      "id": "DLG-STOP",
+      "text": "стоп",
+      "emoji": "🛑",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "остановка",
+        "прекрати"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#FFEBEE",
+      "borderColor": "#F44336",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-SORRY": {
+      "id": "DLG-SORRY",
+      "text": "извини",
+      "emoji": "😔",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "извинение"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#E3F2FD",
+      "borderColor": "#2196F3",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-AGAIN": {
+      "id": "DLG-AGAIN",
+      "text": "ещё раз",
+      "emoji": "🔁",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "повтор"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#E3F2FD",
+      "borderColor": "#2196F3",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-GOOD": {
+      "id": "DLG-GOOD",
+      "text": "хорошо",
+      "emoji": "✅",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "одобрение",
+        "ладно"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#E8F5E9",
+      "borderColor": "#4CAF50",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-BAD": {
+      "id": "DLG-BAD",
+      "text": "плохо",
+      "emoji": "❌",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "неодобрение",
+        "неправильно"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#FFEBEE",
+      "borderColor": "#F44336",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-WANT": {
+      "id": "DLG-WANT",
+      "text": "хочу",
+      "emoji": "👉",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "желание",
+        "просьба"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#FFF3E0",
+      "borderColor": "#FF9800",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-NEED": {
+      "id": "DLG-NEED",
+      "text": "нужно",
+      "emoji": "❗",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "потребность",
+        "необходимо"
+      ],
+      "difficulty": 2,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#FFEBEE",
+      "borderColor": "#F44336",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-DONT-WANT": {
+      "id": "DLG-DONT-WANT",
+      "text": "не хочу",
+      "emoji": "🙅",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "отказ",
+        "нежелание"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#FFEBEE",
+      "borderColor": "#F44336",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-HERE": {
+      "id": "DLG-HERE",
+      "text": "вот",
+      "emoji": "👇",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "указание",
+        "здесь"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#E3F2FD",
+      "borderColor": "#2196F3",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-LOOK": {
+      "id": "DLG-LOOK",
+      "text": "смотри",
+      "emoji": "👀",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "внимание",
+        "показ"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#E3F2FD",
+      "borderColor": "#2196F3",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
+    },
+    "DLG-LISTEN": {
+      "id": "DLG-LISTEN",
+      "text": "слушай",
+      "emoji": "👂",
+      "type": "dialog",
+      "category": "CAT-DIALOG",
+      "forms": {},
+      "tags": [
+        "диалог",
+        "внимание",
+        "слух"
+      ],
+      "difficulty": 1,
+      "status": "active",
+      "usageCount": 0,
+      "created": "2025-12-10T15:00:00.000Z",
+      "modified": "2025-12-10T15:00:00.000Z",
+      "author": "system",
+      "version": 1,
+      "color": "#E3F2FD",
+      "borderColor": "#2196F3",
+      "sections": [
+        "Диалог"
+      ],
+      "metadata": {}
     }
   }
 }
