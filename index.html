@@ -1329,6 +1329,7 @@
             <button class="control-btn import" id="importBtn">Импорт карточек</button>
             <button class="control-btn export" id="exportBtn">Экспорт карточек</button>
             <button class="control-btn reset" id="resetBtn">Сброс к начальным</button>
+			<button class="control-btn" id="editorBtn">Редактор карточек</button>
             <button class="control-btn remote" id="remoteLoadBtn">Загрузить с сервера</button>
             <input type="file" id="fileInput" class="file-input" accept=".json">
           </div>
@@ -3133,6 +3134,10 @@
           this.resetCards();
         });
 
+        document.getElementById('editorBtn').addEventListener('click', () => {
+           window.open('https://zlovreda.github.io/Kom-Kom-Communicator/editor.html', '_blank');
+        });
+		
         document.getElementById('remoteLoadBtn').addEventListener('click', async () => {
           await this.loadCardsFromRemote();
         });
