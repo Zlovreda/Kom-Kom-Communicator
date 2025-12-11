@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инструкция - Редактор карточек Ком-Ком</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            color: #1e293b;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 32px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .app-version {
+            display: inline-block;
+            font-size: 14px;
+            opacity: 0.9;
+            background: rgba(255,255,255,0.15);
+            padding: 6px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            margin-top: 15px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .toc {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .toc h2 {
+            color: #1d4ed8;
+            margin-bottom: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toc h2::before {
+            content: '📚';
+            font-size: 28px;
+        }
+
+        .toc-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            list-style: none;
+        }
+
+        .toc-item {
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .toc-item:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+        }
+
+        .toc-item a {
+            color: #1e293b;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toc-item a:hover {
+            color: #3b82f6;
+        }
+
+        section {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            color: #1d4ed8;
+            margin-bottom: 25px;
+            font-size: 28px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h3 {
+            color: #334155;
+            margin: 30px 0 15px 0;
+            font-size: 22px;
+            padding-left: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        p {
+            margin-bottom: 18px;
+            color: #475569;
+            font-size: 16px;
+        }
+
+        ul, ol {
+            margin-bottom: 20px;
+            padding-left: 25px;
+            color: #475569;
+        }
+
+        li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 2px solid #86efac;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .tip-box h4 {
+            color: #166534;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #fbbf24;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .warning-box h4 {
+            color: #92400e;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 2px solid #93c5fd;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .info-box h4 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .example {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .example-title {
+            color: #7c3aed;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .screenshot {
+            width: 100%;
+            max-width: 800px;
+            border-radius: 12px;
+            border: 3px solid #e2e8f0;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .screenshot-caption {
+            text-align: center;
+            color: #64748b;
+            font-style: italic;
+            margin-top: -15px;
+            margin-bottom: 25px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            color: #1e293b;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .feature-description {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', 'Cascadia Code', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .keyboard-shortcut {
+            background: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            display: inline-block;
+            margin: 5px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-btn.secondary {
+            background: linear-gradient(135deg, #94a3b8, #64748b);
+        }
+
+        .nav-btn.secondary:hover {
+            background: linear-gradient(135deg, #64748b, #475569);
+        }
+
+        footer {
+            background: #f8fafc;
+            padding: 30px 40px;
+            text-align: center;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 30px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: #3b82f6;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer-link:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 15px;
+                border-radius: 15px;
+            }
+            
+            .content {
+                padding: 25px;
+            }
+            
+            header {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        .emoji-bullet {
+            display: inline-block;
+            width: 24px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .quick-start-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border: 2px solid #e2e8f0;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .step-card:hover {
+            border-color: #8b5cf6;
+            transform: translateY(-3px);
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 15px auto;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .step-description {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎴 Инструкция по использованию редактора карточек Ком-Ком</h1>
+            <div class="subtitle">
+                Полное руководство для родителей детей с РАС, педагогов и пользователей альтернативной и дополнительной коммуникации (AAC)
+            </div>
+            <div class="app-version">Версия 2.2 • Обновлено: декабрь 2025</div>
+        </header>
+
+        <div class="content">
+            <div class="toc">
+                <h2>📚 Содержание инструкции</h2>
+                <ul class="toc-list">
+                    <li class="toc-item"><a href="#section1">1. Что такое редактор карточек Ком-Ком?</a></li>
+                    <li class="toc-item"><a href="#section2">2. Быстрый старт: первые шаги</a></li>
+                    <li class="toc-item"><a href="#section3">3. Интерфейс редактора: обзор панелей</a></li>
+                    <li class="toc-item"><a href="#section4">4. Создание и редактирование карточек</a></li>
+                    <li class="toc-item"><a href="#section5">5. Работа с несколькими карточками</a></li>
+                    <li class="toc-item"><a href="#section6">6. Импорт, экспорт и синхронизация</a></li>
+                    <li class="toc-item"><a href="#section7">7. Визуальное оформление и доступность</a></li>
+                    <li class="toc-item"><a href="#section8">8. Частые вопросы и проблемы</a></li>
+                    <li class="toc-item"><a href="#section9">9. Советы для эффективной работы</a></li>
+                    <li class="toc-item"><a href="#section10">10. Дополнительные ресурсы</a></li>
+                </ul>
+            </div>
+
+            <section id="section1">
+                <h2><span class="emoji-bullet">1️⃣</span> Что такое редактор карточек Ком-Ком?</h2>
+                
+                <p>Редактор карточек Ком-Ком — это веб-приложение для создания и управления карточками альтернативной и дополнительной коммуникации (AAC). Он предназначен для:</p>
+                
+                <ul>
+                    <li><span class="emoji-bullet">👨‍👩‍👧‍👦</span> <strong>Родителей детей с РАС</strong> — создание персонализированных карточек для общения</li>
+                    <li><span class="emoji-bullet">👩‍🏫</span> <strong>Педагогов и логопедов</strong> — разработка учебных материалов</li>
+                    <li><span class="emoji-bullet">🧑‍💼</span> <strong>Специалистов по AAC</strong> — создание профессиональных коммуникационных наборов</li>
+                    <li><span class="emoji-bullet">🧑‍🦽</span> <strong>Пользователей с нарушениями речи</strong> — настройка карточек под свои потребности</li>
+                </ul>
+                
+                <div class="info-box">
+                    <h4><span class="emoji-bullet">ℹ️</span> Важная информация</h4>
+                    <p>Приложение работает прямо в браузере и не требует установки! Все данные сохраняются на вашем компьютере. Для работы нужен только современный браузер (Chrome, Firefox, Safari, Edge).</p>
+                </div>
+            </section>
+
+            <section id="section2">
+                <h2><span class="emoji-bullet">2️⃣</span> Быстрый старт: первые шаги</h2>
+                
+                <h3>Как начать работу за 5 минут</h3>
+                
+                <div class="quick-start-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Откройте редактор</div>
+                        <div class="step-description">Перейдите по ссылке на редактор в вашем браузере</div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Загрузите карточки</div>
+                        <div class="step-description">Нажмите "Загрузить с сервера" или начните с нуля</div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Создайте первую карточку</div>
+                        <div class="step-description">Нажмите "+ Новая карточка" и заполните основные поля</div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Настройте внешний вид</div>
+                        <div class="step-description">Выберите цвет, эмодзи и параметры отображения</div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">5</div>
+                        <div class="step-title">Сохраните и используйте</div>
+                        <div class="step-description">Карточки автоматически сохраняются и готовы к использованию</div>
+                    </div>
+                </div>
+                
+                <div class="tip-box">
+                    <h4><span class="emoji-bullet">💡</span> Подсказка для новичков</h4>
+                    <p>Начните с создания 5-10 простых карточек (например: "пить", "есть", "спать", "мама", "папа"). Не старайтесь сразу создать полную систему — лучше постепенно добавлять карточки по мере необходимости.</p>
+                </div>
+            </section>
+
+            <section id="section3">
+                <h2><span class="emoji-bullet">3️⃣</span> Интерфейс редактора: обзор панелей</h2>
+                
+                <h3>Левая панель — список карточек</h3>
+                <p>Здесь отображаются все ваши карточки. Вы можете:</p>
+                <ul>
+                    <li><span class="emoji-bullet">🔍</span> <strong>Искать</strong> карточки по названию, ID или тегам</li>
+                    <li><span class="emoji-bullet">📁</span> <strong>Фильтровать</strong> по типу (действие, объект, эмоция и т.д.)</li>
+                    <li><span class="emoji-bullet">🔀</span> <strong>Сортировать</strong> по названию, популярности, дате создания</li>
+                    <li><span class="emoji-bullet">✅</span> <strong>Выбирать</strong> несколько карточек для массового редактирования</li>
+                    <li><span class="emoji-bullet">👆</span> <strong>Нажимать</strong> на карточку для редактирования</li>
+                </ul>
+                
+                <h3>Правая панель — редактор</h3>
+                <p>Основная рабочая область для редактирования карточек состоит из нескольких разделов:</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📋</div>
+                        <div class="feature-title">Основная информация</div>
+                        <div class="feature-description">ID, текст, эмодзи, тип и категория карточки</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <div class="feature-title">Визуальное оформление</div>
+                        <div class="feature-description">Цвета, рамка, секции для отображения</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📚</div>
+                        <div class="feature-title">Грамматические формы</div>
+                        <div class="feature-description">Падежи и предлоги для правильного построения фраз</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚙️</div>
+                        <div class="feature-title">Метаданные и настройки</div>
+                        <div class="feature-description">Разрешенные элементы, лимиты, теги и статусы</div>
+                    </div>
+                </div>
+                
+                <h3>Панель инструментов</h3>
+                <p>В верхней части находятся кнопки для основных действий:</p>
+                
+                <div class="example">
+                    <div class="example-title"><span class="emoji-bullet">✨</span> Основные кнопки:</div>
+                    <ul>
+                        <li><strong>+ Новая карточка</strong> — создание карточки с нуля</li>
+                        <li><strong>💾 Сохранить</strong> — сохранение текущей карточки</li>
+                        <li><strong>⎘ Дублировать</strong> — создание копии карточки</li>
+                        <li><strong>🗑️ Удалить</strong> — удаление выбранных карточек</li>
+                        <li><strong>👁️ Предпросмотр</strong> — просмотр карточки в режиме коммуникатора</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="section4">
+                <h2><span class="emoji-bullet">4️⃣</span> Создание и редактирование карточек</h2>
+                
+                <h3>Шаг 1: Создание новой карточки</h3>
+                <p>Нажмите кнопку <strong>"✨ + Новая карточка"</strong>. Появится окно для ввода ID карточки. ID должен быть уникальным и состоять из заглавных букв, цифр и дефисов.</p>
+                
+                <div class="example">
+                    <div class="example-title"><span class="emoji-bullet">📝</span> Примеры правильных ID:</div>
+                    <ul>
+                        <li><code>DRINK-WATER</code> — для карточки "пить воду"</li>
+                        <li><code>MOM</code> — для карточки "мама"</li>
+                        <li><code>ACT-PLAY</code> — для действия "играть"</li>
+                        <li><code>CAT-GAMES</code> — для категории "игры"</li>
+                    </ul>
+                </div>
+                
+                <h3>Шаг 2: Заполнение основных полей</h3>
+                <ul>
+                    <li><strong>Текст</strong> — основная надпись на карточке (например: "пить")</li>
+                    <li><strong>Эмодзи</strong> — визуальный символ (1-3 эмодзи, например: "🥤")</li>
+                    <li><strong>Тип карточки</strong> — выберите из списка (действие, объект, эмоция и т.д.)</li>
+                    <li><strong>Категория</strong> — необязательное поле для группировки карточек</li>
+                </ul>
+                
+                <h3>Шаг 3: Настройка грамматических форм</h3>
+                <p>Этот раздел особенно важен для правильного построения фраз в коммуникаторе:</p>
+                
+                <div class="example">
+                    <div class="example-title"><span class="emoji-bullet">🔤</span> Пример для карточки "яблоко":</div>
+                    <ul>
+                        <li><strong>Винительный</strong> (кого? что?) — яблоко</li>
+                        <li><strong>Родительный</strong> (кого? чего?) — яблока</li>
+                        <li><strong>Дательный</strong> (кому? чему?) — яблоку</li>
+                        <li><strong>Творительный</strong> (кем? чем?) — яблоком</li>
+                        <li><strong>Предложный</strong> (о ком? о чем?) — яблоке</li>
+                    </ul>
+                </div>
+                
+                <div class="warning-box">
+                    <h4><span class="emoji-bullet">⚠️</span> Внимание!</h4>
+                    <p>Не все поля обязательны! Заполняйте только те формы, которые действительно будут использоваться. Для простых карточек можно оставить большинство полей пустыми.</p>
+                </div>
+            </section>
+
+            <section id="section5">
+                <h2><span class="emoji-bullet">5️⃣</span> Работа с несколькими карточками</h2>
+                
+                <h3>Выбор нескольких карточек</h3>
+                <p>В списке карточек слева установите флажки рядом с нужными карточками. После выбора двух и более карточек появится раздел <strong>"Массовое редактирование"</strong>.</p>
+                
+                <h3>Массовые операции</h3>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">➕</div>
+                        <div class="feature-title">Добавить тег</div>
+                        <div class="feature-description">Добавить один тег ко всем выбранным карточкам</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">➖</div>
+                        <div class="feature-title">Удалить тег</div>
+                        <div class="feature-description">Удалить определённый тег из выбранных карточек</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <div class="feature-title">Изменить статус</div>
+                        <div class="feature-description">Сделать все карточки активными, скрытыми или черновиками</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🏷️</div>
+                        <div class="feature-title">Изменить категорию</div>
+                        <div class="feature-description">Назначить одну категорию для всех выбранных карточек</div>
+                    </div>
+                </div>
+                
+                <h3>Поиск дубликатов</h3>
+                <p>Нажмите кнопку <strong>"🔍 Найти дубликаты"</strong> для поиска карточек с одинаковым текстом или эмодзи. Это полезно для поддержания порядка в библиотеке карточек.</p>
+                
+                <div class="tip-box">
+                    <h4><span class="emoji-bullet">💡</span> Совет по организации</h4>
+                    <p>Используйте теги для быстрого поиска карточек. Например, для карточек, связанных с едой, добавьте тег "еда". Можно добавлять несколько тегов через запятую: "еда, завтрак, фрукты".</p>
+                </div>
+            </section>
+
+            <section id="section6">
+                <h2><span class="emoji-bullet">6️⃣</span> Импорт, экспорт и синхронизация</h2>
+                
+                <h3>Автосохранение</h3>
+                <p>Редактор автоматически сохраняет все изменения! Вы можете отключить автосохранение в правом верхнем углу, но мы рекомендуем оставить его включённым.</p>
+                
+                <h3>Экспорт карточек</h3>
+                <p>Нажмите <strong>"📤 Экспорт"</strong> для сохранения ваших карточек в файл. Доступны три формата:</p>
+                <ul>
+                    <li><strong>JSON (полный)</strong> — для резервного копирования и переноса в другой редактор</li>
+                    <li><strong>JSON (минифицированный)</strong> — для использования в коммуникаторе</li>
+                    <li><strong>CSV</strong> — для открытия в Excel или Google Таблицах</li>
+                </ul>
+                
+                <h3>Импорт карточек</h3>
+                <p>Нажмите <strong>"📥 Импорт"</strong> для загрузки карточек из файла. Выберите режим импорта:</p>
+                <ul>
+                    <li><strong>Объединить</strong> — добавить новые карточки, сохранив существующие</li>
+                    <li><strong>Заменить все</strong> — удалить все текущие карточки и загрузить новые</li>
+                    <li><strong>Обновить существующие</strong> — обновить только карточки с одинаковыми ID</li>
+                    <li><strong>Добавить только новые</strong> — добавить карточки с новыми ID</li>
+                </ul>
+                
+                <h3>Загрузка с сервера</h3>
+                <p>Нажмите <strong>"🌐 Загрузить с сервера"</strong> для загрузки стандартных наборов карточек с GitHub. Это отличный способ начать с готовой библиотеки!</p>
+                
+                <div class="info-box">
+                    <h4><span class="emoji-bullet">ℹ️</span> Важная информация о хранении</h4>
+                    <p>Все ваши карточки сохраняются в локальном хранилище браузера. Это значит, что они доступны только на этом компьютере и в этом браузере. Для переноса на другой компьютер используйте экспорт/импорт.</p>
+                </div>
+            </section>
+
+            <section id="section7">
+                <h2><span class="emoji-bullet">7️⃣</span> Визуальное оформление и доступность</h2>
+                
+                <h3>Цвета карточек</h3>
+                <p>Используйте цвет для категоризации карточек:</p>
+                <ul>
+                    <li><span style="color: #EF4444;">🔴</span> <strong>Красные оттенки</strong> — для действий (играть, бегать)</li>
+                    <li><span style="color: #3B82F6;">🔵</span> <strong>Синие оттенки</strong> — для объектов (яблоко, книга)</li>
+                    <li><span style="color: #10B981;">🟢</span> <strong>Зелёные оттенки</strong> — для эмоций (радость, грусть)</li>
+                    <li><span style="color: #F59E0B;">🟡</span> <strong>Жёлтые оттенки</strong> — для людей (мама, врач)</li>
+                    <li><span style="color: #8B5CF6;">🟣</span> <strong>Фиолетовые оттенки</strong> — для мест (дом, парк)</li>
+                </ul>
+                
+                <h3>Эмодзи и иконки</h3>
+                <p>Эмодзи помогают быстро распознать карточку:</p>
+                <ul>
+                    <li>Используйте 1-3 эмодзи для лучшей читаемости</li>
+                    <li>Выбирайте общепринятые, понятные эмодзи</li>
+                    <li>Для абстрактных понятий используйте метафорические эмодзи</li>
+                </ul>
+                
+                <div class="example">
+                    <div class="example-title"><span class="emoji-bullet">🎯</span> Примеры удачных сочетаний:</div>
+                    <ul>
+                        <li><strong>пить</strong> — 🥤 (стакан с трубочкой)</li>
+                        <li><strong>болеть</strong> — 🤒😷 (термометр + маска)</li>
+                        <li><strong>радоваться</strong> — 😄🎉 (улыбка + конфетти)</li>
+                        <li><strong>играть в мяч</strong> — ⚽👦 (футбольный мяч + ребёнок)</li>
+                    </ul>
+                </div>
+                
+                <h3>Настройки для разных пользователей</h3>
+                <p>В разделе "Дополнительные настройки" вы можете установить:</p>
+                <ul>
+                    <li><strong>Сложность</strong> — от "очень легко" до "очень сложно"</li>
+                    <li><strong>Статус</strong> — активна, отключена, скрыта или черновик</li>
+                    <li><strong>Секции для отображения</strong> — где будет показана карточка в коммуникаторе</li>
+                </ul>
+                
+                <div class="tip-box">
+                    <h4><span class="emoji-bullet">💡</span> Совет по доступности</h4>
+                    <p>Для пользователей с нарушениями зрения используйте контрастные сочетания цветов (тёмный текст на светлом фоне или наоборот). Избегайте красного и зелёного рядом — это сложно различать людям с дальтонизмом.</p>
+                </div>
+            </section>
+
+            <section id="section8">
+                <h2><span class="emoji-bullet">8️⃣</span> Частые вопросы и проблемы</h2>
+                
+                <h3>❓ Карточки не сохраняются</h3>
+                <p><strong>Решение:</strong> Проверьте, включено ли автосохранение (правый верхний угол). Если проблема persists, попробуйте экспортировать карточки, обновить страницу и импортировать их обратно.</p>
+                
+                <h3>❓ Не могу создать карточку — пишет "ID уже существует"</h3>
+                <p><strong>Решение:</strong> Каждый ID должен быть уникальным. Используйте более конкретные ID или добавьте цифры: вместо "APPLE" используйте "FRUIT-APPLE" или "APPLE-1".</p>
+                
+                <h3>❓ Карточки не отображаются в коммуникаторе</h3>
+                <p><strong>Решение:</strong> Проверьте:
+                    1. Статус карточки (должен быть "активна")
+                    2. Секции для отображения (должна быть выбрана хотя бы одна секция)
+                    3. Правильность формата JSON при экспорте
+                </p>
+                
+                <h3>❓ Потерял все карточки после очистки кэша браузера</h3>
+                <p><strong>Решение:</strong> К сожалению, локальное хранилище очищается вместе с кэшем. Всегда делайте экспорт карточек перед очисткой браузера! Восстановить данные можно только из экспортированного файла.</p>
+                
+                <h3>❓ Не понимаю, как заполнять грамматические формы</h3>
+                <p><strong>Решение:</strong> Это необязательный раздел! Если вы не знаете, как заполнить падежи, оставьте поля пустыми. Карточка будет работать и без них. Постепенно вы научитесь заполнять эти поля.</p>
+                
+                <div class="warning-box">
+                    <h4><span class="emoji-bullet">⚠️</span> Важное предупреждение</h4>
+                    <p>Редактор работает в вашем браузере и не отправляет данные на сервер. Это обеспечивает конфиденциальность, но означает, что вы сами ответственны за резервное копирование. Регулярно экспортируйте свои карточки!</p>
+                </div>
+            </section>
+
+            <section id="section9">
+                <h2><span class="emoji-bullet">9️⃣</span> Советы для эффективной работы</h2>
+                
+                <h3>Совет 1: Начните с малого</h3>
+                <p>Не пытайтесь создать полную систему за один день. Начните с 10-20 самых необходимых карточек и добавляйте новые по мере необходимости.</p>
+                
+                <h3>Совет 2: Используйте шаблоны</h3>
+                <p>Создайте карточку-шаблон для каждого типа (действие, объект, эмоция) и дублируйте её. Это обеспечит единообразие в оформлении.</p>
+                
+                <h3>Совет 3: Организуйте с помощью категорий и тегов</h3>
+                <p>Категории — для основных групп (еда, действия, люди). Теги — для дополнительной фильтрации (завтрак, фрукты, горячее).</p>
+                
+                <h3>Совет 4: Регулярно делайте бэкапы</h3>
+                <p>Раз в неделю экспортируйте все карточки и сохраняйте файл в надёжном месте (облако, флешка, второй компьютер).</p>
+                
+                <h3>Совет 5: Привлекайте пользователя</h3>
+                <p>Если возможно, показывайте карточки ребёнку или пользователю во время создания. Спросите, какие цвета и эмодзи ему нравятся.</p>
+                
+                <h3>Совет 6: Используйте готовые наборы</h3>
+                <p>Не стесняйтесь загружать готовые наборы карточек с сервера и адаптировать их под свои нужды. Это сэкономит много времени!</p>
+                
+                <div class="tip-box">
+                    <h4><span class="emoji-bullet">💡</span> Профессиональный совет</h4>
+                    <p>Создавайте карточки не только для потребностей, но и для интересов пользователя. Если ребёнок любит динозавров, создайте карточки с разными видами динозавров — это повысит мотивацию к использованию системы коммуникации.</p>
+                </div>
+            </section>
+
+            <section id="section10">
+                <h2><span class="emoji-bullet">🔟</span> Дополнительные ресурсы</h2>
+                
+                <h3>Полезные ссылки</h3>
+                <ul>
+                    <li><a href="https://zlovreda.github.io/Kom-Kom-Communicator/" target="_blank">🚀 Коммуникатор Ком-Ком</a> — основное приложение для использования карточек</li>
+                    <li><a href="https://github.com/Zlovreda/Kom-Kom-Communicator" target="_blank">📂 GitHub проекта</a> — исходный код, обсуждения, issue tracker</li>
+                    <li><a href="https://github.com/Zlovreda/Kom-Kom-Communicator/blob/main/LICENSE" target="_blank">📜 Apache License 2.0</a> — лицензия проекта</li>
+                    <li><a href="https://ru.wikipedia.org/wiki/Альтернативная_и_дополнительная_коммуникация" target="_blank">📖 Статья об AAC в Википедии</a> — основы альтернативной коммуникации</li>
+                </ul>
+                
+                <h3>Рекомендуемая литература</h3>
+                <ul>
+                    <li>"Введение в альтернативную и дополнительную коммуникацию" — основы AAC</li>
+                    <li>"PECS: Система общения с помощью обмена карточками" — протокол PECS</li>
+                    <li>"Коммуникация без слов" — практическое руководство для родителей</li>
+                </ul>
+                
+                <h3>Сообщество и поддержка</h3>
+                <p>Присоединяйтесь к сообществу пользователей AAC в социальных сетях и на форумах. Обмен опытом с другими родителями и специалистами может быть очень полезным!</p>
+                
+                <div class="info-box">
+                    <h4><span class="emoji-bullet">📞</span> Нужна помощь?</h4>
+                    <p>Если у вас остались вопросы или вы нашли ошибку в редакторе, создайте issue на GitHub или свяжитесь с разработчиком через страницу проекта. Мы всегда рады обратной связи!</p>
+                </div>
+            </section>
+
+            <div class="navigation-buttons">
+                <a href="https://zlovreda.github.io/Kom-Kom-Communicator/" class="nav-btn secondary" target="_blank">
+                    <span class="emoji-bullet">🚀</span> Перейти в Коммуникатор
+                </a>
+                <button onclick="window.print()" class="nav-btn">
+                    <span class="emoji-bullet">🖨️</span> Распечатать инструкцию
+                </button>
+                <a href="https://zlovreda.github.io/Kom-Kom-Communicator/editor.html" class="nav-btn">
+                    <span class="emoji-bullet">🎴</span> Открыть редактор карточек
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-links">
+                <a href="https://github.com/Zlovreda/Kom-Kom-Communicator" target="_blank" class="footer-link">GitHub проекта</a>
+                <a href="https://github.com/Zlovreda" target="_blank" class="footer-link">Разработчик</a>
+                <a href="https://zlovreda.github.io/Kom-Kom-Communicator/" target="_blank" class="footer-link">Коммуникатор</a>
+                <a href="https://github.com/Zlovreda/Kom-Kom-Communicator/issues" target="_blank" class="footer-link">Сообщить о проблеме</a>
+            </div>
+            <p>© 2025 Павел Копченов • Проект Ком-Ком — открытая система альтернативной и дополнительной коммуникации (AAC)</p>
+            <p style="font-size: 14px; margin-top: 10px; color: #94a3b8;">Эта инструкция создана для помощи родителям детей с РАС и пользователям AAC. Распространяется свободно.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Плавная прокрутка к якорям
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Подсветка текущего раздела при прокрутке
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section');
+            const scrollPosition = window.scrollY + 100;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                const sectionId = section.getAttribute('id');
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    document.querySelectorAll('.toc-item a').forEach(link => {
+                        link.style.fontWeight = link.getAttribute('href') === `#${sectionId}` ? 'bold' : 'normal';
+                        link.style.color = link.getAttribute('href') === `#${sectionId}` ? '#3b82f6' : '#1e293b';
+                    });
+                }
+            });
+        });
+
+        // Автоматическое открытие ссылок в новом окне
+        document.querySelectorAll('a[href^="http"]').forEach(link => {
+            if (!link.getAttribute('target')) {
+                link.setAttribute('target', '_blank');
+            }
+        });
+
+        // Добавление кнопки "Наверх"
+        const scrollToTopBtn = document.createElement('button');
+        scrollToTopBtn.innerHTML = '↑';
+        scrollToTopBtn.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.3);
+            display: none;
+            z-index: 100;
+            transition: all 0.3s;
+        `;
+        
+        scrollToTopBtn.addEventListener('mouseenter', () => {
+            scrollToTopBtn.style.transform = 'scale(1.1)';
+        });
+        
+        scrollToTopBtn.addEventListener('mouseleave', () => {
+            scrollToTopBtn.style.transform = 'scale(1)';
+        });
+        
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        document.body.appendChild(scrollToTopBtn);
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                scrollToTopBtn.style.display = 'block';
+            } else {
+                scrollToTopBtn.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
