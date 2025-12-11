@@ -1,13 +1,13 @@
 # Ком-Ком: Коммуникатор для детей с РАС
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-blue)](https://Zlovreda.github.io/Kom-Kom-Communicator/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![GitHub Pages](https://img.shields.com/badge/GitHub-Pages-blue)](https://Zlovreda.github.com/Kom-Kom-Communicator/)
+[![License](https://img.shields.com/badge/License-MIT-green)](LICENSE)
 
 Онлайн-коммуникатор для невербальных детей или детей с расстройствами аутистического спектра (РАС). Приложение помогает выражать мысли, эмоции и потребности с помощью визуальных карточек.
 
 ## 🌐 Демо версия
 
-Доступна онлайн версия: [https://Zlovreda.github.io/Kom-Kom-Communicator/](https://Zlovreda.github.io/Kom-Kom-Communicator/)
+Доступна онлайн версия: [https://Zlovreda.github.com/Kom-Kom-Communicator/](https://Zlovreda.github.com/Kom-Kom-Communicator/)
 
 ## ✨ Особенности
 
@@ -30,7 +30,7 @@
 ## 🚀 Быстрый старт
 
 ### Вариант 1: Использовать онлайн версию
-1. Перейдите по ссылке: https://Zlovreda.github.io/Kom-Kom-Communicator/
+1. Перейдите по ссылке: https://Zlovreda.github.com/Kom-Kom-Communicator/
 2. Начните использовать сразу
 
 ### Вариант 2: Локальная установка
