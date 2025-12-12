@@ -1,0 +1,107 @@
+- name: "bug"
+  color: "d73a4a"
+  description: "Что-то не работает"
+  
+- name: "enhancement"
+  color: "a2eeef"
+  description: "Новая функция или улучшение"
+  
+- name: "documentation"
+  color: "0075ca"
+  description: "Улучшения или дополнения к документации"
+  
+- name: "good first issue"
+  color: "7057ff"
+  description: "Хорошая задача для новичков"
+  
+- name: "help wanted"
+  color: "008672"
+  description: "Нужна помощь в решении задачи"
+  
+- name: "question"
+  color: "d876e3"
+  description: "Требуется дополнительная информация"
+  
+- name: "cla-required"
+  color: "ff0000"
+  description: "Требуется подписание CLA"
+  
+- name: "cla-signed"
+  color: "00ff00"
+  description: "CLA подписан"
+  
+- name: "legal"
+  color: "cfd3d7"
+  description: "Вопросы лицензирования, CLA и т.д."
+  
+- name: "security"
+  color: "ee0701"
+  description: "Вопросы безопасности"
+  
+- name: "performance"
+  color: "ff8c00"
+  description: "Вопросы производительности"
+  
+- name: "ui/ux"
+  color: "bfd4f2"
+  description: "Вопросы пользовательского интерфейса и опыта"
+  
+- name: "accessibility"
+  color: "1d76db"
+  description: "Вопросы доступности (a11y)"
+  
+- name: "duplicate"
+  color: "cfd3d7"
+  description: "Повторяет существующий issue или PR"
+  
+- name: "wontfix"
+  color: "ffffff"
+  description: "Не будет исправляться"
+  
+- name: "invalid"
+  color: "e4e669"
+  description: "Некорректный issue или PR"
+  
+- name: "triage"
+  color: "f9d0c4"
+  description: "Требуется первоначальная оценка"
+  
+- name: "in progress"
+  color: "ffcc00"
+  description: "В работе"
+  
+- name: "ready for review"
+  color: "00ff00"
+  description: "Готово для ревью"
+  
+- name: "blocked"
+  color: "ff0000"
+  description: "Заблокировано другой задачей"
+  
+- name: "priority: high"
+  color: "ff0000"
+  description: "Высокий приоритет"
+  
+- name: "priority: medium"
+  color: "ff9900"
+  description: "Средний приоритет"
+  
+- name: "priority: low"
+  color: "00ff00"
+  description: "Низкий приоритет"
+  
+- name: "scope: frontend"
+  color: "0e8a16"
+  description: "Относится к фронтенду"
+  
+- name: "scope: backend"
+  color: "5319e7"
+  description: "Относится к бэкенду"
+  
+- name: "scope: documentation"
+  color: "006b75"
+  description: "Относится к документации"
+  
+- name: "scope: infrastructure"
+  color: "f7c6c7"
+  description: "Относится к инфраструктуре"
