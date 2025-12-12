@@ -57,7 +57,7 @@
 - [ ] Я проверил доступность (a11y) изменений
 
 ## ⚖️ CLA (Contributor License Agreement)
-- [ ] Я прочитал [INDIVIDUAL-CLA.md](Kom-Kom-Communicator/.github/cla/INDIVIDUAL-CLA.md) / [CORPORATE-CLA.md](Kom-Kom-Communicator/.github/cla/CORPORATE-CLA.md)
+- [ ] Я прочитал [INDIVIDUAL-CLA.md](INDIVIDUAL-CLA.md) / [CORPORATE-CLA.md](CORPORATE-CLA.md)
 - [ ] Я согласен с условиями CLA
 
 **Для физических лиц:** Оставьте этот комментарий после создания PR: Я, [Ваше полное имя], согласен с условиями CLA
