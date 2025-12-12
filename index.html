@@ -965,8 +965,6 @@
       margin-bottom: 15px;
     }
 
-    /* Стили для наград (удалены) */
-
     @media (max-width: 768px) {
       .categories-container, .cards-container {
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -1285,22 +1283,6 @@
         <div class="settings-card">
           <h3>Информация о системе</h3>
           <div class="settings-info" id="systemInfo"></div>
-          <div class="settings-info-item">
-            <span class="settings-info-label">Лицензия:</span>
-            <span class="settings-info-value">
-              <a href="https://github.com/Zlovreda/Kom-Kom-Communicator/blob/main/LICENSE" target="_blank" class="footer-link">📜 Apache License 2.0</a>
-            </span>
-          </div>
-          <div class="settings-info-item">
-            <span class="settings-info-label">Автор:</span>
-            <span class="settings-info-value">
-              <a href="https://github.com/Zlovreda" target="_blank" class="footer-link">👤 Pavel Nikolaevich Kopchenov</a>
-            </span>
-          </div>
-          <div class="settings-info-item">
-            <span class="settings-info-label">Copyright:</span>
-            <span class="settings-info-value">© 2025 Pavel Nikolaevich Kopchenov</span>
-          </div>
         </div>
 
         <div class="settings-card">
@@ -1308,9 +1290,9 @@
           <div class="settings-controls">
             <button class="control-btn import" id="importBtn">Импорт карточек</button>
             <button class="control-btn export" id="exportBtn">Экспорт карточек</button>
-            <button class="control-btn reset" id="resetBtn">Сброс к начальным</button>
             <button class="control-btn remote" id="remoteLoadBtn">Загрузить с сервера</button>
             <button class="control-btn editor" id="editorBtn">Редактор карточек</button>
+            <button class="control-btn reset" id="resetBtn">Сброс к начальным</button>
             <input type="file" id="fileInput" class="file-input" accept=".json">
           </div>
         </div>
@@ -1369,8 +1351,20 @@
           <h3>О приложении</h3>
           <div class="settings-info">
             <div class="settings-info-item">
-              <span class="settings-info-label">Версия:</span>
-              <span class="settings-info-value">4.4.0</span>
+              <span class="settings-info-label">Лицензия:</span>
+              <span class="settings-info-value">
+                <a href="https://github.com/Zlovreda/Kom-Kom-Communicator/blob/main/LICENSE" target="_blank" class="footer-link">📜 Apache License 2.0</a>
+              </span>
+            </div>
+            <div class="settings-info-item">
+              <span class="settings-info-label">Автор:</span>
+              <span class="settings-info-value">
+                <a href="https://github.com/Zlovreda" target="_blank" class="footer-link">👤 Zlovreda</a>
+              </span>
+            </div>
+            <div class="settings-info-item">
+              <span class="settings-info-label">Copyright:</span>
+              <span class="settings-info-value">© 2025 Павел Николаевич Копченов</span>
             </div>
             <div class="settings-info-item">
               <span class="settings-info-label">Репозиторий:</span>
@@ -1679,7 +1673,7 @@
       }
     }
 
-    // Минимальный набор карточек для fallback
+    // Минимальный набор карточек для fallback с полем order для категорий
     const FALLBACK_CARDS = {
       "cards": {
         "CAT-GAMES": {
@@ -1703,7 +1697,8 @@
           "metadata": {
             "isCategory": true,
             "description": "Игры и игрушки"
-          }
+          },
+          "order": 10
         },
         "CAT-PEOPLE": {
           "id": "CAT-PEOPLE",
@@ -1726,7 +1721,8 @@
           "metadata": {
             "isCategory": true,
             "description": "Люди для совместной деятельности"
-          }
+          },
+          "order": 20
         },
         "CAT-PLACES": {
           "id": "CAT-PLACES",
@@ -1749,7 +1745,8 @@
           "metadata": {
             "isCategory": true,
             "description": "Различные места"
-          }
+          },
+          "order": 30
         },
         "CAT-FOOD": {
           "id": "CAT-FOOD",
@@ -1772,7 +1769,8 @@
           "metadata": {
             "isCategory": true,
             "description": "Различные виды еды"
-          }
+          },
+          "order": 40
         },
         "CAT-TIME": {
           "id": "CAT-TIME",
@@ -1795,7 +1793,8 @@
           "metadata": {
             "isCategory": true,
             "description": "Время и продолжительность"
-          }
+          },
+          "order": 50
         },
         "CAT-DRINK": {
           "id": "CAT-DRINK",
@@ -1818,7 +1817,8 @@
           "metadata": {
             "isCategory": true,
             "description": "Различные напитки"
-          }
+          },
+          "order": 60
         },
         "CAT-EMOTIONS": {
           "id": "CAT-EMOTIONS",
@@ -1841,7 +1841,8 @@
           "metadata": {
             "isCategory": true,
             "description": "Эмоциональное состояние"
-          }
+          },
+          "order": 70
         },
         "CAT-PAIN": {
           "id": "CAT-PAIN",
@@ -1864,7 +1865,8 @@
           "metadata": {
             "isCategory": true,
             "description": "Части тела, которые болят"
-          }
+          },
+          "order": 80
         },
         "CAT-COLORS": {
           "id": "CAT-COLORS",
@@ -1887,7 +1889,8 @@
           "metadata": {
             "isCategory": true,
             "description": "Изучение цветов"
-          }
+          },
+          "order": 10
         },
         "CAT-DIALOG-BASIC": {
           "id": "CAT-DIALOG-BASIC",
@@ -1910,7 +1913,8 @@
           "metadata": {
             "isCategory": true,
             "description": "Основные фразы для диалога"
-          }
+          },
+          "order": 10
         },
         "ACT-PLAY": {
           "id": "ACT-PLAY",
@@ -4395,6 +4399,7 @@
         return 'объектов';
       }
 
+      // ИЗМЕНЕННЫЙ МЕТОД: Сортировка категорий по полю order из карточек
       renderCategories() {
         const container = document.getElementById('categoriesContainer');
         container.innerHTML = '';
@@ -4405,17 +4410,14 @@
           card.sections.includes('Главная')
         );
 
-        const priorityOrder = {
-          'CAT-GAMES': 10, 'CAT-PEOPLE': 997, 'CAT-FOOD': 1, 'CAT-DRINK': 2, 'CAT-PLACES': 998, 'CAT-PETS': 6, 'CAT-HYGIENE': 3, 'CAT-EMOTIONS': 1000,
-          'CAT-CLOTHING': 7, 'CAT-PAIN': 4, 'CAT-BOOKS': 11, 'CAT-CREATIVE': 12,
-          'CAT-SPORT': 13, 'CAT-TRANSPORT': 14, 'CAT-LEARNING': 15,
-          'CAT-HELP': 16, 'CAT-REQUESTS': 17, 'CAT-TIME': 18, 'CAT-ALL': 999
-        };
-
+        // Сортируем категории по полю order (если оно есть), а затем по тексту
         categories.sort((a, b) => {
-          const aPriority = priorityOrder[a.id] || 50;
-          const bPriority = priorityOrder[b.id] || 50;
-          return aPriority - bPriority;
+          const aOrder = a.order || 50;
+          const bOrder = b.order || 50;
+          if (aOrder !== bOrder) {
+            return aOrder - bOrder;
+          }
+          return a.text.localeCompare(b.text);
         });
 
         categories.forEach(category => {
@@ -4488,8 +4490,15 @@
           return;
         }
 
-        // Сортируем категории
-        categories.sort((a, b) => a.text.localeCompare(b.text));
+        // Сортируем категории по полю order (если оно есть), а затем по тексту
+        categories.sort((a, b) => {
+          const aOrder = a.order || 50;
+          const bOrder = b.order || 50;
+          if (aOrder !== bOrder) {
+            return aOrder - bOrder;
+          }
+          return a.text.localeCompare(b.text);
+        });
 
         // Рендерим категории
         categories.forEach(category => {
@@ -5209,7 +5218,7 @@
         const dataSize = (new Blob([cardsJson]).size / 1024).toFixed(2);
         
         const info = {
-          'Версия приложения': '4.4.0',
+          'Версия приложения': '4.4.1',
           'Количество карточек': cardCount,
           'Размер данных': `${dataSize} КБ`,
           'Последнее обновление': new Date().toLocaleString(),
