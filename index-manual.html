@@ -16,8 +16,8 @@
       padding: 20px;
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       min-height: 100vh;
+      color: #2c3e50;
       line-height: 1.6;
-      color: #333;
     }
 
     .container {
@@ -25,28 +25,43 @@
       margin: 0 auto;
       background: white;
       border-radius: 15px;
-      padding: 40px;
+      padding: 30px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
     h1 {
       text-align: center;
-      color: #2c3e50;
       margin-bottom: 30px;
-      padding-bottom: 20px;
+      color: #2c3e50;
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #3498db 0%, #9b59b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      padding-bottom: 15px;
       border-bottom: 3px solid #3498db;
     }
 
     h2 {
       color: #3498db;
-      margin: 25px 0 15px;
-      padding-left: 10px;
-      border-left: 4px solid #3498db;
+      margin: 30px 0 15px;
+      padding: 10px 0;
+      border-bottom: 2px solid #e0e0e0;
+      font-size: 1.8rem;
     }
 
     h3 {
       color: #2c3e50;
+      margin: 25px 0 10px;
+      font-size: 1.4rem;
+      background: #f8f9fa;
+      padding: 8px 15px;
+      border-radius: 8px;
+    }
+
+    h4 {
+      color: #7f8c8d;
       margin: 20px 0 10px;
+      font-size: 1.2rem;
     }
 
     .section {
@@ -54,750 +69,646 @@
       padding: 20px;
       background: #f8f9fa;
       border-radius: 10px;
-      border-left: 5px solid #27ae60;
+      border-left: 5px solid #3498db;
     }
 
     .section.important {
-      border-left-color: #e74c3c;
-      background: #ffebee;
-    }
-
-    .section.warning {
+      background: #fff9e6;
       border-left-color: #f39c12;
-      background: #fff3e0;
     }
 
-    .section.tip {
-      border-left-color: #9b59b6;
-      background: #f3e5f5;
+    .section.for-child {
+      background: #e8f5e9;
+      border-left-color: #27ae60;
+    }
+
+    .section.for-parent {
+      background: #e3f2fd;
+      border-left-color: #3498db;
+    }
+
+    p {
+      margin-bottom: 15px;
+      font-size: 1.1rem;
     }
 
     ul, ol {
-      margin-left: 20px;
-      margin-bottom: 15px;
+      margin: 15px 0 15px 30px;
     }
 
     li {
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
     }
 
-    .card-demo {
-      display: inline-block;
-      background: white;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      padding: 10px 15px;
-      margin: 5px;
-      text-align: center;
-      min-width: 120px;
-      vertical-align: top;
-    }
-
-    .card-demo .emoji {
-      font-size: 2rem;
-      margin-bottom: 5px;
+    .icon {
+      font-size: 1.5rem;
+      margin-right: 10px;
+      vertical-align: middle;
     }
 
     .step {
-      display: flex;
-      align-items: flex-start;
+      counter-increment: step;
       margin-bottom: 20px;
       padding: 15px;
       background: white;
       border-radius: 8px;
-      border: 1px solid #e0e0e0;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      border-left: 4px solid #3498db;
     }
 
-    .step-number {
-      background: #3498db;
-      color: white;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
+    .step::before {
+      content: counter(step) ". ";
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #3498db;
+      margin-right: 10px;
+    }
+
+    .visual-guide {
       display: flex;
       align-items: center;
-      justify-content: center;
-      margin-right: 15px;
-      flex-shrink: 0;
+      margin: 15px 0;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    .step-content {
+    .visual-emoji {
+      font-size: 2.5rem;
+      margin-right: 20px;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .visual-text {
       flex: 1;
     }
 
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 15px;
+    .tab-guide {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
       margin: 20px 0;
     }
 
-    .feature-card {
-      background: white;
-      border-radius: 8px;
-      padding: 15px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-      border-top: 4px solid #3498db;
-    }
-
-    .icon {
-      font-size: 2rem;
-      margin-bottom: 10px;
-    }
-
-    .command {
-      background: #2c3e50;
+    .tab-button {
+      padding: 10px 20px;
+      background: #3498db;
       color: white;
-      padding: 8px 12px;
-      border-radius: 5px;
-      font-family: monospace;
-      margin: 5px 0;
-      display: inline-block;
-    }
-
-    .screenshot {
+      border-radius: 6px;
+      font-weight: bold;
       text-align: center;
-      margin: 20px 0;
-      padding: 10px;
-      background: #f8f9fa;
+      min-width: 120px;
+    }
+
+    .tab-button.learning {
+      background: #9b59b6;
+    }
+
+    .tab-button.emotions {
+      background: #e74c3c;
+    }
+
+    .tab-button.emergency {
+      background: #f39c12;
+    }
+
+    .tab-button.schedule {
+      background: #27ae60;
+    }
+
+    .phrase-example {
+      padding: 15px;
+      background: #f0f8ff;
+      border: 2px solid #4a90e2;
       border-radius: 8px;
-      border: 1px solid #ddd;
+      margin: 15px 0;
+      font-size: 1.2rem;
+      text-align: center;
+      font-weight: bold;
     }
 
-    .screenshot img {
-      max-width: 100%;
-      border-radius: 5px;
-      border: 1px solid #ddd;
+    .button-demo {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 5px;
+      background: #3498db;
+      color: white;
+      border-radius: 6px;
+      font-weight: bold;
+      box-shadow: 0 3px 5px rgba(0,0,0,0.2);
     }
 
-    .caption {
-      font-style: italic;
-      color: #666;
-      margin-top: 10px;
-      font-size: 0.9rem;
+    .button-demo.primary {
+      background: #4a90e2;
+    }
+
+    .button-demo.secondary {
+      background: #e74c3c;
+    }
+
+    .button-demo.learning {
+      background: #9b59b6;
+    }
+
+    .warning-box {
+      padding: 15px;
+      background: #ffebee;
+      border: 2px solid #e74c3c;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .tip-box {
+      padding: 15px;
+      background: #e8f5e9;
+      border: 2px solid #27ae60;
+      border-radius: 8px;
+      margin: 20px 0;
     }
 
     .navigation {
       display: flex;
       justify-content: space-between;
-      margin-top: 30px;
+      margin-top: 40px;
       padding-top: 20px;
-      border-top: 2px solid #eee;
+      border-top: 2px solid #e0e0e0;
     }
 
-    .nav-btn {
+    .nav-button {
+      padding: 12px 25px;
       background: #3498db;
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
       text-decoration: none;
       display: inline-block;
+      text-align: center;
     }
 
-    .nav-btn:hover {
+    .nav-button:hover {
       background: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
-    .qa-item {
-      margin-bottom: 15px;
-      padding: 15px;
-      background: white;
-      border-radius: 8px;
-      border-left: 4px solid #9b59b6;
+    .emoji-large {
+      font-size: 3rem;
+      text-align: center;
+      margin: 20px 0;
     }
 
-    .question {
+    .color-coded {
+      padding: 8px 15px;
+      border-radius: 20px;
       font-weight: bold;
-      color: #2c3e50;
-      margin-bottom: 8px;
-    }
-
-    .answer {
-      color: #555;
-    }
-
-    .color-box {
       display: inline-block;
-      width: 20px;
-      height: 20px;
-      border-radius: 3px;
-      margin-right: 5px;
-      vertical-align: middle;
-      border: 1px solid #ddd;
+      margin: 5px;
+    }
+
+    .color-people {
+      background: #3498db;
+      color: white;
+    }
+
+    .color-places {
+      background: #9b59b6;
+      color: white;
+    }
+
+    .color-objects {
+      background: #f39c12;
+      color: white;
+    }
+
+    .color-time {
+      background: #2ecc71;
+      color: white;
     }
 
     @media (max-width: 768px) {
       .container {
-        padding: 20px;
+        padding: 15px;
       }
       
-      .feature-grid {
-        grid-template-columns: 1fr;
+      h1 {
+        font-size: 2rem;
       }
       
-      .step {
+      h2 {
+        font-size: 1.5rem;
+      }
+      
+      .visual-guide {
         flex-direction: column;
+        text-align: center;
       }
       
-      .step-number {
+      .visual-emoji {
+        margin-right: 0;
         margin-bottom: 10px;
+      }
+      
+      .tab-guide {
+        justify-content: center;
       }
     }
 
-    .toc {
+    .table-of-contents {
       background: #f8f9fa;
       padding: 20px;
       border-radius: 10px;
-      margin-bottom: 30px;
-      border-left: 5px solid #3498db;
+      margin: 30px 0;
     }
 
-    .toc h3 {
-      margin-top: 0;
-      color: #2c3e50;
-    }
-
-    .toc ul {
+    .toc-list {
       columns: 2;
-      list-style-type: none;
+      column-gap: 40px;
     }
 
-    .toc li {
-      margin-bottom: 5px;
+    @media (max-width: 768px) {
+      .toc-list {
+        columns: 1;
+      }
+    }
+
+    .toc-item {
+      margin-bottom: 10px;
       break-inside: avoid;
     }
 
-    .toc a {
+    .toc-link {
       color: #3498db;
       text-decoration: none;
-      display: block;
-      padding: 3px 0;
+      font-weight: bold;
     }
 
-    .toc a:hover {
+    .toc-link:hover {
       text-decoration: underline;
-    }
-
-    .version {
-      text-align: center;
-      color: #7f8c8d;
-      font-size: 0.9rem;
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>📚 Инструкция к Ком-Ком: Коммуникатору для детей с РАС</h1>
+    <h1>📘 Инструкция по использованию Ком-Ком</h1>
     
-    <div class="version">
-      Версия 4.4.0 | Последнее обновление: декабрь 2025
+    <div class="section for-child">
+      <div class="emoji-large">👋 Привет! Я Ком-Ком</div>
+      <p>Я помогу тебе общаться с другими людьми. Ты можешь нажимать на картинки, а я буду говорить слова за тебя!</p>
     </div>
 
-    <div class="toc">
-      <h3>📑 Содержание</h3>
+    <div class="table-of-contents">
+      <h3>📑 Содержание инструкции:</h3>
+      <div class="toc-list">
+        <div class="toc-item">1. <a href="#start" class="toc-link">Начало работы</a></div>
+        <div class="toc-item">2. <a href="#main-tab" class="toc-link">Главная вкладка</a></div>
+        <div class="toc-item">3. <a href="#creating-phrases" class="toc-link">Как составлять фразы</a></div>
+        <div class="toc-item">4. <a href="#emotions-tab" class="toc-link">Вкладка эмоций</a></div>
+        <div class="toc-item">5. <a href="#learning-tab" class="toc-link">Вкладка обучения</a></div>
+        <div class="toc-item">6. <a href="#dialog-tab" class="toc-link">Вкладка диалога</a></div>
+        <div class="toc-item">7. <a href="#emergency-tab" class="toc-link">Экстренные ситуации</a></div>
+        <div class="toc-item">8. <a href="#schedule-tab" class="toc-link">Распорядок дня</a></div>
+        <div class="toc-item">9. <a href="#child-info" class="toc-link">Данные о ребенке</a></div>
+        <div class="toc-item">10. <a href="#settings" class="toc-link">Настройки</a></div>
+        <div class="toc-item">11. <a href="#tips-parents" class="toc-link">Советы для родителей</a></div>
+        <div class="toc-item">12. <a href="#tips-children" class="toc-link">Советы для детей</a></div>
+      </div>
+    </div>
+
+    <h2 id="start">1. 🚀 Начало работы</h2>
+    
+    <div class="step">Открой программу Ком-Ком на своем устройстве</div>
+    <div class="step">Посмотри на верхнюю часть экрана - там есть много кнопочек с разными картинками</div>
+    <div class="step">Нажми на первую кнопку <span class="button-demo">Главная</span> - это самый важный раздел</div>
+    
+    <div class="section for-child">
+      <h3>Для детей:</h3>
+      <p>Не торопись! Исследуй программу постепенно. Начинай с одного раздела в день.</p>
+      <div class="visual-guide">
+        <div class="visual-emoji">🐢</div>
+        <div class="visual-text">
+          <p>Работай медленно, как черепашка. Нажимай на картинки и слушай, что говорит программа.</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 id="main-tab">2. 🏠 Главная вкладка</h2>
+    
+    <p>Это основной раздел для общения. Здесь ты можешь:</p>
+    
+    <div class="visual-guide">
+      <div class="visual-emoji">👤</div>
+      <div class="visual-text">
+        <h4>Кнопка "Я"</h4>
+        <p>Нажми, чтобы начать фразу со слова "Я"</p>
+      </div>
+    </div>
+    
+    <div class="visual-guide">
+      <div class="visual-emoji">👍</div>
+      <div class="visual-text">
+        <h4>Кнопка "Хочу"</h4>
+        <p>Нажми, чтобы сказать, что ты хочешь что-то</p>
+      </div>
+    </div>
+    
+    <div class="visual-guide">
+      <div class="visual-emoji">👎</div>
+      <div class="visual-text">
+        <h4>Кнопка "Не хочу"</h4>
+        <p>Нажми, чтобы сказать, что ты не хочешь что-то</p>
+      </div>
+    </div>
+    
+    <div class="visual-guide">
+      <div class="visual-emoji">🗑️</div>
+      <div class="visual-text">
+        <h4>Кнопка "Корзина"</div>
+        <p>Нажми, чтобы очистить все выбранные слова и начать новую фразу</p>
+      </div>
+    </div>
+    
+    <h3>Быстрая навигация:</h3>
+    <div class="tab-guide">
+      <div class="tab-button">Люди</div>
+      <div class="tab-button">Места</div>
+      <div class="tab-button">Объекты</div>
+      <div class="tab-button">Время</div>
+    </div>
+    
+    <p>Эти кнопки помогают быстро найти нужные карточки для составления фразы.</p>
+
+    <h2 id="creating-phrases">3. 💬 Как составлять фразы</h2>
+    
+    <p>Составление фраз в Ком-Ком похоже на сборку пазла:</p>
+    
+    <div class="step">Нажми кнопку <span class="button-demo primary">👤 Я</span></div>
+    <div class="step">Нажми кнопку <span class="button-demo primary">👍 Хочу</span> или <span class="button-demo secondary">👎 Не хочу</span></div>
+    <div class="step">Найди и нажми на картинку с действием (например, "играть" или "есть")</div>
+    <div class="step">Добавь картинки с людьми, местами или объектами, если нужно</div>
+    <div class="step">Посмотри на верх экрана - там появится твоя фраза</div>
+    <div class="step">Нажми кнопку <span class="button-demo">🔊</span>, чтобы программа сказала фразу вслух</div>
+    
+    <div class="phrase-example">
+      Пример: 👤 Я + 👍 Хочу + 🎮 Играть + 🧸 С игрушками = "Я хочу играть с игрушками"
+    </div>
+    
+    <div class="section important">
+      <h3>Важно помнить:</h3>
+      <p>Программа сама правильно соединяет слова. Тебе нужно только выбирать картинки в любом порядке!</p>
+    </div>
+
+    <h2 id="emotions-tab">4. 😊 Вкладка эмоций</h2>
+    
+    <p>Эта вкладка помогает выражать чувства:</p>
+    
+    <div class="step">Нажми на кнопку <span class="tab-button emotions">Эмоции</span> вверху экрана</div>
+    <div class="step">Выбери категорию эмоций (например, "Радость" или "Грусть")</div>
+    <div class="step">Нажми на картинку с эмоцией</div>
+    <div class="step">Программа скажет твою эмоцию вслух</div>
+    
+    <div class="tip-box">
+      <p><strong>Совет:</strong> Используй эту вкладку, когда тебе сложно словами сказать, что ты чувствуешь.</p>
+    </div>
+
+    <h2 id="learning-tab">5. 📚 Вкладка обучения</h2>
+    
+    <p>Эта вкладка для вопросов и обучения:</p>
+    
+    <div class="step">Нажми на кнопку <span class="tab-button learning">Обучение</span></div>
+    <div class="step">Выбери нужную категорию (например, "Цвета" или "Формы")</div>
+    <div class="step">Нажми на карточку с вопросом или просьбой</div>
+    
+    <div class="section for-child">
+      <h3>Для детей:</h3>
+      <p>Здесь есть специальные кнопки:</p>
+      <div class="visual-guide">
+        <div class="visual-emoji">🤔</div>
+        <div class="visual-text">
+          <p><strong>"Я не понимаю"</strong> - нажми, если что-то не понял</p>
+        </div>
+      </div>
+      <div class="visual-guide">
+        <div class="visual-emoji">⚠️</div>
+        <div class="visual-text">
+          <p><strong>"Нашел ошибку"</strong> - нажми, если увидел ошибку</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 id="dialog-tab">6. 💭 Вкладка диалога</h2>
+    
+    <p>Эта вкладка для простых ответов в разговоре:</p>
+    
+    <div class="step">Нажми на кнопку <span class="tab-button">Диалог</span></div>
+    <div class="step">Используй кнопки внизу экрана:</div>
+    
+    <div style="text-align: center; margin: 20px 0;">
+      <span class="button-demo">Да</span>
+      <span class="button-demo secondary">Нет</span>
+      <span class="button-demo">Не знаю</span>
+    </div>
+    
+    <p>Или выбери карточки с более сложными ответами из категорий.</p>
+
+    <h2 id="emergency-tab">7. 🆘 Экстренные ситуации</h2>
+    
+    <div class="warning-box">
+      <p><strong>Внимание!</strong> Эта вкладка только для настоящих экстренных случаев!</p>
+    </div>
+    
+    <p>Если случилось что-то серьезное, нажми на кнопку <span class="tab-button emergency">Экстренные ситуации</span></p>
+    
+    <div class="step">🆘 <strong>Помощь!</strong> - если срочно нужна помощь взрослого</div>
+    <div class="step">🤕 <strong>Больно!</strong> - если сильно что-то болит</div>
+    <div class="step">😨 <strong>Страшно!</strong> - если очень испугался</div>
+    <div class="step">📞 <strong>Позвонить родителям</strong> - в экстренном случае</div>
+    <div class="step">🗺️ <strong>Я заблудился</strong> - программа скажет твой адрес</div>
+    
+    <div class="section important">
+      <h3>Важно:</h3>
+      <p>Эти кнопки громко кричат и показывают большое сообщение на экране, чтобы привлечь внимание.</p>
+    </div>
+
+    <h2 id="schedule-tab">8. ⏰ Распорядок дня</h2>
+    
+    <p>Эта вкладка помогает понять, что будет происходить в течение дня:</p>
+    
+    <div class="step">Нажми на кнопку <span class="tab-button schedule">Распорядок</span></div>
+    <div class="step">Выбери день недели вверху экрана</div>
+    <div class="step">Посмотри на карточки с временем и занятиями</div>
+    <div class="step">Нажми на любую карточку, чтобы программа прочитала ее вслух</div>
+    
+    <div class="visual-guide">
+      <div class="visual-emoji">08:00 ⏰</div>
+      <div class="visual-text">
+        <p>Карточка показывает время и занятие. Эмодзи помогает понять, что это за занятие.</p>
+      </div>
+    </div>
+
+    <h2 id="child-info">9. 👶 Данные о ребенке</h2>
+    
+    <div class="section for-parent">
+      <h3>Для родителей:</h3>
+      <p>В этой вкладке хранится важная информация о ребенке:</p>
       <ul>
-        <li><a href="#intro">1. Введение</a></li>
-        <li><a href="#start">2. Быстрый старт</a></li>
-        <li><a href="#interface">3. Интерфейс и навигация</a></li>
-        <li><a href="#phrases">4. Составление фраз</a></li>
-        <li><a href="#grammar">5. Грамматическая система</a></li>
-        <li><a href="#tabs">6. Работа с вкладками</a></li>
-        <li><a href="#emergency">7. Экстренные ситуации</a></li>
-        <li><a href="#schedule">8. Распорядок дня</a></li>
-        <li><a href="#child">9. Данные о ребенке</a></li>
-        <li><a href="#settings">10. Настройки</a></li>
-        <li><a href="#cards">11. Управление карточками</a></li>
-        <li><a href="#tips">12. Советы и рекомендации</a></li>
-        <li><a href="#qa">13. Вопросы и ответы</a></li>
-        <li><a href="#support">14. Поддержка</a></li>
-      </ul>
-    </div>
-
-    <div class="section" id="intro">
-      <h2>1. 🎯 Введение</h2>
-      <p><strong>Ком-Ком</strong> — это коммуникатор для детей с расстройствами аутистического спектра (РАС), разработанный для облегчения коммуникации и развития языковых навыков.</p>
-      
-      <h3>Основные возможности:</h3>
-      <ul>
-        <li>💬 Составление фраз с помощью карточек</li>
-        <li>🔊 Озвучивание составленных фраз</li>
-        <li>🎓 Образовательные разделы (цвета, формы, эмоции)</li>
-        <li>🆘 Экстренные ситуации с быстрым доступом</li>
-        <li>📅 Визуальное расписание дня</li>
-        <li>👤 Хранение важной информации о ребенке</li>
-        <li>⚙️ Гибкие настройки под индивидуальные потребности</li>
-      </ul>
-      
-      <p>Приложение использует грамматическую систему для правильного составления фраз на русском языке с учетом падежей и предлогов.</p>
-    </div>
-
-    <div class="section" id="start">
-      <h2>2. 🚀 Быстрый старт</h2>
-      
-      <div class="step">
-        <div class="step-number">1</div>
-        <div class="step-content">
-          <h3>Открытие приложения</h3>
-          <p>Откройте файл <strong>index.html</strong> в браузере. Приложение работает полностью локально, не требует подключения к интернету.</p>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-number">2</div>
-        <div class="step-content">
-          <h3>Первая фраза</h3>
-          <p>Нажмите кнопку <span class="command">👤 Я</span>, затем <span class="command">👍 Хочу</span>, выберите категорию (например, "Еда") и карточку (например, "яблоко"). Нажмите кнопку <span class="command">🔊</span> для озвучивания.</p>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-number">3</div>
-        <div class="step-content">
-          <h3>Заполнение данных о ребенке</h3>
-          <p>Перейдите во вкладку <strong>"Данные о ребенке"</strong> и заполните информацию. Это важно для экстренных ситуаций.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="section" id="interface">
-      <h2>3. 🖥️ Интерфейс и навигация</h2>
-      
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="icon">🏠</div>
-          <h3>Главная панель</h3>
-          <p>Основные кнопки для составления фраз: <span class="command">👤 Я</span>, <span class="command">👍 Хочу</span>, <span class="command">👎 Не хочу</span>, <span class="command">🗑️ Очистить</span></p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="icon">📋</div>
-          <h3>Панель вкладок</h3>
-          <p>9 вкладок для доступа к разным функциям: Главная, Обучение, Диалог, Эмоции, Экстренные ситуации, Распорядок, История, Данные о ребенке, Настройки</p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="icon">🎯</div>
-          <h3>Быстрая навигация</h3>
-          <p>Кнопки для быстрого перехода к категориям: Люди, Места, Объекты, Время. Появляются после выбора действия.</p>
-        </div>
-      </div>
-
-      <h3>Основные элементы:</h3>
-      <ul>
-        <li><strong>Область фразы</strong> — отображает составленную фразу</li>
-        <li><strong>Выбранные элементы</strong> — показывает текущие выбранные карточки (можно кликнуть для замены)</li>
-        <li><strong>Правила и подсказки</strong> — объясняет, что можно добавить к текущему действию</li>
-        <li><strong>Категории/Карточки</strong> — основная рабочая область</li>
-      </ul>
-    </div>
-
-    <div class="section" id="phrases">
-      <h2>4. 💬 Составление фраз</h2>
-      
-      <h3>Базовый шаблон фразы:</h3>
-      <p><strong>Субъект + Желание + Действие + Дополнения + Время</strong></p>
-      
-      <div class="step">
-        <div class="step-number">1</div>
-        <div class="step-content">
-          <h3>Выберите субъект</h3>
-          <p>Нажмите <span class="command">👤 Я</span> или начните с действия (приложение автоматически добавит "Я" для эмоций)</p>
-        </div>
-      </div>
-      
-      <div class="step">
-        <div class="step-number">2</div>
-        <div class="step-content">
-          <h3>Выберите желание</h3>
-          <p>Нажмите <span class="command">👍 Хочу</span> или <span class="command">👎 Не хочу</span></p>
-        </div>
-      </div>
-      
-      <div class="step">
-        <div class="step-number">3</div>
-        <div class="step-content">
-          <h3>Выберите действие</h3>
-          <p>Нажмите <span class="command">Действия</span> или выберите категорию, затем действие (играть, есть, пить и т.д.)</p>
-        </div>
-      </div>
-      
-      <div class="step">
-        <div class="step-number">4</div>
-        <div class="step-content">
-          <h3>Добавьте дополнения</h3>
-          <p>Используйте кнопки быстрой навигации или выберите из категорий:
-            <ul>
-              <li><span class="color-box" style="background:#E3F2FD;"></span> <strong>Люди</strong> — с кем (с папой, с мамой)</li>
-              <li><span class="color-box" style="background:#FFF3E0;"></span> <strong>Места</strong> — где (дома, в парке)</li>
-              <li><span class="color-box" style="background:#E8F5E9;"></span> <strong>Объекты</strong> — что (яблоко, мяч)</li>
-              <li><span class="color-box" style="background:#E3F2FD;"></span> <strong>Время</strong> — когда (сейчас, позже)</li>
-            </ul>
-          </p>
-        </div>
-      </div>
-      
-      <div class="step">
-        <div class="step-number">5</div>
-        <div class="step-content">
-          <h3>Озвучьте фразу</h3>
-          <p>Нажмите кнопку <span class="command">🔊</span> рядом с областью фразы</p>
-        </div>
-      </div>
-      
-      <div class="section tip">
-        <h3>💡 Советы по составлению фраз:</h3>
-        <ul>
-          <li>Для эмоций не нужно выбирать "Я" — система делает это автоматически</li>
-          <li>Для выражения боли выберите категорию "Болит" и часть тела</li>
-          <li>Если лимит дополнений достигнут (например, можно добавить только 2 человека), следующий выбранный человек заменит первого по очереди</li>
-          <li>Кликните на выбранный элемент вверху, чтобы заменить его</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="section" id="grammar">
-      <h2>5. 📚 Грамматическая система</h2>
-      
-      <p>Ком-Ком автоматически правильно склоняет слова и добавляет нужные предлоги:</p>
-      
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="icon">🔤</div>
-          <h3>Падежи</h3>
-          <p>Система определяет нужный падеж для каждого слова в зависимости от контекста</p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="icon">➕</div>
-          <h3>Предлоги</h3>
-          <p>Автоматически добавляет правильные предлоги: с, в, на, у, о</p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="icon">🤝</div>
-          <h3>Согласование</h3>
-          <p>Правильно соединяет однородные члены предложения</p>
-        </div>
-      </div>
-      
-      <h3>Примеры работы грамматики:</h3>
-      <ul>
-        <li><strong>"Я хочу играть с папой в мяч"</strong> — правильно добавляет предлоги</li>
-        <li><strong>"Я хочу яблоко и сок"</strong> — правильно соединяет объекты</li>
-        <li><strong>"У меня болит голова"</strong> — меняет конструкцию для выражения боли</li>
-        <li><strong>"Я радостный"</strong> — правильно строит фразы с эмоциями</li>
-      </ul>
-      
-      <div class="section tip">
-        <p><strong>💡 Примечание:</strong> Грамматическая система работает автоматически. Вам не нужно думать о правильных окончаниях — просто выбирайте нужные карточки.</p>
-      </div>
-    </div>
-
-    <div class="section" id="tabs">
-      <h2>6. 📑 Работа с вкладками</h2>
-      
-      <h3>Обучение 🎓</h3>
-      <p>Образовательные категории: цвета, формы, буквы, цифры. Карточки только озвучиваются.</p>
-      
-      <h3>Диалог 💬</h3>
-      <p>Основные фразы для общения: привет, спасибо, пожалуйста, пока. Карточки только озвучиваются.</p>
-      
-      <h3>Эмоции ❤️</h3>
-      <p>На главной вкладке — добавление эмоций в фразу. На вкладке "Эмоции" — только озвучивание.</p>
-      
-      <h3>Экстренные ситуации 🆘</h3>
-      <p>7 экстренных кнопок с громким озвучиванием и визуальными предупреждениями.</p>
-      
-      <h3>Распорядок дня 📅</h3>
-      <p>Визуальное расписание по дням недели. Можно редактировать (требуется PIN).</p>
-      
-      <h3>История 📜</h3>
-      <p>История всех озвученных фраз. Можно очищать и экспортировать.</p>
-      
-      <h3>Данные о ребенке 👤</h3>
-      <p>Хранение важной информации. Редактирование требует PIN.</p>
-      
-      <h3>Настройки ⚙️</h3>
-      <p>Управление карточками, настройки речи, безопасности и отображения.</p>
-    </div>
-
-    <div class="section important" id="emergency">
-      <h2>7. 🚨 Экстренные ситуации</h2>
-      
-      <p><strong>Важно:</strong> Эти кнопки предназначены для срочных случаев!</p>
-      
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="icon">🆘</div>
-          <h3>Помощь!</h3>
-          <p>Громкое озвучивание "ПОМОГИТЕ! Мне срочно нужна помощь!"</p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="icon">🤕</div>
-          <h3>Больно!</h3>
-          <p>"У меня СИЛЬНАЯ БОЛЬ! Нужен врач!"</p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="icon">😨</div>
-          <h3>Страшно!</h3>
-          <p>"Мне ОЧЕНЬ СТРАШНО! Помогите!"</p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="icon">🗺️</div>
-          <h3>Я заблудился</h3>
-          <p>Озвучивает адрес из данных о ребенке</p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="icon">📞</div>
-          <h3>Позвонить родителям</h3>
-          <p>Показывает телефоны родителей</p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="icon">🛑</div>
-          <h3>Стоп!</h3>
-          <p>"СТОП! Немедленно остановитесь!"</p>
-        </div>
-      </div>
-      
-      <div class="section warning">
-        <h3>⚠️ Важно для функций "Я заблудился" и "Позвонить родителям":</h3>
-        <p>Для работы этих функций необходимо заполнить адрес и телефон во вкладке "Данные о ребенке".</p>
-      </div>
-    </div>
-
-    <div class="section" id="schedule">
-      <h2>8. 📅 Распорядок дня</h2>
-      
-      <p>Визуальное расписание помогает ребенку понимать последовательность событий дня.</p>
-      
-      <div class="step">
-        <div class="step-number">1</div>
-        <div class="step-content">
-          <h3>Выберите день</h3>
-          <p>Используйте переключатель дней недели вверху</p>
-        </div>
-      </div>
-      
-      <div class="step">
-        <div class="step-number">2</div>
-        <div class="step-content">
-          <h3>Просмотр расписания</h3>
-          <p>Каждое занятие отображается с временем, эмодзи и названием</p>
-        </div>
-      </div>
-      
-      <div class="step">
-        <div class="step-number">3</div>
-        <div class="step-content">
-          <h3>Озвучивание занятия</h3>
-          <p>Кликните на любое занятие, чтобы услышать его</p>
-        </div>
-      </div>
-      
-      <div class="step">
-        <div class="step-number">4</div>
-        <div class="step-content">
-          <h3>Редактирование</h3>
-          <p>Нажмите "Редактировать распорядок", введите PIN (по умолчанию: 0000)</p>
-          <ul>
-            <li>✏️ — изменить время и название</li>
-            <li>😀 — выбрать другое эмодзи</li>
-            <li>🗑️ — удалить занятие</li>
-            <li>➕ — добавить новое занятие</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="section" id="child">
-      <h2>9. 👤 Данные о ребенке</h2>
-      
-      <p>Эта вкладка хранит важную информацию, доступную в экстренных случаях.</p>
-      
-      <h3>Что сохраняется:</h3>
-      <ul>
-        <li><strong>Основная информация:</strong> имя, возраст, пол, адрес</li>
-        <li><strong>Контакты:</strong> телефоны родителей, врача</li>
-        <li><strong>Медицинская информация:</strong> диагноз, аллергии, лекарства</li>
-        <li><strong>Навыки и предпочтения:</strong> любимые занятия, страхи, сенсорные предпочтения</li>
+        <li>Имя, возраст, адрес</li>
+        <li>Телефоны родителей и врача</li>
+        <li>Медицинская информация (аллергии, диагноз)</li>
+        <li>Любимые занятия и то, что не нравится</li>
       </ul>
       
-      <div class="section warning">
-        <h3>🔒 Безопасность данных:</h3>
-        <p>Для редактирования данных требуется PIN-код (по умолчанию: 0000). Рекомендуется изменить его в настройках.</p>
+      <div class="tip-box">
+        <p><strong>Важно:</strong> Заполните раздел "Я заблудился" во вкладке экстренных ситуаций! 
+        Программа использует адрес из этой вкладки.</p>
       </div>
     </div>
 
-    <div class="section" id="settings">
-      <h2>10. ⚙️ Настройки</h2>
+    <h2 id="settings">10. ⚙️ Настройки</h2>
+    
+    <div class="section for-parent">
+      <h3>Для родителей:</h3>
+      <p>В этой вкладке вы можете настроить программу под нужды ребенка:</p>
       
-      <h3>Управление данными</h3>
-      <ul>
-        <li><strong>Импорт карточек</strong> — загрузка карточек из JSON-файла</li>
-        <li><strong>Экспорт карточек</strong> — сохранение текущих карточек в файл</li>
-        <li><strong>Сброс к начальным</strong> — возврат к стандартному набору карточек</li>
-        <li><strong>Загрузить с сервера</strong> — обновление карточек с GitHub</li>
-        <li><strong>Редактор карточек</strong> — открывает редактор в новой вкладке</li>
-      </ul>
+      <div class="step"><strong>Управление данными:</strong> импорт/экспорт карточек, сброс к начальным настройкам</div>
+      <div class="step"><strong>Настройки безопасности:</strong> установите PIN-код для защиты данных</div>
+      <div class="step"><strong>Настройки речи:</strong> измените скорость и голос программы</div>
+      <div class="step"><strong>Настройки отображения:</strong> увеличьте размер шрифта, если нужно</div>
       
-      <h3>Настройки безопасности</h3>
-      <p>Изменение PIN-кода для доступа к редактированию данных</p>
-      
-      <h3>Настройки речи</h3>
-      <ul>
-        <li><strong>Скорость чтения</strong> — от 0.5x до 2x</li>
-        <li><strong>Голос</strong> — выбор системного голоса (если доступно)</li>
-      </ul>
-      
-      <h3>Настройки отображения</h3>
-      <ul>
-        <li><strong>Размер шрифта</strong> — от 70% до 150%</li>
-        <li><strong>Демонстрация размера</strong> — предпросмотр выбранного размера</li>
-      </ul>
-      
-      <h3>Информация о системе</h3>
-      <p>Показывает версию приложения, количество карточек, размер данных и другую информацию</p>
+      <h4>Как установить PIN-код:</h4>
+      <div class="step">Нажмите "Настройки" → "Настройки безопасности"</div>
+      <div class="step">Введите текущий PIN (по умолчанию 0000)</div>
+      <div class="step">Введите новый PIN из 4 цифр</div>
+      <div class="step">Подтвердите новый PIN</div>
+      <div class="step">Нажмите "Сменить PIN"</div>
     </div>
 
-    <div class="section" id="cards">
-      <h2>11. 🃏 Управление карточками</h2>
+    <h2 id="tips-parents">11. 💡 Советы для родителей</h2>
+    
+    <div class="section for-parent">
+      <h3>Как помочь ребенку освоить программу:</h3>
       
-      <h3>Типы карточек:</h3>
-      <ul>
-        <li><span class="color-box" style="background:#FFF3E0;"></span> <strong>Категории</strong> — группы карточек (игры, еда, люди)</li>
-        <li><span class="color-box" style="background:#FFF3E0;"></span> <strong>Действия</strong> — глаголы (играть, есть, пить)</li>
-        <li><span class="color-box" style="background:#E3F2FD;"></span> <strong>Люди</strong> — люди и питомцы</li>
-        <li><span class="color-box" style="background:#FFF3E0;"></span> <strong>Места</strong> — места и локации</li>
-        <li><span class="color-box" style="background:#E8F5E9;"></span> <strong>Объекты</strong> — предметы, еда, напитки</li>
-        <li><span class="color-box" style="background:#FCE4EC;"></span> <strong>Эмоции</strong> — эмоциональные состояния</li>
-        <li><span class="color-box" style="background:#FFEBEE;"></span> <strong>Боль</strong> — части тела</li>
-        <li><span class="color-box" style="background:#E3F2FD;"></span> <strong>Время</strong> — временные указатели</li>
-      </ul>
+      <div class="tip-box">
+        <p><strong>Начните с простого:</strong> В первый день покажите только главную вкладку и 2-3 карточки.</p>
+      </div>
       
-      <h3>Формат карточек:</h3>
-      <p>Каждая карточка содержит:</p>
-      <ul>
-        <li><strong>ID</strong> — уникальный идентификатор</li>
-        <li><strong>Текст</strong> — отображаемый текст</li>
-        <li><strong>Эмодзи</strong> — визуальное представление</li>
-        <li><strong>Тип</strong> — категория, действие, человек и т.д.</li>
-        <li><strong>Категория</strong> — родительская категория</li>
-        <li><strong>Формы</strong> — грамматические формы для разных падежей</li>
-        <li><strong>Метаданные</strong> — ограничения и правила использования</li>
-      </ul>
+      <div class="tip-box">
+        <p><strong>Играйте вместе:</strong> Составляйте фразы по очереди. "Мама хочет...", "Папа хочет..."</p>
+      </div>
       
-      <h3>Редактор карточек:</h3>
-      <p>Доступен через кнопку "Редактор карточек" в настройках или по прямой ссылке: <a href="https://zlovreda.github.io/Kom-Kom-Communicator/editor.html" target="_blank">https://zlovreda.github.io/Kom-Kom-Communicator/editor.html</a></p>
+      <div class="tip-box">
+        <p><strong>Создайте распорядок:</strong> Используйте вкладку распорядка, чтобы подготовить ребенка к изменениям в течение дня.</p>
+      </div>
+      
+      <div class="tip-box">
+        <p><strong>Настройте под ребенка:</strong> Увеличьте шрифт, замедлите речь, выберите удобный голос.</p>
+      </div>
+      
+      <div class="tip-box">
+        <p><strong>Практикуйте экстренные ситуации:</strong> Покажите, как работают красные кнопки, чтобы в реальной ситуации ребенок не растерялся.</p>
+      </div>
+      
+      <h3>Что делать, если ребенок не пользуется программой:</h3>
+      <ol>
+        <li>Упростите интерфейс (оставьте только самые нужные карточки)</li>
+        <li>Свяжите использование программы с приятными занятиями</li>
+        <li>Хвалите за любую попытку использования</li>
+        <li>Показывайте пример, используя программу сами</li>
+        <li>Дайте время - некоторым детям нужно несколько недель, чтобы привыкнуть</li>
+      </ol>
     </div>
 
-    <div class="section tip" id="tips">
-      <h2>12. 💡 Советы и рекомендации</h2>
+    <h2 id="tips-children">12. 🌟 Советы для детей</h2>
+    
+    <div class="section for-child">
+      <div class="emoji-large">🎮 Помни, Ком-Ком - это твой помощник!</div>
       
-      <h3>Для родителей и педагогов:</h3>
-      <ul>
-        <li><strong>Начните с простого</strong> — сначала используйте базовые фразы ("Я хочу есть", "Я хочу играть")</li>
-        <li><strong>Используйте расписание</strong> — визуальное расписание снижает тревожность</li>
-        <li><strong>Настройте под ребенка</strong> — измените размер шрифта, скорость речи в настройках</li>
-        <li><strong>Добавьте персонализацию</strong> — создайте карточки с именами родственников, любимыми игрушками</li>
-        <li><strong>Обучайте постепенно</strong> — вводите новые карточки по мере освоения старых</li>
-      </ul>
-      
-      <h3>Технические советы:</h3>
-      <ul>
-        <li><strong>Регулярно экспортируйте данные</strong> — создавайте резервные копии карточек</li>
-        <li><strong>Используйте редактор</strong> — добавляйте новые карточки через веб-редактор</li>
-        <li><strong>Обновляйте карточки</strong> — периодически загружайте обновления с сервера</li>
-        <li><strong>Измените PIN</strong> — замените стандартный PIN-код 0000 на свой</li>
-        <li><strong>Сохраняйте историю</strong> — экспортируйте историю для анализа прогресса</li>
-      </ul>
-    </div>
-
-    <div class="section" id="qa">
-      <h2>13. ❓ Вопросы и ответы</h2>
-      
-      <div class="qa-item">
-        <div class="question">Как добавить новую карточку?</div>
-        <div class="answer">Используйте редактор карточек (доступен через настройки). В редакторе можно создать новую карточку, указать все необходимые параметры и сохранить.</div>
+      <div class="visual-guide">
+        <div class="visual-emoji">🎯</div>
+        <div class="visual-text">
+          <h4>Твоя цель:</h4>
+          <p>Не нужно запоминать все сразу. Осваивай по одной вкладке за раз.</p>
+        </div>
       </div>
       
-      <div class="qa-item">
-        <div class="question">Почему не работает озвучивание?</div>
-        <div class="answer">Проверьте настройки речи в браузере. Некоторые браузеры требуют разрешения на использование синтеза речи. Также проверьте уровень громкости системы.</div>
+      <div class="visual-guide">
+        <div class="visual-emoji">🔧</div>
+        <div class="visual-text">
+          <h4>Не бойся ошибаться:</h4>
+          <p>Если нажал не туда - просто нажми на корзину 🗑️ и начни заново.</p>
+        </div>
       </div>
       
-      <div class="qa-item">
-        <div class="question">Как сбросить забытый PIN-код?</div>
-        <div class="answer">Очистите localStorage в браузере. Это вернет все настройки к начальным, включая PIN-код (0000).</div>
+      <div class="visual-guide">
+        <div class="visual-emoji">📞</div>
+        <div class="visual-text">
+          <h4>Проси о помощи:</h4>
+          <p>Если что-то не получается, покажи взрослому. Можно даже использовать для этого программу!</p>
+        </div>
       </div>
       
-      <div class="qa-item">
-        <div class="question">Можно ли использовать приложение на планшете?</div>
-        <div class="answer">Да, приложение адаптировано для мобильных устройств и планшетов. Используйте браузер на планшете для доступа.</div>
+      <div class="visual-guide">
+        <div class="visual-emoji">🎉</div>
+        <div class="visual-text">
+          <h4>Гордись собой:</h4>
+          <p>Каждая составленная фраза - это твоя победа! Покажи взрослым, что у тебя получилось.</p>
+        </div>
       </div>
       
-      <div class="qa-item">
-        <div class="question">Как поделиться набором карточек с другим пользователем?</div>
-        <div class="answer">Экспортируйте карточки в настройках, отправьте полученный JSON-файл другому пользователю, который импортирует его в своем приложении.</div>
-      </div>
-      
-      <div class="qa-item">
-        <div class="question">Почему некоторые кнопки быстрой навигации неактивны?</div>
-        <div class="answer">Кнопки становятся активными только после выбора действия. Также некоторые действия не поддерживают определенные дополнения (например, нельзя добавить людей к действию "спать").</div>
+      <div class="phrase-example">
+        Помни: ты можешь общаться, даже если сложно говорить слова! 
+        Ком-Ком поможет тебе рассказать о своих желаниях, чувствах и мыслях.
       </div>
     </div>
 
-    <div class="section" id="support">
-      <h2>14. 📞 Поддержка</h2>
-      
-      <h3>Полезные ссылки:</h3>
+    <div class="section important">
+      <h3>🎁 Дополнительные возможности:</h3>
+      <p>Ком-Ком постоянно улучшается. На сайте программы ты можешь:</p>
       <ul>
-        <li><strong>Репозиторий проекта:</strong> <a href="https://github.com/Zlovreda/Kom-Kom-Communicator" target="_blank">GitHub</a></li>
-        <li><strong>Редактор карточек:</strong> <a href="https://zlovreda.github.io/Kom-Kom-Communicator/editor.html" target="_blank">Online Editor</a></li>
-        <li><strong>Лицензия:</strong> <a href="https://github.com/Zlovreda/Kom-Kom-Communicator/blob/main/LICENSE" target="_blank">Apache License 2.0</a></li>
-        <li><strong>Сообщить о проблеме:</strong> <a href="https://github.com/Zlovreda/Kom-Kom-Communicator/issues" target="_blank">Issues на GitHub</a></li>
+        <li>Скачать новые карточки</li>
+        <li>Создать свои карточки в редакторе</li>
+        <li>Посмотреть видео-инструкции</li>
+        <li>Пообщаться с другими пользователями в Telegram-чате</li>
       </ul>
+      <p>Ссылки на все ресурсы есть во вкладке "Настройки" → "О приложении".</p>
+    </div>
+
+    <div class="section">
+      <h3>🌈 Цветовая система подсказок:</h3>
+      <p>Чтобы легче находить нужные карточки, запомни цвета:</p>
       
-      <h3>Автор:</h3>
-      <p>Павел Николаевич Копченов (<a href="https://github.com/Zlovreda" target="_blank">Zlovreda</a>)</p>
+      <p><span class="color-coded color-people">Люди</span> - синие карточки</p>
+      <p><span class="color-coded color-places">Места</span> - фиолетовые карточки</p>
+      <p><span class="color-coded color-objects">Объекты</span> - оранжевые карточки</p>
+      <p><span class="color-coded color-time">Время</span> - зеленые карточки</p>
       
-      <h3>Лицензия:</h3>
-      <p>© 2025 Павел Николаевич Копченов. Приложение распространяется под лицензией Apache 2.0.</p>
-      
-      <div class="section tip">
-        <p><strong>💡 Помните:</strong> Ком-Ком — открытый проект. Вы можете модифицировать его под свои нужды, добавлять новые функции и делиться улучшениями с сообществом.</p>
-      </div>
+      <p>Эмоции, действия и другие категории имеют свои цвета, которые помогают быстрее найти нужное.</p>
     </div>
 
     <div class="navigation">
-      <a href="#" class="nav-btn" onclick="window.print()">🖨️ Распечатать инструкцию</a>
-      <a href="index.html" class="nav-btn">🏠 Вернуться к приложению</a>
+      <a href="#" class="nav-button" onclick="window.print(); return false;">🖨️ Распечатать инструкцию</a>
+      <a href="communicator.html" class="nav-button">🚀 Вернуться к программе</a>
     </div>
 
-    <div class="version">
-      Ком-Ком: Коммуникатор для детей с РАС | Версия 4.4.0<br>
-      © 2025 Павел Николаевич Копченов | Лицензия Apache 2.0
+    <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #e0e0e0; color: #7f8c8d;">
+      <p>Инструкция составлена с учетом особенностей детей с расстройствами аутистического спектра</p>
+      <p>© 2025 Ком-Ком: Коммуникатор для детей с РАС | Версия 4.5.0</p>
     </div>
   </div>
 
   <script>
     // Плавная прокрутка к якорям
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
+    document.querySelectorAll('.toc-link').forEach(link => {
+      link.addEventListener('click', function(e) {
         e.preventDefault();
         const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-        
         const targetElement = document.querySelector(targetId);
+        
         if (targetElement) {
           window.scrollTo({
             top: targetElement.offsetTop - 20,
@@ -806,10 +717,10 @@
         }
       });
     });
-    
+
     // Подсветка текущего раздела при прокрутке
     window.addEventListener('scroll', function() {
-      const sections = document.querySelectorAll('.section');
+      const sections = document.querySelectorAll('h2');
       const scrollPosition = window.scrollY + 100;
       
       sections.forEach(section => {
@@ -818,23 +729,51 @@
         const sectionId = section.getAttribute('id');
         
         if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-          document.querySelectorAll('.toc a').forEach(link => {
+          document.querySelectorAll('.toc-link').forEach(link => {
             link.style.fontWeight = 'normal';
-            if (link.getAttribute('href') === `#${sectionId}`) {
-              link.style.fontWeight = 'bold';
-              link.style.color = '#e74c3c';
-            }
+            link.style.color = '#3498db';
           });
+          
+          const activeLink = document.querySelector(`.toc-link[href="#${sectionId}"]`);
+          if (activeLink) {
+            activeLink.style.fontWeight = 'bold';
+            activeLink.style.color = '#e74c3c';
+          }
         }
       });
     });
+
+    // Добавление кнопки "Наверх"
+    const scrollToTopBtn = document.createElement('button');
+    scrollToTopBtn.innerHTML = '⬆ Наверх';
+    scrollToTopBtn.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 1000;
+    `;
     
-    // Автоматическое обновление года в копирайте
-    document.addEventListener('DOMContentLoaded', function() {
-      const yearElement = document.querySelector('.version');
-      if (yearElement) {
-        yearElement.innerHTML = yearElement.innerHTML.replace('2025', new Date().getFullYear());
+    document.body.appendChild(scrollToTopBtn);
+    
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 500) {
+        scrollToTopBtn.style.display = 'block';
+      } else {
+        scrollToTopBtn.style.display = 'none';
       }
+    });
+    
+    scrollToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   </script>
 </body>
