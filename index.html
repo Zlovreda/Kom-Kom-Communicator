@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ком-Ком: Коммуникатор для детей с РАС</title>
   <style>
+    /* Все стили остаются без изменений */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -1237,12 +1238,7 @@
     <div id="settings" class="tab-content">
       <h2>Настройки</h2>
       <div class="settings-grid">
-        <div class="settings-card">
-          <h3>Информация о системе</h3>
-          <div class="settings-info" id="systemInfo"></div>
-        </div>
-
-        <div class="settings-card">
+                <div class="settings-card">
           <h3>Управление данными</h3>
           <div class="settings-controls">
             <button class="control-btn import" id="importBtn">Импорт карточек</button>
@@ -1302,6 +1298,11 @@
           <div class="font-size-demo" id="fontSizeDemo">Пример текста: Я хочу играть</div>
         </div>
 
+		<div class="settings-card">
+          <h3>Информация о системе</h3>
+          <div class="settings-info" id="systemInfo"></div>
+        </div>
+		
         <div class="settings-card">
           <h3>О приложении</h3>
           <div class="settings-info">
@@ -1323,12 +1324,18 @@
             </div>
             <div class="settings-info-item">
               <span class="settings-info-label">Версия:</span>
-              <span class="settings-info-value">4.4.0</span>
+              <span class="settings-info-value">4.5.0</span>
             </div>
             <div class="settings-info-item">
               <span class="settings-info-label">Репозиторий:</span>
               <span class="settings-info-value">
                 <a href="https://github.com/Zlovreda/Kom-Kom-Communicator" target="_blank" class="footer-link">GitHub</a>
+              </span>
+            </div>
+			<div class="settings-info-item">
+              <span class="settings-info-label">ТГ чат:</span>
+              <span class="settings-info-value">
+                <a href="https://t.me/kom_kom_chat" target="_blank" class="footer-link">Ком-Ком Коммуникатор</a>
               </span>
             </div>
           </div>
@@ -4156,281 +4163,6 @@ handlePetSelection(card) {
         container.innerHTML = html;
       }
     }
-
-// Инициализация расширенных грамматических правил
-function setupExtendedGrammarRules() {
-  const communicator = window.communicator;
-  
-  if (!communicator || !communicator.grammar) return;
-  
-  // Добавляем правила для новых категорий
-  communicator.addGrammarRule('transport', { 
-    preposition: 'на', 
-    case: 'prepositional' 
-  });
-  
-  communicator.addGrammarRule('weather', { 
-    preposition: null, 
-    case: 'nominative' 
-  });
-  
-  communicator.addGrammarRule('clothing', { 
-    preposition: 'в', 
-    case: 'prepositional' 
-  });
-  
-  // Добавляем правила для конкретных действий
-  communicator.addActionGrammarRule('ACT-RIDE', {
-    type: 'movement',
-    pattern: 'подлежащее + действие + на + транспорт'
-  });
-  
-  communicator.addActionGrammarRule('ACT-WEAR', {
-    type: 'dressing',
-    pattern: 'подлежащее + действие + одежду'
-  });
-  
-  // Правила для обучения
-  communicator.addActionGrammarRule('ACT-LEARN', {
-    type: 'education',
-    pattern: 'подлежащее + действие + тему'
-  });
-  
-  communicator.addActionGrammarRule('ACT-DRAW', {
-    type: 'creative',
-    pattern: 'подлежащее + действие + картину'
-  });
-  
-  console.log('Расширенные грамматические правила загружены');
-  
-  // Добавляем кнопки в интерфейс
-  addGrammarTestButton();
-  addGrammarManagementButtons();
-}
-
-// Добавление кнопки для тестирования грамматики
-function addGrammarTestButton() {
-  setTimeout(() => {
-    const settingsGrid = document.querySelector('.settings-grid');
-    if (!settingsGrid) return;
-    
-    // Проверяем, не добавлена ли уже кнопка
-    if (document.getElementById('grammarTestInput')) return;
-    
-    const grammarTestCard = document.createElement('div');
-    grammarTestCard.className = 'settings-card';
-    grammarTestCard.innerHTML = `
-      <h3>Тестирование грамматики</h3>
-      <div class="form-group">
-        <label>Тестовая фраза:</label>
-        <input type="text" id="grammarTestInput" placeholder="Я хочу играть с мамой" class="view-only" readonly style="background: #f5f5f5;">
-      </div>
-      <div class="form-group">
-        <label>Результат:</label>
-        <div id="grammarTestResult" style="padding: 10px; background: #f5f5f5; border-radius: 5px; min-height: 40px;"></div>
-      </div>
-      <button class="save-btn" id="testGrammarBtn">Проверить грамматику</button>
-    `;
-    
-    settingsGrid.appendChild(grammarTestCard);
-    
-    document.getElementById('testGrammarBtn')?.addEventListener('click', testGrammar);
-  }, 2000);
-}
-
-// Функция тестирования грамматики
-function testGrammar() {
-  const resultDiv = document.getElementById('grammarTestResult');
-  
-  if (!resultDiv) return;
-  
-  const communicator = window.communicator;
-  if (!communicator) {
-    resultDiv.textContent = 'Коммуникатор не инициализирован';
-    return;
-  }
-  
-  // Создаем тестовую фразу
-  const testPhrase = {
-    subject: 'Я',
-    desire: 'хочу',
-    action: { text: 'играть', type: 'action', id: 'ACT-PLAY' },
-    people: [{ text: 'мама', type: 'person', forms: { 'с': 'с мамой' } }],
-    objects: [{ text: 'мяч', type: 'object', forms: { 'с': 'с мячом' } }],
-    time: { text: 'сейчас', type: 'time' }
-  };
-  
-  const result = communicator.grammar.buildPhrase(testPhrase);
-  resultDiv.textContent = `Результат: ${result}`;
-  
-  // Произносим результат
-  if ('speechSynthesis' in window) {
-    const utterance = new SpeechSynthesisUtterance(result);
-    utterance.lang = 'ru-RU';
-    speechSynthesis.speak(utterance);
-  }
-}
-
-// Экспорт грамматических правил
-function exportGrammarRules() {
-  const communicator = window.communicator;
-  if (!communicator) return;
-  
-  const rules = {
-    rules: communicator.grammar.rules,
-    actionRules: communicator.grammar.actionRules,
-    caseEndings: communicator.grammar.caseEndings,
-    prepositions: communicator.grammar.prepositions
-  };
-  
-  const dataStr = JSON.stringify(rules, null, 2);
-  const dataBlob = new Blob([dataStr], { type: 'application/json' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(dataBlob);
-  link.download = 'kom_kom_grammar_rules_' + new Date().toISOString().slice(0, 10) + '.json';
-  link.click();
-}
-
-// Импорт грамматических правил
-function importGrammarRules(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const importedRules = JSON.parse(e.target.result);
-      const communicator = window.communicator;
-      
-      if (communicator && communicator.grammar) {
-        if (importedRules.rules) {
-          Object.assign(communicator.grammar.rules, importedRules.rules);
-        }
-        
-        if (importedRules.actionRules) {
-          Object.assign(communicator.grammar.actionRules, importedRules.actionRules);
-        }
-        
-        if (importedRules.caseEndings) {
-          Object.assign(communicator.grammar.caseEndings, importedRules.caseEndings);
-        }
-        
-        if (importedRules.prepositions) {
-          Object.assign(communicator.grammar.prepositions, importedRules.prepositions);
-        }
-        
-        alert('Грамматические правила успешно импортированы!');
-      }
-    } catch (error) {
-      alert('Ошибка при импорте грамматических правил: ' + error.message);
-    }
-  };
-  
-  reader.readAsText(file);
-}
-
-// Добавление кнопок экспорта/импорта грамматических правил в интерфейс
-function addGrammarManagementButtons() {
-  setTimeout(() => {
-    const settingsCards = document.querySelectorAll('.settings-card');
-    if (!settingsCards.length) return;
-    
-    // Находим карточку "Управление данными"
-    let dataCard = null;
-    settingsCards.forEach(card => {
-      if (card.querySelector('h3')?.textContent === 'Управление данными') {
-        dataCard = card;
-      }
-    });
-    
-    if (!dataCard) return;
-    
-    const settingsControls = dataCard.querySelector('.settings-controls');
-    if (!settingsControls) return;
-    
-    // Проверяем, не добавлены ли уже кнопки грамматики
-    if (document.getElementById('exportGrammarBtn')) return;
-    
-    // СОХРАНЯЕМ существующие кнопки
-    const existingButtons = settingsControls.innerHTML;
-    
-    // Добавляем новые кнопки ПОСЛЕ существующих
-    settingsControls.innerHTML = existingButtons + `
-      <button class="control-btn" id="exportGrammarBtn" style="background: #9b59b6;">Экспорт грамматики</button>
-      <button class="control-btn import" id="importGrammarBtn" style="background: #3498db;">Импорт грамматики</button>
-      <input type="file" id="grammarFileInput" class="file-input" accept=".json" style="display: none;">
-    `;
-    
-    // Навешиваем обработчики на НОВЫЕ кнопки
-    document.getElementById('exportGrammarBtn')?.addEventListener('click', exportGrammarRules);
-    document.getElementById('importGrammarBtn')?.addEventListener('click', () => {
-      document.getElementById('grammarFileInput').click();
-    });
-    
-    document.getElementById('grammarFileInput')?.addEventListener('change', importGrammarRules);
-    
-    // ВОССТАНАВЛИВАЕМ обработчики на СТАРЫЕ кнопки
-    restoreDataButtonsHandlers();
-    
-    console.log('Кнопки управления грамматикой добавлены');
-  }, 3000);
-}
-
-// Восстановление обработчиков старых кнопок управления данными
-function restoreDataButtonsHandlers() {
-  const communicator = window.communicator;
-  if (!communicator) return;
-  
-  // Восстанавливаем обработчики оригинальных кнопок
-  const importBtn = document.getElementById('importBtn');
-  const exportBtn = document.getElementById('exportBtn');
-  const remoteLoadBtn = document.getElementById('remoteLoadBtn');
-  const editorBtn = document.getElementById('editorBtn');
-  const resetBtn = document.getElementById('resetBtn');
-  const fileInput = document.getElementById('fileInput');
-  
-  if (importBtn && !importBtn.hasAttribute('data-handler-restored')) {
-    importBtn.setAttribute('data-handler-restored', 'true');
-    importBtn.addEventListener('click', () => {
-      fileInput.click();
-    });
-  }
-  
-  if (exportBtn && !exportBtn.hasAttribute('data-handler-restored')) {
-    exportBtn.setAttribute('data-handler-restored', 'true');
-    exportBtn.addEventListener('click', () => {
-      communicator.exportCards();
-    });
-  }
-  
-  if (remoteLoadBtn && !remoteLoadBtn.hasAttribute('data-handler-restored')) {
-    remoteLoadBtn.setAttribute('data-handler-restored', 'true');
-    remoteLoadBtn.addEventListener('click', async () => {
-      await communicator.loadCardsFromRemote();
-    });
-  }
-  
-  if (editorBtn && !editorBtn.hasAttribute('data-handler-restored')) {
-    editorBtn.setAttribute('data-handler-restored', 'true');
-    editorBtn.addEventListener('click', () => {
-      window.open(communicator.EDITOR_URL, '_blank');
-    });
-  }
-  
-  if (resetBtn && !resetBtn.hasAttribute('data-handler-restored')) {
-    resetBtn.setAttribute('data-handler-restored', 'true');
-    resetBtn.addEventListener('click', () => {
-      communicator.resetCards();
-    });
-  }
-  
-  if (fileInput && !fileInput.hasAttribute('data-handler-restored')) {
-    fileInput.setAttribute('data-handler-restored', 'true');
-    fileInput.addEventListener('change', (e) => {
-      communicator.importCards(e);
-    });
-  }
-}
 	
     function loadVoices() {
       voices = speechSynthesis.getVoices();
@@ -4457,13 +4189,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const communicator = new Communicator();
   window.communicator = communicator;
   
-  // Инициализация расширенных грамматических правил
-  setTimeout(() => {
-    if (window.communicator && window.communicator.grammar) {
-      setupExtendedGrammarRules();
-    }
-  }, 100);
-  
   document.getElementById('speedSlider').value = speechRate;
   document.getElementById('speedValue').textContent = speechRate;
   document.getElementById('fontSizeSlider').value = fontSizeScale * 100;
@@ -4472,43 +4197,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Инициализируем голоса
   loadVoices();
   
-  // Добавляем кнопку быстрого теста грамматики для отладки
-  setTimeout(() => {
-    const testButton = document.createElement('button');
-    testButton.textContent = 'Тест грамматики';
-    testButton.style.cssText = `
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      z-index: 9999;
-      background: #9b59b6;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 12px;
-      opacity: 0.7;
-    `;
-    testButton.title = 'Быстрая проверка грамматической системы';
-    testButton.addEventListener('click', () => {
-      if (window.communicator) {
-        const testPhrase = {
-          subject: 'Я',
-          desire: 'хочу',
-          action: { text: 'играть', type: 'action', id: 'ACT-PLAY' },
-          people: [{ text: 'друг', type: 'person' }],
-          objects: [{ text: 'мяч', type: 'object' }],
-          places: [{ text: 'парк', type: 'place' }]
-        };
-        
-        const result = window.communicator.grammar.buildPhrase(testPhrase);
-        alert('Тест грамматики:\n\n' + result);
-        window.communicator.speakText(result);
-      }
-    });
-    document.body.appendChild(testButton);
-  }, 2000);
+  // Удаляем кнопку быстрого теста грамматики
 });
   </script>
 </body>
