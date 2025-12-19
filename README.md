@@ -36,7 +36,7 @@
 2. Начните использовать сразу, при необходимости прочитайте [инструкцию](https://zlovreda.github.io/Kom-Kom-Communicator/index-manual.html) 
 
 ### Вариант 2: Локальная установка
-1. Скачайте файл <a href="https://raw.githubusercontent.com/Zlovreda/Kom-Kom-Communicator/main/index.html" download="Kom-Kom-Communicator.html">Скачать Kom-Kom-Communicator</a>
+1. Нажмите [здесь](https://raw.githubusercontent.com/Zlovreda/Kom-Kom-Communicator/main/index.html) и сохраните файл как `Kom-Kom-Communicator.html`
 2. Откройте его в любом современном браузере (Chrome, Firefox, Edge)
 3. Начните использовать
 
