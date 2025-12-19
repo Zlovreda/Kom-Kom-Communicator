@@ -1061,6 +1061,54 @@
       font-weight: bold;
       color: #2e7d32;
     }
+	
+	/* Стили для модального окна загрузки */
+.pin-modal input[type="radio"],
+.pin-modal input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.pin-modal label {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.pin-modal strong {
+  color: #2c3e50;
+}
+
+#sectionsSelection label {
+  margin-bottom: 5px;
+}
+
+#summaryInfo {
+  background: #e8f5e9 !important;
+  border: 1px solid #27ae60;
+}
+
+#sectionCounts {
+  font-size: 0.9rem;
+  color: #2e7d32;
+}
+
+/* Анимация для модального окна */
+.pin-modal {
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
   </style>
 </head>
 <body>
@@ -1073,7 +1121,6 @@
       <button class="tab-btn" data-tab="dialog">Диалог</button>
       <button class="tab-btn" data-tab="emotions">Эмоции</button>
       <button class="tab-btn" data-tab="emergency">Экстренные ситуации</button>
-      <button class="tab-btn" data-tab="schedule">Распорядок</button>
       <button class="tab-btn" data-tab="history">История</button>
       <button class="tab-btn" data-tab="child">Данные о ребенке</button>
       <button class="tab-btn" data-tab="settings">Настройки</button>
@@ -1445,6 +1492,73 @@
       </div>
     </div>
   </div>
+
+<div id="remoteLoadModal" class="pin-overlay" style="display: none;">
+  <div class="pin-modal" style="max-width: 500px;">
+    <h3>Загрузка карточек с сервера</h3>
+    
+    <div class="form-group">
+      <label><strong>Выберите стратегию загрузки:</strong></label>
+      <div style="margin: 15px 0;">
+        <label style="display: block; margin-bottom: 10px;">
+          <input type="radio" name="loadStrategy" value="replace" checked>
+          <strong>ЗАМЕНИТЬ ВСЕ</strong> - Полная замена всех карточек (текущие будут удалены)
+        </label>
+        <label style="display: block; margin-bottom: 10px;">
+          <input type="radio" name="loadStrategy" value="merge">
+          <strong>ОБЪЕДИНИТЬ</strong> - Добавить новые и обновить существующие карточки
+        </label>
+        <label style="display: block; margin-bottom: 10px;">
+          <input type="radio" name="loadStrategy" value="sections">
+          <strong>ВЫБОРОЧНАЯ</strong> - Загрузить только выбранные разделы
+        </label>
+      </div>
+    </div>
+
+    <div id="sectionsSelection" style="display: none; margin-top: 15px;">
+      <label><strong>Выберите разделы для загрузки:</strong></label>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+        <label style="display: flex; align-items: center;">
+          <input type="checkbox" name="section" value="Главная" checked>
+          📱 Главная
+        </label>
+        <label style="display: flex; align-items: center;">
+          <input type="checkbox" name="section" value="Обучение">
+          🎓 Обучение
+        </label>
+        <label style="display: flex; align-items: center;">
+          <input type="checkbox" name="section" value="Диалог">
+          💬 Диалог
+        </label>
+        <label style="display: flex; align-items: center;">
+          <input type="checkbox" name="section" value="Эмоции">
+          😊 Эмоции
+        </label>
+      </div>
+      
+      <div style="margin-top: 15px; padding: 10px; background: #f0f8ff; border-radius: 5px;">
+        <label style="display: block; margin-bottom: 5px;">
+          <input type="checkbox" id="skipCategories">
+          Не загружать категории (только карточки)
+        </label>
+        <label style="display: block;">
+          <input type="checkbox" id="preserveExisting">
+          Сохранить существующие карточки в невыбранных разделах
+        </label>
+      </div>
+    </div>
+
+    <div id="summaryInfo" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; display: none;">
+      <div style="font-weight: bold; margin-bottom: 5px;">Будет загружено:</div>
+      <div id="sectionCounts">0 карточек из 0 разделов</div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <button id="confirmRemoteLoad" class="control-btn" style="background: #27ae60;">Загрузить</button>
+      <button id="cancelRemoteLoad" class="control-btn" style="background: #e74c3c; margin-left: 10px;">Отмена</button>
+    </div>
+  </div>
+</div>
 
   <script>
     const REMOTE_CARDS_URL = 'https://raw.githubusercontent.com/Zlovreda/communicator/refs/heads/main/cards.json';
@@ -2202,6 +2316,182 @@ class AdvancedGrammarSystem {
         }
       }
 
+async loadCardsWithOptions() {
+  const modal = document.getElementById('remoteLoadModal');
+  modal.style.display = 'flex';
+  
+  // Сброс формы
+  document.querySelector('input[name="loadStrategy"][value="replace"]').checked = true;
+  document.querySelectorAll('input[name="section"]').forEach(cb => {
+    cb.checked = cb.value === 'Главная';
+  });
+  document.getElementById('skipCategories').checked = false;
+  document.getElementById('preserveExisting').checked = false;
+  document.getElementById('sectionsSelection').style.display = 'none';
+  document.getElementById('summaryInfo').style.display = 'none';
+}
+
+async confirmRemoteLoad() {
+  const modal = document.getElementById('remoteLoadModal');
+  const strategy = document.querySelector('input[name="loadStrategy"]:checked').value;
+  const selectedSections = Array.from(document.querySelectorAll('input[name="section"]:checked'))
+    .map(cb => cb.value);
+  const skipCategories = document.getElementById('skipCategories').checked;
+  const preserveExisting = document.getElementById('preserveExisting').checked;
+  
+  if (strategy === 'sections' && selectedSections.length === 0) {
+    alert('Выберите хотя бы один раздел для загрузки!');
+    return;
+  }
+  
+  modal.style.display = 'none';
+  
+  try {
+    console.log('Загрузка карточек с сервера...');
+    const response = await fetch(REMOTE_CARDS_URL);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    if (!data.cards) {
+      throw new Error('Некорректный формат данных: отсутствует ключ "cards"');
+    }
+    
+    const remoteCards = data.cards;
+    const result = await this.processRemoteCards(remoteCards, {
+      strategy,
+      selectedSections,
+      skipCategories,
+      preserveExisting
+    });
+    
+    this.saveCards();
+    this.navigateToHome();
+    this.renderCategories();
+    this.updateUI();
+    this.updateSystemInfo();
+    
+    alert(`Успешно загружено!\nНовых карточек: ${result.new}\nОбновлено: ${result.updated}\nВсего карточек: ${Object.keys(this.cards).length}`);
+    
+  } catch (error) {
+    console.error('Ошибка загрузки карточек с сервера:', error);
+    alert(`Не удалось загрузить карточки с сервера: ${error.message}`);
+  }
+}
+
+processRemoteCards(remoteCards, options) {
+  const stats = { new: 0, updated: 0, skipped: 0 };
+  
+  switch (options.strategy) {
+    case 'replace':
+      // Полная замена
+      this.cards = remoteCards;
+      stats.new = Object.keys(remoteCards).length;
+      break;
+      
+    case 'merge':
+      // Объединение: добавляем новые, обновляем существующие
+      for (const [id, card] of Object.entries(remoteCards)) {
+        if (!this.cards[id]) {
+          this.cards[id] = card;
+          stats.new++;
+        } else {
+          // Обновляем существующую карточку
+          this.cards[id] = { ...this.cards[id], ...card };
+          stats.updated++;
+        }
+      }
+      break;
+      
+    case 'sections':
+      // Выборочная загрузка по разделам
+      this.selectiveLoad(remoteCards, options, stats);
+      break;
+  }
+  
+  console.log('Статистика загрузки:', stats);
+  return stats;
+}
+
+selectiveLoad(remoteCards, options, stats) {
+  const { selectedSections, skipCategories, preserveExisting } = options;
+  
+  // Создаем копию текущих карточек, если нужно сохранить невыбранные разделы
+  let newCards = preserveExisting ? { ...this.cards } : {};
+  
+  // Фильтруем карточки с сервера
+  for (const [id, card] of Object.entries(remoteCards)) {
+    // Проверяем, относится ли карточка к выбранным разделам
+    const hasSelectedSection = card.sections && 
+      card.sections.some(section => selectedSections.includes(section));
+    
+    // Проверяем, нужно ли пропускать категории
+    const isCategory = card.type === 'category';
+    
+    if (hasSelectedSection && (!skipCategories || !isCategory)) {
+      // Добавляем или обновляем карточку
+      if (!newCards[id]) {
+        newCards[id] = card;
+        stats.new++;
+      } else {
+        // Объединяем разделы с существующей карточкой
+        if (card.sections && newCards[id].sections) {
+          const mergedSections = [...new Set([...newCards[id].sections, ...card.sections])];
+          newCards[id] = { ...newCards[id], ...card, sections: mergedSections };
+        } else {
+          newCards[id] = { ...newCards[id], ...card };
+        }
+        stats.updated++;
+      }
+    } else if (preserveExisting && this.cards[id]) {
+      // Сохраняем существующую карточку из невыбранных разделов
+      newCards[id] = this.cards[id];
+      stats.skipped++;
+    }
+  }
+  
+  this.cards = newCards;
+}
+
+// Метод для предпросмотра загрузки
+previewRemoteLoad() {
+  const strategy = document.querySelector('input[name="loadStrategy"]:checked').value;
+  const selectedSections = Array.from(document.querySelectorAll('input[name="section"]:checked'))
+    .map(cb => cb.value);
+  const skipCategories = document.getElementById('skipCategories').checked;
+  
+  const summary = document.getElementById('summaryInfo');
+  const counts = document.getElementById('sectionCounts');
+  
+  if (strategy === 'sections') {
+    if (selectedSections.length === 0) {
+      summary.style.display = 'none';
+      return;
+    }
+    
+    let sectionText = selectedSections.map(s => {
+      switch(s) {
+        case 'Главная': return '📱 Главная';
+        case 'Обучение': return '🎓 Обучение';
+        case 'Диалог': return '💬 Диалог';
+        case 'Эмоции': return '😊 Эмоции';
+        default: return s;
+      }
+    }).join(', ');
+    
+    counts.textContent = `${selectedSections.length} разделов: ${sectionText}`;
+    if (skipCategories) {
+      counts.textContent += ' (без категорий)';
+    }
+    summary.style.display = 'block';
+  } else {
+    summary.style.display = 'none';
+  }
+}
+
       loadChildInfo() {
         const saved = localStorage.getItem('childInfo');
         return saved ? JSON.parse(saved) : {
@@ -2582,9 +2872,52 @@ class AdvancedGrammarSystem {
           this.resetCards();
         });
 
-        document.getElementById('remoteLoadBtn').addEventListener('click', async () => {
-          await this.loadCardsFromRemote();
-        });
+document.getElementById('remoteLoadBtn').addEventListener('click', () => {
+  this.loadCardsWithOptions();
+});
+
+// Добавьте обработчики для модального окна загрузки
+document.getElementById('confirmRemoteLoad').addEventListener('click', () => {
+  this.confirmRemoteLoad();
+});
+
+document.getElementById('cancelRemoteLoad').addEventListener('click', () => {
+  document.getElementById('remoteLoadModal').style.display = 'none';
+});
+
+// Обработчики для динамического обновления формы
+document.querySelectorAll('input[name="loadStrategy"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    const sectionsDiv = document.getElementById('sectionsSelection');
+    if (radio.value === 'sections') {
+      sectionsDiv.style.display = 'block';
+      this.previewRemoteLoad();
+    } else {
+      sectionsDiv.style.display = 'none';
+      document.getElementById('summaryInfo').style.display = 'none';
+    }
+  });
+});
+
+document.querySelectorAll('input[name="section"], #skipCategories, #preserveExisting').forEach(input => {
+  input.addEventListener('change', () => {
+    this.previewRemoteLoad();
+  });
+});
+
+// Закрытие по клику вне модального окна
+document.getElementById('remoteLoadModal').addEventListener('click', (e) => {
+  if (e.target.id === 'remoteLoadModal') {
+    document.getElementById('remoteLoadModal').style.display = 'none';
+  }
+});
+
+// Закрытие по Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('remoteLoadModal').style.display === 'flex') {
+    document.getElementById('remoteLoadModal').style.display = 'none';
+  }
+});
 
         document.getElementById('editorBtn').addEventListener('click', () => {
           window.open(EDITOR_URL, '_blank');
@@ -4472,6 +4805,58 @@ isObjectAllowed(card) {
         selectedVoice = voices.find(v => v.name === savedVoice);
       }
     }
+	
+	function populateVoiceList() {
+    voices = speechSynthesis.getVoices();
+    const voiceSelect = document.getElementById('voiceSelect');
+    voiceSelect.innerHTML = '';
+
+    // Создаем опцию для системного голоса по умолчанию
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = '🔊 Системный голос (по умолчанию)';
+    voiceSelect.appendChild(defaultOption);
+
+    // Фильтруем только русские голоса
+    const russianVoices = voices.filter(voice => 
+        voice.lang.startsWith('ru-') || 
+        voice.lang.startsWith('RU-') || 
+        voice.lang === 'ru' || 
+        voice.lang === 'RU'
+    );
+
+    // Добавляем только русские голоса
+    russianVoices.forEach((voice, index) => {
+        const option = document.createElement('option');
+        option.value = voice.name;
+        option.textContent = `🇷🇺 ${voice.name} (${voice.lang})`;
+        voiceSelect.appendChild(option);
+    });
+
+    // Если нет русских голосов, показываем сообщение
+    if (russianVoices.length === 0) {
+        const noRussianOption = document.createElement('option');
+        noRussianOption.value = '';
+        noRussianOption.textContent = '❌ Русские голоса не найдены';
+        noRussianOption.disabled = true;
+        voiceSelect.appendChild(noRussianOption);
+    }
+
+    // Восстанавливаем сохраненный выбор пользователя
+    const savedVoice = localStorage.getItem('selected_voice');
+    if (savedVoice && voices.some(v => v.name === savedVoice)) {
+        voiceSelect.value = savedVoice;
+        selectedVoice = voices.find(v => v.name === savedVoice);
+    }
+}
+
+// Важно: список голосов загружается асинхронно
+if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = populateVoiceList;
+}
+
+// Также вызываем сразу на случай, если голоса уже загружены
+setTimeout(populateVoiceList, 100);
 
 document.addEventListener('DOMContentLoaded', async () => {
   const communicator = new Communicator();
