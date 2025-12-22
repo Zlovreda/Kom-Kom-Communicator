@@ -419,20 +419,21 @@
         "removePreposition": "с"
       }
     },
-	  "CLOTHING-JACKET": {
-      "id": "CLOTHING-JACKET",
-      "type": "clothing",
-      "text": "куртка",
-      "forms": {
-        "в": "куртку",
-        "снять": "куртку"
-      },
-      "emoji": "🧥",
-      "category": "CAT-CLOTHING",
-      "sections": [
-        "Главная"
-      ]
-    },
+"CLOTHING-JACKET": {
+  "id": "CLOTHING-JACKET",
+  "type": "clothing",
+  "text": "куртка",
+  "forms": {
+    "direct": "куртку",
+    "в": "куртку",
+    "снять": "куртку"
+  },
+  "emoji": "🧥",
+  "category": "CAT-CLOTHING",
+  "sections": [
+    "Главная"
+  ]
+},
     "CAT-TOILET": {
       "id": "CAT-TOILET",
       "type": "category",
