@@ -1422,13 +1422,13 @@ class AdvancedGrammarSystem {
         case: 'instrumental', 
         joinPreposition: true 
       },
-      'clothing': { 
-        storeIn: 'objects',
-        preposition: 'в', 
-        case: 'accusative', 
-        joinPreposition: false,
-        directObject: true 
-      },
+'clothing': { 
+  storeIn: 'objects',
+  preposition: null, 
+  case: 'accusative', 
+  joinPreposition: false,
+  directObject: true 
+},
       'time': { 
         storeIn: 'time',
         preposition: null, 
@@ -1672,6 +1672,25 @@ class AdvancedGrammarSystem {
       return text;
     }
     
+	// Обработка для clothing
+if (type === 'clothing') {
+  // Для одежды в винительном падеже без предлога
+  if (context.directObject) {
+    if (forms && forms.direct) {
+      return forms.direct;
+    }
+    return text;
+  }
+  
+  // Для предложного падежа (где есть)
+  if (context.preposition && forms && forms[context.preposition]) {
+    return forms[context.preposition];
+  }
+  
+  return text || '';
+}
+	
+	
     // Для мест - используем специальные формы
     if (type === 'place' && this.specialPlaceForms[text]) {
       return this.specialPlaceForms[text];
@@ -1807,30 +1826,30 @@ class AdvancedGrammarSystem {
         parts.push(this.joinElements(pets));
       }
     }
-    else if (actionId === 'ACT-WEAR') {
-      // Для "одеваться" - предлог "в" + винительный падеж
-      if (phrase.objects && phrase.objects.length > 0) {
-        const clothing = phrase.objects.map(item => {
-          if (item.forms && item.forms['в']) {
-            return `в ${item.forms['в']}`;
-          }
-          return `в ${item.text}`;
-        });
-        parts.push(this.joinElements(clothing));
+else if (actionId === 'ACT-WEAR') {
+  // Для "надеть" - прямой объект в винительном падеже без предлога
+  if (phrase.objects && phrase.objects.length > 0) {
+    const clothing = phrase.objects.map(item => {
+      if (item.type === 'clothing' && item.forms && item.forms.direct) {
+        return item.forms.direct; // Например: "куртку", "штаны"
       }
-    }
-    else if (actionId === 'ACT-UNDRESS') {
-      // Для "снять" - прямое дополнение
-      if (phrase.objects && phrase.objects.length > 0) {
-        const clothing = phrase.objects.map(item => {
-          if (item.forms && item.forms['direct']) {
-            return item.forms['direct'];
-          }
-          return item.text;
-        });
-        parts.push(this.joinElements(clothing));
+      return item.text;
+    });
+    parts.push(this.joinElements(clothing));
+  }
+}
+else if (actionId === 'ACT-UNDRESS') {
+  // Для "снять" - тоже прямой объект в винительном падеже
+  if (phrase.objects && phrase.objects.length > 0) {
+    const clothing = phrase.objects.map(item => {
+      if (item.type === 'clothing' && item.forms && item.forms.direct) {
+        return item.forms.direct;
       }
-    }
+      return item.text;
+    });
+    parts.push(this.joinElements(clothing));
+  }
+}
     else if (actionId === 'ACT-RIDE') {
       // Для "кататься" - предлог "на" + предложный падеж
       if (phrase.objects && phrase.objects.length > 0) {
