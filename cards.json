@@ -38,6 +38,34 @@
           "OBJ-LEGO",
           "OBJ-PUZZLE"
         ]
+      },
+      "grammar": {
+        "requiresSubject": true,
+        "requiresDesire": true,
+        "isStandalone": false,
+        "directObject": false,
+        "allowedTypes": [
+          "people",
+          "places",
+          "objects",
+          "time"
+        ],
+        "maxCounts": {
+          "people": 3,
+          "places": 1,
+          "objects": 2
+        },
+        "objectPreposition": "с",
+        "objectCase": "instrumental",
+        "personPreposition": "с",
+        "personCase": "instrumental",
+        "allowedObjects": [
+          "OBJ-BALL",
+          "OBJ-DOLL",
+          "OBJ-CAR",
+          "OBJ-LEGO",
+          "OBJ-PUZZLE"
+        ]
       }
     },
     "OBJ-BALL": {
@@ -53,7 +81,17 @@
       "sections": [
         "Главная"
       ],
-      "color": "#FF5722"
+      "color": "#FF5722",
+      "grammar": {
+        "forms": {
+          "nominative": "мяч",
+          "accusative": "мяч",
+          "instrumental": "мячом",
+          "prepositional": "мяче"
+        },
+        "preposition": "с",
+        "caseForPreposition": "instrumental"
+      }
     },
     "OBJ-DOLL": {
       "id": "OBJ-DOLL",
@@ -67,7 +105,17 @@
       "category": "CAT-PLAY",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "кукла",
+          "accusative": "куклу",
+          "instrumental": "куклой",
+          "prepositional": "кукле"
+        },
+        "preposition": "с",
+        "caseForPreposition": "instrumental"
+      }
     },
     "CAT-EAT": {
       "id": "CAT-EAT",
@@ -108,6 +156,30 @@
           "OBJ-PORRIDGE"
         ],
         "directObject": true
+      },
+      "grammar": {
+        "requiresSubject": true,
+        "requiresDesire": true,
+        "isStandalone": false,
+        "directObject": true,
+        "allowedTypes": [
+          "people",
+          "places",
+          "objects",
+          "time"
+        ],
+        "maxCounts": {
+          "people": 4,
+          "places": 1,
+          "objects": 2
+        },
+        "allowedObjects": [
+          "OBJ-APPLE",
+          "OBJ-BANANA",
+          "OBJ-BREAD",
+          "OBJ-SOUP",
+          "OBJ-PORRIDGE"
+        ]
       }
     },
     "OBJ-APPLE": {
@@ -121,7 +193,15 @@
       "category": "CAT-EAT",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "яблоко",
+          "accusative": "яблоко",
+          "instrumental": "яблоком",
+          "prepositional": "яблоке"
+        }
+      }
     },
     "OBJ-BANANA": {
       "id": "OBJ-BANANA",
@@ -134,7 +214,15 @@
       "category": "CAT-EAT",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "банан",
+          "accusative": "банан",
+          "instrumental": "бананом",
+          "prepositional": "банане"
+        }
+      }
     },
     "CAT-DRINK": {
       "id": "CAT-DRINK",
@@ -175,6 +263,30 @@
           "OBJ-COMPOT"
         ],
         "directObject": true
+      },
+      "grammar": {
+        "requiresSubject": true,
+        "requiresDesire": true,
+        "isStandalone": false,
+        "directObject": true,
+        "allowedTypes": [
+          "people",
+          "places",
+          "objects",
+          "time"
+        ],
+        "maxCounts": {
+          "people": 2,
+          "places": 1,
+          "objects": 1
+        },
+        "allowedObjects": [
+          "OBJ-WATER",
+          "OBJ-JUICE",
+          "OBJ-MILK",
+          "OBJ-TEA",
+          "OBJ-COMPOT"
+        ]
       }
     },
     "OBJ-WATER": {
@@ -188,7 +300,15 @@
       "category": "CAT-DRINK",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "вода",
+          "accusative": "воду",
+          "instrumental": "водой",
+          "prepositional": "воде"
+        }
+      }
     },
     "OBJ-MILK": {
       "id": "OBJ-MILK",
@@ -201,7 +321,15 @@
       "category": "CAT-DRINK",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "молоко",
+          "accusative": "молоко",
+          "instrumental": "молоком",
+          "prepositional": "молоке"
+        }
+      }
     },
     "CAT-HYGIENE": {
       "id": "CAT-HYGIENE",
@@ -235,6 +363,26 @@
           "OBJ-SOAP",
           "OBJ-TOWEL"
         ]
+      },
+      "grammar": {
+        "requiresSubject": true,
+        "requiresDesire": true,
+        "isStandalone": false,
+        "directObject": false,
+        "allowedTypes": [
+          "objects",
+          "places",
+          "time"
+        ],
+        "maxCounts": {
+          "objects": 2
+        },
+        "objectPreposition": "с",
+        "objectCase": "instrumental",
+        "allowedObjects": [
+          "OBJ-SOAP",
+          "OBJ-TOWEL"
+        ]
       }
     },
     "ACT-BRUSH-TEETH": {
@@ -256,6 +404,25 @@
         "allowedObjects": [
           "OBJ-TOOTHBRUSH"
         ]
+      },
+      "grammar": {
+        "requiresSubject": true,
+        "requiresDesire": true,
+        "isStandalone": false,
+        "directObject": false,
+        "allowedTypes": [
+          "objects",
+          "places",
+          "time"
+        ],
+        "maxCounts": {
+          "objects": 1
+        },
+        "objectPreposition": "с",
+        "objectCase": "instrumental",
+        "allowedObjects": [
+          "OBJ-TOOTHBRUSH"
+        ]
       }
     },
     "OBJ-SOAP": {
@@ -269,7 +436,17 @@
       "category": "CAT-HYGIENE",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "мыло",
+          "accusative": "мыло",
+          "instrumental": "мылом",
+          "prepositional": "мыле"
+        },
+        "preposition": "с",
+        "caseForPreposition": "instrumental"
+      }
     },
     "OBJ-TOOTHBRUSH": {
       "id": "OBJ-TOOTHBRUSH",
@@ -282,7 +459,17 @@
       "category": "CAT-HYGIENE",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "зубная щётка",
+          "accusative": "зубную щётку",
+          "instrumental": "зубной щёткой",
+          "prepositional": "зубной щётке"
+        },
+        "preposition": "с",
+        "caseForPreposition": "instrumental"
+      }
     },
     "CAT-CLOTHING": {
       "id": "CAT-CLOTHING",
@@ -313,21 +500,45 @@
         ],
         "maxObjects": 3,
         "clothingPreposition": "в"
+      },
+      "grammar": {
+        "requiresSubject": true,
+        "requiresDesire": true,
+        "isStandalone": false,
+        "directObject": true,
+        "allowedTypes": [
+          "objects",
+          "places",
+          "time"
+        ],
+        "maxCounts": {
+          "objects": 3
+        }
       }
     },
     "OBJ-TSHIRT": {
       "id": "OBJ-TSHIRT",
-"type": "clothing",
-  "emoji": "👕",
-  "text": "футболка",
-  "forms": {
-    "direct": "футболку",
-    "в": "футболке"
-  },
-  "category": "CAT-CLOTHING",
-  "sections": ["Главная"]
-},
-	  "OBJ-PANTS": {
+      "type": "clothing",
+      "emoji": "👕",
+      "text": "футболка",
+      "forms": {
+        "direct": "футболку",
+        "в": "футболке"
+      },
+      "category": "CAT-CLOTHING",
+      "sections": [
+        "Главная"
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "футболка",
+          "accusative": "футболку",
+          "instrumental": "футболкой",
+          "prepositional": "футболке"
+        }
+      }
+    },
+    "OBJ-PANTS": {
       "id": "OBJ-PANTS",
       "type": "clothing",
       "text": "штаны",
@@ -339,7 +550,15 @@
       "category": "CAT-CLOTHING",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "штаны",
+          "accusative": "штаны",
+          "instrumental": "штанами",
+          "prepositional": "штанах"
+        }
+      }
     },
     "CAT-PETS": {
       "id": "CAT-PETS",
@@ -370,6 +589,20 @@
           "time"
         ],
         "maxPets": 2
+      },
+      "grammar": {
+        "requiresSubject": true,
+        "requiresDesire": true,
+        "isStandalone": false,
+        "directObject": true,
+        "allowedTypes": [
+          "pets",
+          "places",
+          "time"
+        ],
+        "maxCounts": {
+          "pets": 2
+        }
       }
     },
     "OBJ-CAT": {
@@ -384,7 +617,15 @@
       "category": "CAT-PETS",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "кошка",
+          "accusative": "кошку",
+          "instrumental": "кошкой",
+          "prepositional": "кошке"
+        }
+      }
     },
     "OBJ-DOG": {
       "id": "OBJ-DOG",
@@ -398,7 +639,15 @@
       "category": "CAT-PETS",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "собака",
+          "accusative": "собаку",
+          "instrumental": "собакой",
+          "prepositional": "собаке"
+        }
+      }
     },
     "ACT-UNDRESS": {
       "id": "ACT-UNDRESS",
@@ -417,23 +666,45 @@
         ],
         "maxObjects": 3,
         "removePreposition": "с"
+      },
+      "grammar": {
+        "requiresSubject": true,
+        "requiresDesire": true,
+        "isStandalone": false,
+        "directObject": true,
+        "allowedTypes": [
+          "objects",
+          "places",
+          "time"
+        ],
+        "maxCounts": {
+          "objects": 3
+        }
       }
     },
-"CLOTHING-JACKET": {
-  "id": "CLOTHING-JACKET",
-  "type": "clothing",
-  "text": "куртка",
-  "forms": {
-    "direct": "куртку",
-    "в": "куртку",
-    "снять": "куртку"
-  },
-  "emoji": "🧥",
-  "category": "CAT-CLOTHING",
-  "sections": [
-    "Главная"
-  ]
-},
+    "CLOTHING-JACKET": {
+      "id": "CLOTHING-JACKET",
+      "type": "clothing",
+      "text": "куртка",
+      "forms": {
+        "direct": "куртку",
+        "в": "куртку",
+        "снять": "куртку"
+      },
+      "emoji": "🧥",
+      "category": "CAT-CLOTHING",
+      "sections": [
+        "Главная"
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "куртка",
+          "accusative": "куртку",
+          "instrumental": "курткой",
+          "prepositional": "куртке"
+        }
+      }
+    },
     "CAT-TOILET": {
       "id": "CAT-TOILET",
       "type": "category",
@@ -452,11 +723,25 @@
       "emoji": "🚽",
       "text": "писать",
       "category": "CAT-TOILET",
-      "sections": ["Главная"],
+      "sections": [
+        "Главная"
+      ],
       "metadata": {
-        "allowedWith": ["places", "time"],
+        "allowedWith": [
+          "places",
+          "time"
+        ],
         "requiresDesire": true,
         "requiresSubject": true
+      },
+      "grammar": {
+        "requiresSubject": true,
+        "requiresDesire": true,
+        "isStandalone": false,
+        "allowedTypes": [
+          "places",
+          "time"
+        ]
       }
     },
     "ACT-POO": {
@@ -465,11 +750,25 @@
       "emoji": "💩",
       "text": "какать",
       "category": "CAT-TOILET",
-      "sections": ["Главная"],
+      "sections": [
+        "Главная"
+      ],
       "metadata": {
-        "allowedWith": ["places", "time"],
+        "allowedWith": [
+          "places",
+          "time"
+        ],
         "requiresDesire": true,
         "requiresSubject": true
+      },
+      "grammar": {
+        "requiresSubject": true,
+        "requiresDesire": true,
+        "isStandalone": false,
+        "allowedTypes": [
+          "places",
+          "time"
+        ]
       }
     },
     "PLACE-TOILET": {
@@ -483,7 +782,13 @@
       "category": "CAT-PLACES",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "туалет",
+          "locative": "в туалете"
+        }
+      }
     },
     "ACT-SHOWER": {
       "id": "ACT-SHOWER",
@@ -497,6 +802,15 @@
       "metadata": {
         "isStandalone": true,
         "allowedWith": [
+          "places",
+          "time"
+        ]
+      },
+      "grammar": {
+        "requiresSubject": true,
+        "requiresDesire": true,
+        "isStandalone": true,
+        "allowedTypes": [
           "places",
           "time"
         ]
@@ -533,6 +847,23 @@
         "maxPeople": 2,
         "maxObjects": 1,
         "transportPreposition": "на"
+      },
+      "grammar": {
+        "requiresSubject": true,
+        "requiresDesire": true,
+        "isStandalone": false,
+        "allowedTypes": [
+          "objects",
+          "people",
+          "places",
+          "time"
+        ],
+        "maxCounts": {
+          "people": 2,
+          "objects": 1
+        },
+        "objectPreposition": "на",
+        "objectCase": "prepositional"
       }
     },
     "OBJ-CAR-TR": {
@@ -546,7 +877,17 @@
       "category": "CAT-TRANSPORT",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "машина",
+          "accusative": "машину",
+          "instrumental": "машиной",
+          "prepositional": "машине"
+        },
+        "preposition": "на",
+        "caseForPreposition": "prepositional"
+      }
     },
     "OBJ-BUS": {
       "id": "OBJ-BUS",
@@ -559,7 +900,17 @@
       "category": "CAT-TRANSPORT",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "автобус",
+          "accusative": "автобус",
+          "instrumental": "автобусом",
+          "prepositional": "автобусе"
+        },
+        "preposition": "на",
+        "caseForPreposition": "prepositional"
+      }
     },
     "CAT-PEOPLE": {
       "id": "CAT-PEOPLE",
@@ -584,7 +935,17 @@
       "category": "CAT-PEOPLE",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "мама",
+          "accusative": "маму",
+          "instrumental": "мамой",
+          "prepositional": "маме"
+        },
+        "preposition": "с",
+        "caseForPreposition": "instrumental"
+      }
     },
     "PERSON-DAD": {
       "id": "PERSON-DAD",
@@ -597,7 +958,17 @@
       "category": "CAT-PEOPLE",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "папа",
+          "accusative": "папу",
+          "instrumental": "папой",
+          "prepositional": "папе"
+        },
+        "preposition": "с",
+        "caseForPreposition": "instrumental"
+      }
     },
     "PERSON-GRANDMA": {
       "id": "PERSON-GRANDMA",
@@ -610,7 +981,17 @@
       "category": "CAT-PEOPLE",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "бабушка",
+          "accusative": "бабушку",
+          "instrumental": "бабушкой",
+          "prepositional": "бабушке"
+        },
+        "preposition": "с",
+        "caseForPreposition": "instrumental"
+      }
     },
     "CAT-PLACES": {
       "id": "CAT-PLACES",
@@ -635,7 +1016,13 @@
       "category": "CAT-PLACES",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "дом",
+          "locative": "дома"
+        }
+      }
     },
     "PLACE-PLAYGROUND": {
       "id": "PLACE-PLAYGROUND",
@@ -648,7 +1035,13 @@
       "category": "CAT-PLACES",
       "sections": [
         "Главная"
-      ]
+      ],
+      "grammar": {
+        "forms": {
+          "nominative": "площадка",
+          "locative": "на площадке"
+        }
+      }
     },
     "CAT-TIME": {
       "id": "CAT-TIME",
@@ -724,6 +1117,11 @@
         "Главная"
       ],
       "metadata": {
+        "isStandalone": true
+      },
+      "grammar": {
+        "requiresSubject": false,
+        "requiresDesire": false,
         "isStandalone": true
       }
     },
@@ -3662,6 +4060,14 @@
       "forms": {
         "direct": "голова",
         "genitive": "головы"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "голова",
+          "accusative": "голову",
+          "instrumental": "головой",
+          "prepositional": "голове"
+        }
       }
     },
     "pain-tooth": {
@@ -3676,6 +4082,15 @@
       "forms": {
         "direct": "зуб",
         "genitive": "зуба"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "зуб",
+          "accusative": "зуб",
+          "instrumental": "зубом",
+          "prepositional": "зубе"
+        },
+        "pluralForm": "зубы"
       }
     },
     "pain-stomach": {
@@ -3690,6 +4105,14 @@
       "forms": {
         "direct": "живот",
         "genitive": "живота"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "живот",
+          "accusative": "живот",
+          "instrumental": "животом",
+          "prepositional": "животе"
+        }
       }
     },
     "pain-ear": {
@@ -3704,6 +4127,15 @@
       "forms": {
         "direct": "ухо",
         "genitive": "уха"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "ухо",
+          "accusative": "ухо",
+          "instrumental": "ухом",
+          "prepositional": "ухе"
+        },
+        "pluralForm": "уши"
       }
     },
     "pain-throat": {
@@ -3718,6 +4150,14 @@
       "forms": {
         "direct": "горло",
         "genitive": "горла"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "горло",
+          "accusative": "горло",
+          "instrumental": "горлом",
+          "prepositional": "горле"
+        }
       }
     },
     "pain-leg": {
@@ -3732,6 +4172,15 @@
       "forms": {
         "direct": "нога",
         "genitive": "ноги"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "нога",
+          "accusative": "ногу",
+          "instrumental": "ногой",
+          "prepositional": "ноге"
+        },
+        "pluralForm": "ноги"
       }
     },
     "pain-arm": {
@@ -3746,6 +4195,15 @@
       "forms": {
         "direct": "рука",
         "genitive": "руки"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "рука",
+          "accusative": "руку",
+          "instrumental": "рукой",
+          "prepositional": "руке"
+        },
+        "pluralForm": "руки"
       }
     },
     "pain-back": {
@@ -3760,6 +4218,14 @@
       "forms": {
         "direct": "спина",
         "genitive": "спины"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "спина",
+          "accusative": "спину",
+          "instrumental": "спиной",
+          "prepositional": "спине"
+        }
       }
     },
     "pain-eye": {
@@ -3774,6 +4240,15 @@
       "forms": {
         "direct": "глаз",
         "genitive": "глаза"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "глаз",
+          "accusative": "глаз",
+          "instrumental": "глазом",
+          "prepositional": "глазе"
+        },
+        "pluralForm": "глаза"
       }
     },
     "pain-nose": {
@@ -3788,6 +4263,14 @@
       "forms": {
         "direct": "нос",
         "genitive": "носа"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "нос",
+          "accusative": "нос",
+          "instrumental": "носом",
+          "prepositional": "носе"
+        }
       }
     },
     "pain-toe": {
@@ -3802,6 +4285,15 @@
       "forms": {
         "direct": "палец ноги",
         "genitive": "пальца ноги"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "палец ноги",
+          "accusative": "палец ноги",
+          "instrumental": "пальцем ноги",
+          "prepositional": "пальце ноги"
+        },
+        "pluralForm": "пальцы ног"
       }
     },
     "pain-finger": {
@@ -3816,6 +4308,15 @@
       "forms": {
         "direct": "палец руки",
         "genitive": "пальца руки"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "палец руки",
+          "accusative": "палец руки",
+          "instrumental": "пальцем руки",
+          "prepositional": "пальце руки"
+        },
+        "pluralForm": "пальцы рук"
       }
     },
     "pain-chest": {
@@ -3830,6 +4331,14 @@
       "forms": {
         "direct": "грудь",
         "genitive": "груди"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "грудь",
+          "accusative": "грудь",
+          "instrumental": "грудью",
+          "prepositional": "груди"
+        }
       }
     },
     "pain-heart": {
@@ -3844,6 +4353,14 @@
       "forms": {
         "direct": "сердце",
         "genitive": "сердца"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "сердце",
+          "accusative": "сердце",
+          "instrumental": "сердцем",
+          "prepositional": "сердце"
+        }
       }
     },
     "pain-neck": {
@@ -3858,6 +4375,14 @@
       "forms": {
         "direct": "шея",
         "genitive": "шеи"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "шея",
+          "accusative": "шею",
+          "instrumental": "шеей",
+          "prepositional": "шее"
+        }
       }
     },
     "pain-knee": {
@@ -3872,6 +4397,15 @@
       "forms": {
         "direct": "колено",
         "genitive": "колена"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "колено",
+          "accusative": "колено",
+          "instrumental": "коленом",
+          "prepositional": "колене"
+        },
+        "pluralForm": "колени"
       }
     },
     "pain-elbow": {
@@ -3886,6 +4420,15 @@
       "forms": {
         "direct": "локоть",
         "genitive": "локтя"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "локоть",
+          "accusative": "локоть",
+          "instrumental": "локтем",
+          "prepositional": "локте"
+        },
+        "pluralForm": "локти"
       }
     },
     "pain-shoulder": {
@@ -3900,6 +4443,15 @@
       "forms": {
         "direct": "плечо",
         "genitive": "плеча"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "плечо",
+          "accusative": "плечо",
+          "instrumental": "плечом",
+          "prepositional": "плече"
+        },
+        "pluralForm": "плечи"
       }
     },
     "pain-ankle": {
@@ -3914,6 +4466,15 @@
       "forms": {
         "direct": "лодыжка",
         "genitive": "лодыжки"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "лодыжка",
+          "accusative": "лодыжку",
+          "instrumental": "лодыжкой",
+          "prepositional": "лодыжке"
+        },
+        "pluralForm": "лодыжки"
       }
     },
     "pain-wrist": {
@@ -3928,6 +4489,15 @@
       "forms": {
         "direct": "запястье",
         "genitive": "запястья"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "запястье",
+          "accusative": "запястье",
+          "instrumental": "запястьем",
+          "prepositional": "запястье"
+        },
+        "pluralForm": "запястья"
       }
     },
     "pain-everywhere": {
@@ -3942,6 +4512,14 @@
       "forms": {
         "direct": "везде",
         "genitive": "везде"
+      },
+      "grammar": {
+        "forms": {
+          "nominative": "везде",
+          "accusative": "везде",
+          "instrumental": "везде",
+          "prepositional": "везде"
+        }
       }
     },
     "ACT-HURT": {
@@ -3957,6 +4535,18 @@
       "metadata": {
         "isStandalone": true,
         "requiresDesire": false
+      },
+      "grammar": {
+        "requiresSubject": true,
+        "requiresDesire": false,
+        "isStandalone": false,
+        "painConstruction": true,
+        "allowedTypes": [
+          "objects"
+        ],
+        "maxCounts": {
+          "objects": 1
+        }
       }
     }
   }
