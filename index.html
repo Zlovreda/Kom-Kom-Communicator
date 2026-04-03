@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ком-Ком: Коммуникатор для детей с РАС</title>
   <style>
-    /* Все стили остаются без изменений */
+    /* Все стили без изменений (такие же, как в исходной версии) */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -1379,387 +1379,78 @@
 </div>
 
   <script>
-    const REMOTE_CARDS_URL = 'https://raw.githubusercontent.com/Zlovreda/communicator/refs/heads/main/cards.json';
-    const EDITOR_URL = 'https://zlovreda.github.io/Kom-Kom-Communicator/editor.html';
-    const DEFAULT_PIN = "0000";
-    
-    let currentPin = localStorage.getItem('communicator_pin') || DEFAULT_PIN;
-    let pinAction = null;
-    let isEditingEnabled = false;
-    let speechRate = parseFloat(localStorage.getItem('speech_rate') || '1.0');
-    let fontSizeScale = parseFloat(localStorage.getItem('font_size_scale') || '1.0');
-    let voices = [];
-    let selectedVoice = null;
-    let history = JSON.parse(localStorage.getItem('communicator_history') || '[]');
-    
-    // ================= НОВАЯ ГРАММАТИЧЕСКАЯ СИСТЕМА =================
-    class AdvancedGrammarSystem {
+    // ================= МОДУЛИ =================
+    // 1. CardManager – управление карточками (загрузка, сохранение, миграция, импорт/экспорт)
+    class CardManager {
       constructor() {
-        // Дефолтные правила для действий (если в карточке нет grammar)
-        this.defaultActionGrammar = {
-          requiresSubject: true,
-          requiresDesire: true,
-          isStandalone: false,
-          directObject: false,
-          painConstruction: false,
-          allowedTypes: [],
-          maxCounts: {},
-          objectPreposition: null,
-          objectCase: null,
-          personPreposition: null,
-          personCase: null,
-          placePreposition: null,
-          allowedObjects: []
-        };
-        
-        // Дефолтные правила для объектов (существительных, мест, людей и т.д.)
-        this.defaultItemGrammar = {
-          forms: {},
-          preposition: null,
-          caseForPreposition: null,
-          pluralForm: null,
-          isPluralOnly: false
-        };
-      }
-      
-      // Получить грамматику действия, объединяя с дефолтной
-      getActionGrammar(actionCard) {
-        if (!actionCard) return this.defaultActionGrammar;
-        const grammar = actionCard.grammar || {};
-        // Миграция старых полей metadata в grammar, если есть
-        if (actionCard.metadata && !actionCard.grammar) {
-          const m = actionCard.metadata;
-          const newGrammar = {};
-          if (m.requiresSubject !== undefined) newGrammar.requiresSubject = m.requiresSubject;
-          if (m.requiresDesire !== undefined) newGrammar.requiresDesire = m.requiresDesire;
-          if (m.isStandalone !== undefined) newGrammar.isStandalone = m.isStandalone;
-          if (m.directObject !== undefined) newGrammar.directObject = m.directObject;
-          if (m.painConstruction !== undefined) newGrammar.painConstruction = m.painConstruction;
-          if (m.allowedWith) newGrammar.allowedTypes = m.allowedWith;
-          if (m.maxPeople !== undefined || m.maxPets !== undefined || m.maxPlaces !== undefined || m.maxObjects !== undefined) {
-            newGrammar.maxCounts = {
-              people: m.maxPeople || 0,
-              pets: m.maxPets || 0,
-              places: m.maxPlaces || 0,
-              objects: m.maxObjects || 0
-            };
-          }
-          if (m.transportPreposition) newGrammar.objectPreposition = m.transportPreposition;
-          if (m.clothingPreposition) newGrammar.objectPreposition = m.clothingPreposition;
-          if (m.removePreposition) newGrammar.objectPreposition = m.removePreposition;
-          if (m.allowedObjects) newGrammar.allowedObjects = m.allowedObjects;
-          return { ...this.defaultActionGrammar, ...newGrammar };
-        }
-        return { ...this.defaultActionGrammar, ...grammar };
-      }
-      
-      // Получить грамматику объекта (существительного, места, человека и т.д.)
-      getItemGrammar(itemCard) {
-        if (!itemCard) return this.defaultItemGrammar;
-        // Если есть поле grammar – используем его
-        if (itemCard.grammar) {
-          return { ...this.defaultItemGrammar, ...itemCard.grammar };
-        }
-        // Иначе создаём на основе старого поля forms (миграция)
-        const grammar = { ...this.defaultItemGrammar };
-        if (itemCard.forms) {
-          grammar.forms = { ...itemCard.forms };
-          // Попытаемся определить стандартный предлог и падеж
-          if (itemCard.forms['с']) {
-            grammar.preposition = 'с';
-            grammar.caseForPreposition = 'instrumental';
-          } else if (itemCard.forms['в']) {
-            grammar.preposition = 'в';
-            grammar.caseForPreposition = 'prepositional';
-          } else if (itemCard.forms['на']) {
-            grammar.preposition = 'на';
-            grammar.caseForPreposition = 'locative';
-          }
-        }
-        return grammar;
-      }
-      
-      // Получить форму слова в нужном падеже/с предлогом
-      getWordForm(card, context = {}) {
-        const grammar = this.getItemGrammar(card);
-        const { forms } = grammar;
-        
-        // Приоритет: context.preposition -> context.case -> стандартный предлог карточки
-        if (context.preposition && forms[context.preposition]) {
-          return forms[context.preposition];
-        }
-        if (context.case && forms[context.case]) {
-          return forms[context.case];
-        }
-        if (grammar.preposition && grammar.caseForPreposition && forms[grammar.caseForPreposition]) {
-          return `${grammar.preposition} ${forms[grammar.caseForPreposition]}`;
-        }
-        
-        // Для мест с особой формой locative (например, "дома")
-        if (card.type === 'place' && forms.locative) {
-          return forms.locative;
-        }
-        
-        // Для прямого дополнения (винительный падеж)
-        if (context.directObject && forms.accusative) {
-          return forms.accusative;
-        }
-        
-        return card.text || '';
-      }
-      
-      // Проверить, совместим ли объект с действием
-      isObjectCompatible(actionCard, objectCard) {
-        const actionGrammar = this.getActionGrammar(actionCard);
-        const allowedObjects = actionGrammar.allowedObjects;
-        if (allowedObjects && allowedObjects.length > 0) {
-          return allowedObjects.includes(objectCard.id);
-        }
-        // Если список разрешённых не задан, проверяем по типу
-        const allowedTypes = actionGrammar.allowedTypes;
-        if (allowedTypes && allowedTypes.length > 0) {
-          const objectType = objectCard.type;
-          const typeMap = {
-            'person': 'people',
-            'pet': 'pets',
-            'place': 'places',
-            'object': 'objects',
-            'clothing': 'objects',
-            'pain': 'objects',
-            'time': 'time'
-          };
-          const category = typeMap[objectType];
-          return allowedTypes.includes(category);
-        }
-        return true;
-      }
-      
-      // Основной метод построения фразы
-      buildPhrase(phrase) {
-        if (!phrase.action) return 'Выберите действие';
-        
-        const actionCard = phrase.action;
-        const actionGrammar = this.getActionGrammar(actionCard);
-        
-        // Специальная обработка для боли
-        if (actionGrammar.painConstruction) {
-          return this.buildPainPhrase(phrase);
-        }
-        
-        // Для самостоятельных фраз (эмоции, диалог, обучение)
-        if (actionGrammar.isStandalone) {
-          if (phrase.subject && actionGrammar.requiresSubject) {
-            return `${phrase.subject} ${actionCard.text}`;
-          }
-          return actionCard.text;
-        }
-        
-        const parts = [];
-        
-        // Подлежащее
-        if (actionGrammar.requiresSubject && phrase.subject) {
-          parts.push(phrase.subject);
-        } else if (actionGrammar.requiresSubject && !phrase.subject) {
-          parts.push('Я');
-        }
-        
-        // Желание
-        if (actionGrammar.requiresDesire && phrase.desire) {
-          parts.push(phrase.desire);
-        } else if (actionGrammar.requiresDesire && !phrase.desire) {
-          parts.push('хочу');
-        }
-        
-        // Глагол
-        parts.push(actionCard.text);
-        
-        // Объекты (игрушки, еда, одежда)
-        if (phrase.objects && phrase.objects.length > 0) {
-          const items = phrase.objects.map(obj => {
-            const context = {};
-            if (actionGrammar.objectPreposition) {
-              context.preposition = actionGrammar.objectPreposition;
-            }
-            if (actionGrammar.directObject) {
-              context.directObject = true;
-            }
-            if (actionGrammar.objectCase) {
-              context.case = actionGrammar.objectCase;
-            }
-            return this.getWordForm(obj, context);
-          });
-          parts.push(this.joinElements(items));
-        }
-        
-        // Люди
-        if (phrase.people && phrase.people.length > 0) {
-          const people = phrase.people.map(person => {
-            const context = {};
-            if (actionGrammar.personPreposition) {
-              context.preposition = actionGrammar.personPreposition;
-            }
-            if (actionGrammar.personCase) {
-              context.case = actionGrammar.personCase;
-            }
-            return this.getWordForm(person, context);
-          });
-          parts.push(this.joinElements(people));
-        }
-        
-        // Места
-        if (phrase.places && phrase.places.length > 0) {
-          const place = phrase.places[0];
-          const context = {};
-          if (actionGrammar.placePreposition) {
-            context.preposition = actionGrammar.placePreposition;
-          } else {
-            // Для мест без предлога используем locative
-            context.case = 'locative';
-          }
-          parts.push(this.getWordForm(place, context));
-        }
-        
-        // Время
-        if (phrase.time) {
-          parts.push(this.getWordForm(phrase.time));
-        }
-        
-        return parts.join(' ');
-      }
-      
-      // Специальный метод для построения фраз о боли
-      buildPainPhrase(phrase) {
-        const parts = [];
-        // Подлежащее
-        if (phrase.subject) {
-          parts.push(phrase.subject);
-        } else {
-          parts.push('У меня');
-        }
-        
-        const actionCard = phrase.action;
-        let verb = actionCard ? actionCard.text : 'болит';
-        
-        // Определяем множественное число для боли
-        let isPlural = false;
-        if (phrase.objects && phrase.objects.length > 0) {
-          const painObj = phrase.objects[0];
-          const pluralForms = ['зубы', 'уши', 'ноги', 'руки', 'глаза', 'колени', 'локти', 'плечи', 'лодыжки', 'запястья', 'пальцы ног', 'пальцы рук'];
-          isPlural = pluralForms.includes(painObj.text);
-          if (isPlural && verb === 'болит') verb = 'болят';
-        }
-        
-        parts.push(verb);
-        
-        if (phrase.objects && phrase.objects.length > 0) {
-          const painObj = phrase.objects[0];
-          const grammar = this.getItemGrammar(painObj);
-          let painWord = painObj.text;
-          if (grammar.forms && grammar.forms.nominative) painWord = grammar.forms.nominative;
-          parts.push(painWord);
-        } else {
-          parts.push('что-то');
-        }
-        
-        if (phrase.time) {
-          parts.push(this.getWordForm(phrase.time));
-        }
-        
-        return parts.join(' ');
-      }
-      
-      // Вспомогательный метод для соединения элементов с "и"
-      joinElements(elements, conjunction = 'и') {
-        if (!elements || elements.length === 0) return '';
-        if (elements.length === 1) return elements[0];
-        if (elements.length === 2) return `${elements[0]} ${conjunction} ${elements[1]}`;
-        const last = elements.pop();
-        return `${elements.join(', ')} ${conjunction} ${last}`;
-      }
-    }
-    
-    const FALLBACK_CARDS = {
-      "cards": {}
-    };
-    
-    // ================= КЛАСС COMMUNICATOR (ОБНОВЛЁННЫЙ) =================
-    class Communicator {
-      constructor() {
-        this.currentPhrase = {
-          subject: null,
-          desire: null,
-          action: null,
-          people: [],
-          pets: [],
-          places: [],
-          objects: [],
-          time: null
-        };
-        
         this.cards = {};
-        this.navigationStack = [];
-        this.currentView = 'categories';
-        this.childInfo = this.loadChildInfo();
-        this.filterMode = null;
-        this.currentTab = 'main';
-        this.isQuickNavMode = false;
-        this.currentReplacement = null;
-        this.grammar = new AdvancedGrammarSystem();
-        
-        this.nextReplacementIndex = {
-          people: 0,
-          places: 0,
-          objects: 0
-        };
-        
-        this.tabNavigationStacks = {
-          'emotions': [],
-          'learning': [],
-          'dialog': []
-        };
-        
-        this.tabCurrentViews = {
-          'emotions': 'categories',
-          'learning': 'categories',
-          'dialog': 'categories'
-        };
-        
-        this.initializeCards().then(() => {
-          this.init();
-          this.initTabs();
-          this.initPinSystem();
-          this.loadAllData();
-          this.updateSystemInfo();
-        });
-
-        this.cardTypeHandlers = {
-          'action': this.handleActionSelection.bind(this),
-          'emotion': this.handleEmotionSelection.bind(this),
-          'person': this.handlePersonSelection.bind(this),
-          'pet': this.handlePetSelection.bind(this),
-          'place': this.handlePlaceSelection.bind(this),
-          'object': this.handleObjectSelection.bind(this),
-          'clothing': this.handleObjectSelection.bind(this),
-          'book': this.handleObjectSelection.bind(this),
-          'creative': this.handleObjectSelection.bind(this),
-          'pain': this.handlePainSelection.bind(this),
-          'time': this.handleTimeSelection.bind(this),
-          'learning': this.handleLearningSelection.bind(this),
-          'help': this.handleActionSelection.bind(this),
-          'request': this.handleActionSelection.bind(this),
-          'dialog': this.handleDialogSelection.bind(this),
-          'color': this.handleLearningSelection.bind(this)
-        };
       }
-      
-      // Миграция старых карточек в новый формат (добавляем поле grammar)
+
+      async loadFromLocalStorage() {
+        const saved = localStorage.getItem('communicatorCards');
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            this.cards = parsed.cards || parsed;
+            this.migrateOldCards();
+            console.log('Карточки загружены из localStorage');
+          } catch (e) {
+            console.error('Ошибка загрузки карточек из localStorage:', e);
+            await this.loadFallback();
+          }
+        } else {
+          await this.loadFallback();
+        }
+        return this.cards;
+      }
+
+      async loadFallback() {
+        // Здесь можно загрузить fallback из внешнего файла, но пока пусто
+        this.cards = {};
+        console.log('Используются fallback карточки');
+        this.migrateOldCards();
+      }
+
+      async loadFromRemote(url) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        if (!data.cards) throw new Error('Некорректный формат данных: отсутствует ключ "cards"');
+        this.cards = data.cards;
+        this.migrateOldCards();
+        this.saveToLocalStorage();
+        return this.cards;
+      }
+
+      saveToLocalStorage() {
+        localStorage.setItem('communicatorCards', JSON.stringify({ cards: this.cards }));
+      }
+
+      importCards(jsonData) {
+        const parsed = JSON.parse(jsonData);
+        if (!parsed.cards) throw new Error('Формат файла не поддерживается');
+        this.cards = parsed.cards;
+        this.migrateOldCards();
+        this.saveToLocalStorage();
+        return this.cards;
+      }
+
+      exportCards() {
+        return JSON.stringify({ cards: this.cards }, null, 2);
+      }
+
+      resetToFallback() {
+        this.cards = {};
+        this.migrateOldCards();
+        this.saveToLocalStorage();
+      }
+
+      // Миграция старых карточек (добавление поля grammar)
       migrateOldCards() {
         let changed = false;
         for (const [id, card] of Object.entries(this.cards)) {
           if (card.grammar) continue;
           let newGrammar = null;
-          
-          // Для действий
           if (card.type === 'action' && card.metadata) {
             const m = card.metadata;
             newGrammar = {};
@@ -1782,12 +1473,9 @@
             if (m.removePreposition) newGrammar.objectPreposition = m.removePreposition;
             if (m.allowedObjects) newGrammar.allowedObjects = m.allowedObjects;
           }
-          
-          // Для объектов (существительных, мест, людей)
           if ((card.type === 'object' || card.type === 'clothing' || card.type === 'place' || card.type === 'person' || card.type === 'pet') && card.forms) {
             if (!newGrammar) newGrammar = {};
             newGrammar.forms = { ...card.forms };
-            // Определяем стандартный предлог
             if (card.forms['с']) {
               newGrammar.preposition = 'с';
               newGrammar.caseForPreposition = 'instrumental';
@@ -1799,226 +1487,236 @@
               newGrammar.caseForPreposition = 'locative';
             }
           }
-          
           if (newGrammar && Object.keys(newGrammar).length > 0) {
             card.grammar = newGrammar;
             changed = true;
           }
         }
         if (changed) {
-          this.saveCards();
+          this.saveToLocalStorage();
           console.log('Карточки сконвертированы в новый формат grammar');
         }
       }
-      
-      async initializeCards() {
-        const savedCards = localStorage.getItem('communicatorCards');
-        
-        if (savedCards) {
-          try {
-            const parsed = JSON.parse(savedCards);
-            this.cards = parsed.cards || parsed;
-            console.log('Карточки загружены из localStorage');
-            this.migrateOldCards();
-            return;
-          } catch (e) {
-            console.error('Ошибка загрузки карточек из localStorage:', e);
+    }
+
+    // 2. PhraseBuilder – грамматическая система
+    class PhraseBuilder {
+      constructor() {
+        this.defaultActionGrammar = {
+          requiresSubject: true,
+          requiresDesire: true,
+          isStandalone: false,
+          directObject: false,
+          painConstruction: false,
+          allowedTypes: [],
+          maxCounts: {},
+          objectPreposition: null,
+          objectCase: null,
+          personPreposition: null,
+          personCase: null,
+          placePreposition: null,
+          allowedObjects: []
+        };
+        this.defaultItemGrammar = {
+          forms: {},
+          preposition: null,
+          caseForPreposition: null,
+          pluralForm: null,
+          isPluralOnly: false
+        };
+      }
+
+      getActionGrammar(actionCard) {
+        if (!actionCard) return this.defaultActionGrammar;
+        const grammar = actionCard.grammar || {};
+        return { ...this.defaultActionGrammar, ...grammar };
+      }
+
+      getItemGrammar(itemCard) {
+        if (!itemCard) return this.defaultItemGrammar;
+        if (itemCard.grammar) return { ...this.defaultItemGrammar, ...itemCard.grammar };
+        const grammar = { ...this.defaultItemGrammar };
+        if (itemCard.forms) {
+          grammar.forms = { ...itemCard.forms };
+          if (itemCard.forms['с']) {
+            grammar.preposition = 'с';
+            grammar.caseForPreposition = 'instrumental';
+          } else if (itemCard.forms['в']) {
+            grammar.preposition = 'в';
+            grammar.caseForPreposition = 'prepositional';
+          } else if (itemCard.forms['на']) {
+            grammar.preposition = 'на';
+            grammar.caseForPreposition = 'locative';
           }
         }
-        
-        this.cards = FALLBACK_CARDS.cards;
-        console.log('Используются fallback карточки');
-        this.migrateOldCards();
+        return grammar;
       }
-      
-      async loadCardsFromRemote() {
-        try {
-          console.log('Загрузка карточек с сервера...');
-          const response = await fetch(REMOTE_CARDS_URL);
-          
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          
-          const data = await response.json();
-          
-          if (data.cards) {
-            this.cards = data.cards;
-            this.migrateOldCards();
-            this.saveCards();
-            
-            this.navigateToHome();
-            this.renderCategories();
-            this.updateUI();
-            this.updateSystemInfo();
-            
-            console.log('Карточки успешно загружены с сервера');
-            alert('Карточки успешно загружены с сервера!');
-            return true;
-          } else {
-            throw new Error('Некорректный формат данных');
-          }
-        } catch (error) {
-          console.error('Ошибка загрузки карточек с сервера:', error);
-          alert(`Не удалось загрузить карточки с сервера: ${error.message}`);
-          return false;
+
+      getWordForm(card, context = {}) {
+        const grammar = this.getItemGrammar(card);
+        const { forms } = grammar;
+        if (context.preposition && forms[context.preposition]) return forms[context.preposition];
+        if (context.case && forms[context.case]) return forms[context.case];
+        if (grammar.preposition && grammar.caseForPreposition && forms[grammar.caseForPreposition]) {
+          return `${grammar.preposition} ${forms[grammar.caseForPreposition]}`;
         }
+        if (card.type === 'place' && forms.locative) return forms.locative;
+        if (context.directObject && forms.accusative) return forms.accusative;
+        return card.text || '';
       }
-      
-      async loadCardsWithOptions() {
-        const modal = document.getElementById('remoteLoadModal');
-        modal.style.display = 'flex';
-        
-        document.querySelector('input[name="loadStrategy"][value="replace"]').checked = true;
-        document.querySelectorAll('input[name="section"]').forEach(cb => {
-          cb.checked = cb.value === 'Главная';
-        });
-        document.getElementById('skipCategories').checked = false;
-        document.getElementById('preserveExisting').checked = false;
-        document.getElementById('sectionsSelection').style.display = 'none';
-        document.getElementById('summaryInfo').style.display = 'none';
-      }
-      
-      async confirmRemoteLoad() {
-        const modal = document.getElementById('remoteLoadModal');
-        const strategy = document.querySelector('input[name="loadStrategy"]:checked').value;
-        const selectedSections = Array.from(document.querySelectorAll('input[name="section"]:checked'))
-          .map(cb => cb.value);
-        const skipCategories = document.getElementById('skipCategories').checked;
-        const preserveExisting = document.getElementById('preserveExisting').checked;
-        
-        if (strategy === 'sections' && selectedSections.length === 0) {
-          alert('Выберите хотя бы один раздел для загрузки!');
-          return;
+
+      isObjectCompatible(actionCard, objectCard) {
+        const g = this.getActionGrammar(actionCard);
+        if (g.allowedObjects && g.allowedObjects.length > 0) return g.allowedObjects.includes(objectCard.id);
+        if (g.allowedTypes && g.allowedTypes.length > 0) {
+          const typeMap = { 'person':'people', 'pet':'pets', 'place':'places', 'object':'objects', 'clothing':'objects', 'pain':'objects', 'time':'time' };
+          const category = typeMap[objectCard.type];
+          return g.allowedTypes.includes(category);
         }
-        
-        modal.style.display = 'none';
-        
-        try {
-          console.log('Загрузка карточек с сервера...');
-          const response = await fetch(REMOTE_CARDS_URL);
-          
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          
-          const data = await response.json();
-          
-          if (!data.cards) {
-            throw new Error('Некорректный формат данных: отсутствует ключ "cards"');
-          }
-          
-          const remoteCards = data.cards;
-          const result = await this.processRemoteCards(remoteCards, {
-            strategy,
-            selectedSections,
-            skipCategories,
-            preserveExisting
+        return true;
+      }
+
+      buildPhrase(phrase) {
+        if (!phrase.action) return 'Выберите действие';
+        const actionCard = phrase.action;
+        const g = this.getActionGrammar(actionCard);
+        if (g.painConstruction) return this.buildPainPhrase(phrase);
+        if (g.isStandalone) {
+          if (phrase.subject && g.requiresSubject) return `${phrase.subject} ${actionCard.text}`;
+          return actionCard.text;
+        }
+        const parts = [];
+        if (g.requiresSubject && phrase.subject) parts.push(phrase.subject);
+        else if (g.requiresSubject && !phrase.subject) parts.push('Я');
+        if (g.requiresDesire && phrase.desire) parts.push(phrase.desire);
+        else if (g.requiresDesire && !phrase.desire) parts.push('хочу');
+        parts.push(actionCard.text);
+        // объекты
+        if (phrase.objects && phrase.objects.length) {
+          const items = phrase.objects.map(obj => {
+            const ctx = {};
+            if (g.objectPreposition) ctx.preposition = g.objectPreposition;
+            if (g.directObject) ctx.directObject = true;
+            if (g.objectCase) ctx.case = g.objectCase;
+            return this.getWordForm(obj, ctx);
           });
-          
-          this.migrateOldCards();
-          this.saveCards();
-          this.navigateToHome();
-          this.renderCategories();
-          this.updateUI();
-          this.updateSystemInfo();
-          
-          alert(`Успешно загружено!\nНовых карточек: ${result.new}\nОбновлено: ${result.updated}\nВсего карточек: ${Object.keys(this.cards).length}`);
-          
-        } catch (error) {
-          console.error('Ошибка загрузки карточек с сервера:', error);
-          alert(`Не удалось загрузить карточки с сервера: ${error.message}`);
+          parts.push(this.joinElements(items));
         }
-      }
-      
-      processRemoteCards(remoteCards, options) {
-        const stats = { new: 0, updated: 0, skipped: 0 };
-        
-        switch (options.strategy) {
-          case 'replace':
-            this.cards = remoteCards;
-            stats.new = Object.keys(remoteCards).length;
-            break;
-          case 'merge':
-            for (const [id, card] of Object.entries(remoteCards)) {
-              if (!this.cards[id]) {
-                this.cards[id] = card;
-                stats.new++;
-              } else {
-                this.cards[id] = { ...this.cards[id], ...card };
-                stats.updated++;
-              }
-            }
-            break;
-          case 'sections':
-            this.selectiveLoad(remoteCards, options, stats);
-            break;
+        // питомцы
+        if (phrase.pets && phrase.pets.length) {
+          const pets = phrase.pets.map(pet => {
+            const ctx = {};
+            if (g.directObject) ctx.directObject = true;
+            return this.getWordForm(pet, ctx);
+          });
+          parts.push(this.joinElements(pets));
         }
-        return stats;
-      }
-      
-      selectiveLoad(remoteCards, options, stats) {
-        const { selectedSections, skipCategories, preserveExisting } = options;
-        let newCards = preserveExisting ? { ...this.cards } : {};
-        
-        for (const [id, card] of Object.entries(remoteCards)) {
-          const hasSelectedSection = card.sections && 
-            card.sections.some(section => selectedSections.includes(section));
-          const isCategory = card.type === 'category';
-          
-          if (hasSelectedSection && (!skipCategories || !isCategory)) {
-            if (!newCards[id]) {
-              newCards[id] = card;
-              stats.new++;
-            } else {
-              if (card.sections && newCards[id].sections) {
-                const mergedSections = [...new Set([...newCards[id].sections, ...card.sections])];
-                newCards[id] = { ...newCards[id], ...card, sections: mergedSections };
-              } else {
-                newCards[id] = { ...newCards[id], ...card };
-              }
-              stats.updated++;
-            }
-          } else if (preserveExisting && this.cards[id]) {
-            newCards[id] = this.cards[id];
-            stats.skipped++;
-          }
+        // люди
+        if (phrase.people && phrase.people.length) {
+          const people = phrase.people.map(person => {
+            const ctx = {};
+            if (g.personPreposition) ctx.preposition = g.personPreposition;
+            if (g.personCase) ctx.case = g.personCase;
+            return this.getWordForm(person, ctx);
+          });
+          parts.push(this.joinElements(people));
         }
-        this.cards = newCards;
-      }
-      
-      previewRemoteLoad() {
-        const strategy = document.querySelector('input[name="loadStrategy"]:checked').value;
-        const selectedSections = Array.from(document.querySelectorAll('input[name="section"]:checked'))
-          .map(cb => cb.value);
-        const skipCategories = document.getElementById('skipCategories').checked;
-        
-        const summary = document.getElementById('summaryInfo');
-        const counts = document.getElementById('sectionCounts');
-        
-        if (strategy === 'sections') {
-          if (selectedSections.length === 0) {
-            summary.style.display = 'none';
-            return;
-          }
-          let sectionText = selectedSections.map(s => {
-            switch(s) {
-              case 'Главная': return '📱 Главная';
-              case 'Обучение': return '🎓 Обучение';
-              case 'Диалог': return '💬 Диалог';
-              case 'Эмоции': return '😊 Эмоции';
-              default: return s;
-            }
-          }).join(', ');
-          counts.textContent = `${selectedSections.length} разделов: ${sectionText}`;
-          if (skipCategories) counts.textContent += ' (без категорий)';
-          summary.style.display = 'block';
-        } else {
-          summary.style.display = 'none';
+        // места
+        if (phrase.places && phrase.places.length) {
+          const place = phrase.places[0];
+          const ctx = {};
+          if (g.placePreposition) ctx.preposition = g.placePreposition;
+          else ctx.case = 'locative';
+          parts.push(this.getWordForm(place, ctx));
         }
+        // время
+        if (phrase.time) parts.push(this.getWordForm(phrase.time));
+        return parts.join(' ');
       }
-      
-      loadChildInfo() {
+
+      buildPainPhrase(phrase) {
+        const parts = [];
+        if (phrase.subject) parts.push(phrase.subject);
+        else parts.push('У меня');
+        let verb = phrase.action ? phrase.action.text : 'болит';
+        let isPlural = false;
+        if (phrase.objects && phrase.objects.length) {
+          const painObj = phrase.objects[0];
+          const pluralForms = ['зубы','уши','ноги','руки','глаза','колени','локти','плечи','лодыжки','запястья','пальцы ног','пальцы рук'];
+          isPlural = pluralForms.includes(painObj.text);
+          if (isPlural && verb === 'болит') verb = 'болят';
+        }
+        parts.push(verb);
+        if (phrase.objects && phrase.objects.length) {
+          const painObj = phrase.objects[0];
+          const grammar = this.getItemGrammar(painObj);
+          let painWord = painObj.text;
+          if (grammar.forms && grammar.forms.nominative) painWord = grammar.forms.nominative;
+          parts.push(painWord);
+        } else parts.push('что-то');
+        if (phrase.time) parts.push(this.getWordForm(phrase.time));
+        return parts.join(' ');
+      }
+
+      joinElements(elements, conjunction = 'и') {
+        if (!elements || elements.length === 0) return '';
+        if (elements.length === 1) return elements[0];
+        if (elements.length === 2) return `${elements[0]} ${conjunction} ${elements[1]}`;
+        const last = elements.pop();
+        return `${elements.join(', ')} ${conjunction} ${last}`;
+      }
+    }
+
+    // 3. HistoryManager
+    class HistoryManager {
+      constructor() {
+        this.history = [];
+        this.loadFromLocalStorage();
+      }
+
+      loadFromLocalStorage() {
+        const saved = localStorage.getItem('communicator_history');
+        this.history = saved ? JSON.parse(saved) : [];
+      }
+
+      saveToLocalStorage() {
+        localStorage.setItem('communicator_history', JSON.stringify(this.history));
+      }
+
+      addEntry(text) {
+        const now = new Date();
+        const entry = {
+          text,
+          timestamp: now.toISOString(),
+          timeString: now.toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit', second:'2-digit' }),
+          dateString: now.toLocaleDateString('ru-RU')
+        };
+        this.history.unshift(entry);
+        if (this.history.length > 100) this.history = this.history.slice(0,100);
+        this.saveToLocalStorage();
+      }
+
+      getAll() {
+        return [...this.history];
+      }
+
+      clear() {
+        this.history = [];
+        this.saveToLocalStorage();
+      }
+
+      export() {
+        return JSON.stringify(this.history, null, 2);
+      }
+    }
+
+    // 4. ChildDataManager
+    class ChildDataManager {
+      constructor() {
+        this.data = this.load();
+      }
+
+      load() {
         const saved = localStorage.getItem('childInfo');
         return saved ? JSON.parse(saved) : {
           name: '', age: '', gender: '', birthDate: '', motherPhone: '', fatherPhone: '',
@@ -2027,112 +1725,113 @@
           difficultyLevel: 'medium'
         };
       }
-      
-      init() {
+
+      save() {
+        localStorage.setItem('childInfo', JSON.stringify(this.data));
+      }
+
+      getInfo() {
+        return { ...this.data };
+      }
+
+      updateInfo(updates) {
+        Object.assign(this.data, updates);
+        this.save();
+      }
+
+      getPhoneNumbers() {
+        return { mother: this.data.motherPhone, father: this.data.fatherPhone };
+      }
+    }
+
+    // ================= ОСНОВНОЙ КЛАСС APP =================
+    class App {
+      constructor() {
+        // Менеджеры
+        this.cardManager = new CardManager();
+        this.phraseBuilder = new PhraseBuilder();
+        this.historyManager = new HistoryManager();
+        this.childDataManager = new ChildDataManager();
+
+        // Состояние приложения
+        this.currentPhrase = {
+          subject: null,
+          desire: null,
+          action: null,
+          people: [],
+          pets: [],
+          places: [],
+          objects: [],
+          time: null
+        };
+        this.navigationStack = [];
+        this.currentView = 'categories';
+        this.filterMode = null;
+        this.currentTab = 'main';
+        this.isQuickNavMode = false;
+        this.currentReplacement = null;
+        this.nextReplacementIndex = { people: 0, places: 0, objects: 0 };
+        this.tabNavigationStacks = { emotions: [], learning: [], dialog: [] };
+        this.tabCurrentViews = { emotions: 'categories', learning: 'categories', dialog: 'categories' };
+
+        // Настройки
+        this.speechRate = parseFloat(localStorage.getItem('speech_rate') || '1.0');
+        this.fontSizeScale = parseFloat(localStorage.getItem('font_size_scale') || '1.0');
+        this.voices = [];
+        this.selectedVoice = null;
+        this.currentPin = localStorage.getItem('communicator_pin') || "0000";
+        this.pinAction = null;
+
+        // Карточки будут загружены асинхронно
+        this.cards = {};
+      }
+
+      async init() {
+        await this.cardManager.loadFromLocalStorage();
+        this.cards = this.cardManager.cards;
         this.applyFontSettings();
         this.bindEvents();
         this.renderCategories();
         this.updateUI();
+        this.initTabs();
+        this.initPinSystem();
+        this.loadAllData();
+        this.updateSystemInfo();
       }
-      
+
       applyFontSettings() {
-        document.documentElement.style.setProperty('--font-scale', fontSizeScale);
-        document.documentElement.style.setProperty('--base-font-size', (16 * fontSizeScale) + 'px');
+        document.documentElement.style.setProperty('--font-scale', this.fontSizeScale);
+        document.documentElement.style.setProperty('--base-font-size', (16 * this.fontSizeScale) + 'px');
       }
-      
+
       initTabs() {
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
-        tabBtns.forEach(btn => {
+        const btns = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+        btns.forEach(btn => {
           btn.addEventListener('click', () => {
-            const tabId = btn.getAttribute('data-tab');
-            this.currentTab = tabId;
-            tabBtns.forEach(b => b.classList.remove('active'));
-            tabContents.forEach(c => c.classList.remove('active'));
+            const id = btn.getAttribute('data-tab');
+            this.currentTab = id;
+            btns.forEach(b => b.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
-            this.switchButtons(tabId);
-            this.loadTabData(tabId);
+            document.getElementById(id).classList.add('active');
+            this.switchButtons(id);
+            this.loadTabData(id);
           });
         });
         this.switchButtons(this.currentTab);
       }
-      
+
       switchButtons(tabId) {
-        const mainButtons = document.getElementById('mainButtonsContainer');
-        const learningButtons = document.getElementById('learningButtonsContainer');
-        const dialogButtons = document.getElementById('dialogButtonsContainer');
-        mainButtons.style.display = 'none';
-        learningButtons.style.display = 'none';
-        dialogButtons.style.display = 'none';
-        if (tabId === 'main') mainButtons.style.display = 'block';
-        else if (tabId === 'learning') learningButtons.style.display = 'block';
-        else if (tabId === 'dialog') dialogButtons.style.display = 'block';
+        const main = document.getElementById('mainButtonsContainer');
+        const learn = document.getElementById('learningButtonsContainer');
+        const dialog = document.getElementById('dialogButtonsContainer');
+        main.style.display = 'none'; learn.style.display = 'none'; dialog.style.display = 'none';
+        if (tabId === 'main') main.style.display = 'block';
+        else if (tabId === 'learning') learn.style.display = 'block';
+        else if (tabId === 'dialog') dialog.style.display = 'block';
       }
-      
-      initPinSystem() {
-        const pinBtns = document.querySelectorAll('.pin-btn');
-        const pinInput = document.getElementById('pinInput');
-        const pinOverlay = document.getElementById('pinOverlay');
-        const pinCancel = document.getElementById('pinCancel');
-        
-        pinBtns.forEach(btn => {
-          btn.addEventListener('click', () => {
-            const value = btn.getAttribute('data-pin');
-            if (value === 'clear') pinInput.value = '';
-            else if (value === 'enter') this.checkPin(pinInput.value);
-            else if (pinInput.value.length < 4) pinInput.value += value;
-          });
-        });
-        
-        pinCancel.addEventListener('click', () => {
-          pinOverlay.style.display = 'none';
-          pinInput.value = '';
-          pinAction = null;
-        });
-        
-        document.addEventListener('keydown', (e) => {
-          if (pinOverlay.style.display === 'block') {
-            if (e.key >= '0' && e.key <= '9') {
-              if (pinInput.value.length < 4) pinInput.value += e.key;
-              e.preventDefault();
-            } else if (e.key === 'Enter') {
-              this.checkPin(pinInput.value);
-              e.preventDefault();
-            } else if (e.key === 'Backspace' || e.key === 'Delete') {
-              pinInput.value = pinInput.value.slice(0, -1);
-              e.preventDefault();
-            } else if (e.key === 'Escape') {
-              pinOverlay.style.display = 'none';
-              pinInput.value = '';
-              pinAction = null;
-              e.preventDefault();
-            }
-          }
-        });
-      }
-      
-      checkPin(enteredPin) {
-        const pinOverlay = document.getElementById('pinOverlay');
-        if (enteredPin === currentPin) {
-          isEditingEnabled = true;
-          pinOverlay.style.display = 'none';
-          document.getElementById('pinInput').value = '';
-          if (pinAction === 'editChild') this.enableChildEditing();
-        } else {
-          alert("Неверный PIN-код!");
-          document.getElementById('pinInput').value = '';
-        }
-        pinAction = null;
-      }
-      
-      showPinModal(action) {
-        pinAction = action;
-        document.getElementById('pinInput').value = '';
-        document.getElementById('pinOverlay').style.display = 'flex';
-      }
-      
+
       loadTabData(tabId) {
         if (tabId === 'main') this.switchButtons('main');
         else if (tabId === 'child') this.renderChildInfo(false);
@@ -2142,57 +1841,754 @@
         else if (tabId === 'history') this.renderHistory();
         else if (tabId === 'settings') this.updateSystemInfo();
       }
-      
+
       loadAllData() {
         this.renderChildInfo(false);
         this.renderEmotionsTab();
       }
-      
-      saveCards() {
-        const dataToSave = { cards: this.cards };
-        localStorage.setItem('communicatorCards', JSON.stringify(dataToSave));
-        this.updateSystemInfo();
+
+      updateSystemInfo() {
+        const container = document.getElementById('systemInfo');
+        const count = Object.keys(this.cards).length;
+        const size = (new Blob([JSON.stringify({cards:this.cards})]).size / 1024).toFixed(2);
+        const info = {
+          'Версия приложения':'4.5.0 (модульная архитектура)',
+          'Количество карточек':count,
+          'Размер данных':`${size} КБ`,
+          'Последнее обновление':new Date().toLocaleString(),
+          'Скорость чтения':this.speechRate,
+          'Размер шрифта':`${(this.fontSizeScale*100).toFixed(0)}%`,
+          'PIN-код установлен':this.currentPin !== "0000" ? 'Да' : 'Нет (по умолчанию 0000)',
+          'Всего фраз в истории':this.historyManager.getAll().length
+        };
+        let html = '';
+        for (let [k,v] of Object.entries(info)) html += `<div class="settings-info-item"><span class="settings-info-label">${k}:</span> <span class="settings-info-value">${v}</span></div>`;
+        container.innerHTML = html;
       }
-      
-      resetCards() {
-        if (confirm("Вы уверены, что хотите сбросить все карточки к начальным? Это удалит все добавленные карточки.")) {
-          this.cards = FALLBACK_CARDS.cards;
-          this.migrateOldCards();
-          this.saveCards();
-          this.navigateToHome();
-          this.renderCategories();
-          this.updateSystemInfo();
-          alert("Карточки сброшены к начальным настройкам!");
+
+      // --- Работа с историей ---
+      addToHistory(text) {
+        this.historyManager.addEntry(text);
+        if (this.currentTab === 'history') this.renderHistory();
+      }
+
+      renderHistory() {
+        const container = document.getElementById('historyContainer');
+        container.innerHTML = '';
+        const history = this.historyManager.getAll();
+        if (history.length === 0) {
+          container.innerHTML = '<div class="no-action-message">История пуста</div>';
+          return;
+        }
+        history.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'history-item';
+          div.innerHTML = `<div class="history-text">${item.text}</div><div class="history-time" title="${item.dateString}">${item.timeString}</div>`;
+          div.addEventListener('click', () => this.speakText(item.text));
+          container.appendChild(div);
+        });
+      }
+
+      clearHistory() {
+        if (confirm("Очистить всю историю запросов?")) {
+          this.historyManager.clear();
+          this.renderHistory();
+          alert('История очищена');
         }
       }
-      
-      exportCards() {
-        const dataStr = JSON.stringify({ cards: this.cards }, null, 2);
-        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+
+      exportHistory() {
+        const dataStr = this.historyManager.export();
+        const blob = new Blob([dataStr], {type:'application/json'});
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(dataBlob);
+        link.href = URL.createObjectURL(blob);
+        link.download = 'communicator_history_' + new Date().toISOString().slice(0,10) + '.json';
+        link.click();
+      }
+
+      // --- Работа с данными ребёнка ---
+      renderChildInfo(editable = false) {
+        const container = document.getElementById('childInfoGrid');
+        const info = this.childDataManager.getInfo();
+        container.innerHTML = `
+          <div class="child-card"><h3>Основная информация</h3>
+            <div class="form-group"><label>Имя ребенка</label><input type="text" id="childName" value="${info.name||''}" ${editable?'':'disabled class="view-only"'}></div>
+            <div class="form-group"><label>Возраст</label><input type="number" id="childAge" value="${info.age||''}" ${editable?'':'disabled class="view-only"'}></div>
+            <div class="form-group"><label>Пол</label><select id="childGender" ${editable?'':'disabled class="view-only"'}><option value="">Выберите</option><option value="male" ${info.gender==='male'?'selected':''}>Мальчик</option><option value="female" ${info.gender==='female'?'selected':''}>Девочка</option></select></div>
+            <div class="form-group"><label>Адрес</label><input type="text" id="childAddress" value="${info.address||''}" ${editable?'':'disabled class="view-only"'}></div>
+            ${editable?'<button class="save-btn" onclick="window.app.saveChildInfo()">Сохранить</button>':''}
+          </div>
+          <div class="child-card"><h3>Контакты</h3>
+            <div class="form-group"><label>Телефон мамы</label><input type="tel" id="motherPhone" value="${info.motherPhone||''}" ${editable?'':'disabled class="view-only"'}></div>
+            <div class="form-group"><label>Телефон папы</label><input type="tel" id="fatherPhone" value="${info.fatherPhone||''}" ${editable?'':'disabled class="view-only"'}></div>
+            <div class="form-group"><label>Телефон врача</label><input type="tel" id="doctorPhone" value="${info.doctorPhone||''}" ${editable?'':'disabled class="view-only"'}></div>
+            ${editable?'<button class="save-btn" onclick="window.app.saveContacts()">Сохранить</button>':''}
+          </div>
+          <div class="child-card"><h3>Медицинская информация</h3>
+            <div class="form-group"><label>Диагноз</label><textarea id="childDiagnosis" ${editable?'':'disabled class="view-only"'}">${info.diagnosis||''}</textarea></div>
+            <div class="form-group"><label>Аллергии</label><textarea id="childAllergies" ${editable?'':'disabled class="view-only"'}">${info.allergies||''}</textarea></div>
+            ${editable?'<button class="save-btn" onclick="window.app.saveMedicalInfo()">Сохранить</button>':''}
+          </div>
+          <div class="child-card"><h3>Навыки и предпочтения</h3>
+            <div class="form-group"><label>Любимые занятия</label><textarea id="childInterests" ${editable?'':'disabled class="view-only"'}">${info.interests||''}</textarea></div>
+            <div class="form-group"><label>Не любит/Боится</label><textarea id="childDislikes" ${editable?'':'disabled class="view-only"'}">${info.dislikes||''}</textarea></div>
+            ${editable?'<button class="save-btn" onclick="window.app.saveSkillsInfo()">Сохранить</button>':''}
+          </div>
+        `;
+      }
+
+      enableChildEditing() {
+        this.renderChildInfo(true);
+        document.getElementById('editChildBtn').style.display = 'none';
+      }
+
+      saveChildInfo() {
+        this.childDataManager.updateInfo({
+          name: document.getElementById('childName').value,
+          age: document.getElementById('childAge').value,
+          gender: document.getElementById('childGender').value,
+          address: document.getElementById('childAddress').value
+        });
+        alert('Основная информация сохранена');
+        this.renderChildInfo(false);
+        document.getElementById('editChildBtn').style.display = 'block';
+      }
+
+      saveContacts() {
+        this.childDataManager.updateInfo({
+          motherPhone: document.getElementById('motherPhone').value,
+          fatherPhone: document.getElementById('fatherPhone').value,
+          doctorPhone: document.getElementById('doctorPhone').value
+        });
+        alert('Контакты сохранены');
+      }
+
+      saveMedicalInfo() {
+        this.childDataManager.updateInfo({
+          diagnosis: document.getElementById('childDiagnosis').value,
+          allergies: document.getElementById('childAllergies').value
+        });
+        alert('Медицинская информация сохранена');
+      }
+
+      saveSkillsInfo() {
+        this.childDataManager.updateInfo({
+          interests: document.getElementById('childInterests').value,
+          dislikes: document.getElementById('childDislikes').value
+        });
+        alert('Информация о навыках сохранена');
+      }
+
+      // --- Речь ---
+      speakText(text) {
+        if ('speechSynthesis' in window) {
+          speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = 'ru-RU';
+          u.rate = this.speechRate;
+          u.pitch = 1.1;
+          if (this.selectedVoice) u.voice = this.selectedVoice;
+          speechSynthesis.speak(u);
+          this.addToHistory(text);
+        }
+      }
+
+      speakPhrase() {
+        const phrase = document.getElementById('phraseDisplay').textContent;
+        if (phrase && phrase !== 'Выберите элементы для фразы') this.speakText(phrase);
+      }
+
+      // --- Логика построения фразы и UI ---
+      updateUI() {
+        this.updatePhraseDisplay();
+        this.updateSelectedItems();
+        this.updateRulesInfo();
+        this.renderCards();
+        this.updateQuickNavigation();
+      }
+
+      updatePhraseDisplay() {
+        document.getElementById('phraseDisplay').textContent = this.phraseBuilder.buildPhrase(this.currentPhrase) || 'Выберите элементы для фразы';
+      }
+
+      updateSelectedItems() {
+        const cont = document.getElementById('selectedItems');
+        cont.innerHTML = '';
+        if (this.currentPhrase.subject) this.addSelectedItem(cont, 'subject', null, this.currentPhrase.subject);
+        if (this.currentPhrase.desire) this.addSelectedItem(cont, 'desire', null, this.currentPhrase.desire);
+        if (this.currentPhrase.action) this.addSelectedItem(cont, 'action', this.currentPhrase.action.id, this.currentPhrase.action.text, this.currentPhrase.action.emoji);
+        this.currentPhrase.people.forEach((p,i) => this.addSelectedItem(cont, 'person', p.id, p.text, p.emoji, true, i));
+        this.currentPhrase.pets.forEach(p => this.addSelectedItem(cont, 'pet', p.id, p.text, p.emoji, true));
+        this.currentPhrase.places.forEach((p,i) => this.addSelectedItem(cont, 'place', p.id, p.text, p.emoji, true, i));
+        this.currentPhrase.objects.forEach((o,i) => this.addSelectedItem(cont, 'object', o.id, o.text, o.emoji, true, i));
+        if (this.currentPhrase.time) this.addSelectedItem(cont, 'time', this.currentPhrase.time.id, this.currentPhrase.time.text, this.currentPhrase.time.emoji, true);
+      }
+
+      addSelectedItem(container, type, id, text, emoji = null, canReplace = false, idx = -1) {
+        const div = document.createElement('div');
+        div.className = 'selected-item' + (canReplace ? ' can-replace' : '');
+        div.innerHTML = `${emoji ? emoji+' ' : ''}${text}<span class="remove" data-type="${type}" data-id="${id||''}">×</span>`;
+        const rem = div.querySelector('.remove');
+        rem.addEventListener('click', (e) => { e.stopPropagation(); this.removeElement(type, id); });
+        if (canReplace) div.addEventListener('click', (e) => { if (e.target !== rem) this.showReplacementCategory(type, idx); });
+        container.appendChild(div);
+      }
+
+      removeElement(type, id) {
+        switch(type) {
+          case 'subject': this.currentPhrase.subject = null; break;
+          case 'desire': this.currentPhrase.desire = null; break;
+          case 'action': this.currentPhrase.action = null; break;
+          case 'person': this.currentPhrase.people = this.currentPhrase.people.filter(p => p.id !== id); this.nextReplacementIndex.people = 0; break;
+          case 'pet': this.currentPhrase.pets = this.currentPhrase.pets.filter(p => p.id !== id); break;
+          case 'place': this.currentPhrase.places = this.currentPhrase.places.filter(p => p.id !== id); this.nextReplacementIndex.places = 0; break;
+          case 'object': this.currentPhrase.objects = this.currentPhrase.objects.filter(o => o.id !== id); this.nextReplacementIndex.objects = 0; break;
+          case 'time': this.currentPhrase.time = null; break;
+        }
+        this.updateUI();
+      }
+
+      showReplacementCategory(type, idx) {
+        let cat = '';
+        if (type === 'person') cat = 'CAT-PEOPLE';
+        else if (type === 'pet') cat = 'CAT-PETS';
+        else if (type === 'place') cat = 'CAT-PLACES';
+        else if (type === 'object' && this.currentPhrase.action) cat = this.currentPhrase.action.category;
+        else if (type === 'time') cat = 'CAT-TIME';
+        if (cat) { this.currentReplacement = { type, index: idx }; this.selectCategory(cat); }
+      }
+
+      updateRulesInfo() {
+        const el = document.getElementById('rulesInfo');
+        let text = '';
+        if (this.currentPhrase.action && this.phraseBuilder.getActionGrammar(this.currentPhrase.action).painConstruction) text = 'Выберите часть тела, которая болит. Можно выбрать только одну часть тела.';
+        else if (this.currentPhrase.action && this.currentPhrase.action.type === 'emotion') text = 'Эмоции выражают состояние. Выберите эмоцию для выражения своего состояния.';
+        else if (this.navigationStack.includes('CAT-PAIN')) text = 'Выберите часть тела, которая болит.';
+        else if (this.currentPhrase.action && this.phraseBuilder.getActionGrammar(this.currentPhrase.action).isStandalone) text = 'Это самостоятельная фраза, не требует дополнительных элементов. Можно добавить время.';
+        else if (this.currentPhrase.action) {
+          const g = this.phraseBuilder.getActionGrammar(this.currentPhrase.action);
+          const allowed = g.allowedTypes || [];
+          const max = g.maxCounts || {};
+          const parts = [];
+          if (allowed.includes('people')) parts.push(max.people === 0 ? 'людей (без ограничений)' : `до ${max.people} ${this.getPeopleWord(max.people)}`);
+          if (allowed.includes('places')) parts.push(max.places === 0 ? 'мест (без ограничений)' : `до ${max.places} ${this.getPlacesWord(max.places)}`);
+          if (allowed.includes('objects')) parts.push(max.objects === 0 ? 'объектов (без ограничений)' : `до ${max.objects} ${this.getObjectsWord(max.objects)}`);
+          if (allowed.includes('pets')) parts.push(max.pets === 0 ? 'питомцев (без ограничений)' : `до ${max.pets} ${this.getPetsWord(max.pets)}`);
+          text = `К действию "${this.currentPhrase.action.text}" можно добавить: ${parts.join(', ')}. Время можно добавить или заменить.`;
+        } else text = 'Выберите действие для составления фразы.';
+        el.textContent = text;
+      }
+
+      getPeopleWord(c) { return c===1 ? 'человека' : 'людей'; }
+      getPetsWord(c) { return c===1 ? 'питомца' : 'питомцев'; }
+      getPlacesWord(c) { return c===1 ? 'места' : 'мест'; }
+      getObjectsWord(c) { return c===1 ? 'объекта' : 'объектов'; }
+
+      // --- Навигация и рендеринг ---
+      renderCategories() {
+        const container = document.getElementById('categoriesContainer');
+        container.innerHTML = '';
+        const categories = Object.values(this.cards).filter(c => c.type === 'category' && c.category === null && c.sections.includes('Главная'));
+        categories.sort((a,b) => (a.order||50)-(b.order||50) || a.text.localeCompare(b.text));
+        categories.forEach(cat => {
+          const div = document.createElement('div');
+          div.className = 'category-card';
+          if (cat.color) div.style.backgroundColor = cat.color;
+          div.innerHTML = `<div class="card-emoji">${cat.emoji}</div><div class="card-text">${cat.text}</div>`;
+          div.addEventListener('click', () => this.selectCategory(cat.id));
+          container.appendChild(div);
+        });
+      }
+
+      selectCategory(categoryId) {
+        this.filterMode = null;
+        this.isQuickNavMode = false;
+        this.navigationStack.push(categoryId);
+        this.renderCards();
+        this.toggleBackButton();
+        this.showCardsView();
+        this.updateQuickNavigation();
+        this.hideDoneButton();
+      }
+
+      renderCards() {
+        const container = document.getElementById('cardsContainer');
+        container.innerHTML = '';
+        let cards = [];
+        const cur = this.navigationStack[this.navigationStack.length-1];
+        if (cur === 'ALL-ACTIONS') cards = this.getAllActions();
+        else if (cur === 'FILTER-PEOPLE') cards = this.getFilteredPeople();
+        else if (cur === 'FILTER-PLACES') cards = this.getFilteredPlaces();
+        else if (cur === 'FILTER-OBJECTS') cards = this.getFilteredObjects();
+        else if (cur === 'FILTER-TIME') cards = this.getFilteredTime();
+        else if (this.navigationStack.length > 0 && cur.startsWith('CAT-')) {
+          if (cur === 'CAT-ALL') cards = Object.values(this.cards).filter(c => c.type !== 'category' && c.sections.includes('Главная'));
+          else cards = Object.values(this.cards).filter(c => c.category === cur && c.sections.includes('Главная'));
+        }
+        if (cards.length === 0) { container.innerHTML = '<div class="no-action-message">В этой категории пока нет карточек</div>'; return; }
+        this.renderCardList(container, cards, 'main');
+      }
+
+      getAllActions() {
+        return Object.values(this.cards).filter(c => (c.type === 'action' || c.type === 'emotion' || c.type === 'learning' || c.type === 'help' || c.type === 'request' || c.type === 'dialog') && c.sections.includes('Главная'));
+      }
+
+      renderCardList(container, cardsToShow, tabId='main') {
+        const order = { 'action':1,'emotion':1,'learning':1,'help':1,'request':1,'dialog':1,'person':2,'pet':3,'place':4,'object':5,'clothing':6,'book':7,'creative':8,'pain':9,'time':10 };
+        cardsToShow.sort((a,b) => (order[a.type]||10)-(order[b.type]||10));
+        cardsToShow.forEach(card => {
+          const div = document.createElement('div');
+          div.className = `card ${card.type}`;
+          if (card.color) div.style.backgroundColor = card.color;
+          const selected = (this.currentPhrase.action && card.id === this.currentPhrase.action.id) ||
+            this.currentPhrase.people.some(p=>p.id===card.id) ||
+            this.currentPhrase.pets.some(p=>p.id===card.id) ||
+            this.currentPhrase.places.some(p=>p.id===card.id) ||
+            this.currentPhrase.objects.some(o=>o.id===card.id) ||
+            (this.currentPhrase.time && card.id===this.currentPhrase.time.id);
+          if (selected) div.classList.add('selected');
+          let disabled = false;
+          if (this.currentPhrase.action && tabId==='main') {
+            const g = this.phraseBuilder.getActionGrammar(this.currentPhrase.action);
+            const types = g.allowedTypes || [];
+            if (card.type==='person' && !types.includes('people')) disabled=true;
+            if (card.type==='pet' && !types.includes('pets')) disabled=true;
+            if (card.type==='place' && !types.includes('places')) disabled=true;
+            if ((card.type==='object'||card.type==='clothing'||card.type==='pain') && !types.includes('objects')) disabled=true;
+            if ((card.type==='object'||card.type==='clothing') && types.includes('objects')) {
+              const allowed = g.allowedObjects || [];
+              if (allowed.length && !allowed.includes(card.id)) disabled=true;
+            }
+          }
+          if (disabled && !selected) div.classList.add('disabled');
+          div.innerHTML = `<div class="card-emoji">${card.emoji}</div><div class="card-text">${card.text}</div>`;
+          if (!disabled || selected) div.addEventListener('click', () => this.selectCard(card.id, tabId));
+          container.appendChild(div);
+        });
+      }
+
+      getFilteredPeople() { return Object.values(this.cards).filter(c => c.type==='person' && c.sections.includes('Главная')); }
+      getFilteredPlaces() { return Object.values(this.cards).filter(c => c.type==='place' && c.sections.includes('Главная')); }
+      getFilteredTime() { return Object.values(this.cards).filter(c => c.type==='time' && c.sections.includes('Главная')); }
+      getFilteredObjects() {
+        if (!this.currentPhrase.action) return [];
+        const g = this.phraseBuilder.getActionGrammar(this.currentPhrase.action);
+        const allowed = g.allowedObjects || [];
+        if (allowed.length) return Object.values(this.cards).filter(c => allowed.includes(c.id) && c.sections.includes('Главная'));
+        const cat = this.currentPhrase.action.category;
+        return Object.values(this.cards).filter(c => (c.type==='object'||c.type==='clothing') && c.category===cat && c.sections.includes('Главная'));
+      }
+
+      selectCard(cardId, tabId='main') {
+        const card = this.cards[cardId];
+        if (!card) return;
+        if (tabId === 'learning' || tabId === 'dialog' || tabId === 'emotions') { this.speakText(card.text); return; }
+        if (this.navigationStack.includes('CAT-PAIN')) { this.handlePainSelection(card); this.updateUI(); return; }
+        const handler = this.getCardHandler(card.type);
+        if (handler) handler(card);
+        else this.currentPhrase.objects.push(card);
+        this.updateUI();
+        if (this.filterMode && !this.isQuickNavMode) this.navigateBack();
+      }
+
+      getCardHandler(type) {
+        const handlers = {
+          'action': this.handleActionSelection.bind(this),
+          'emotion': this.handleEmotionSelection.bind(this),
+          'person': this.handlePersonSelection.bind(this),
+          'pet': this.handlePetSelection.bind(this),
+          'place': this.handlePlaceSelection.bind(this),
+          'object': this.handleObjectSelection.bind(this),
+          'clothing': this.handleObjectSelection.bind(this),
+          'pain': this.handlePainSelection.bind(this),
+          'time': this.handleTimeSelection.bind(this),
+          'help': this.handleActionSelection.bind(this),
+          'request': this.handleActionSelection.bind(this)
+        };
+        return handlers[type] || null;
+      }
+
+      handleActionSelection(card) {
+        const old = this.currentPhrase.action;
+        this.currentPhrase.action = card;
+        this.checkAndResetIncompatibleElements(old, card);
+        if (this.phraseBuilder.getActionGrammar(card).isStandalone) {
+          this.currentPhrase.people = []; this.currentPhrase.pets = []; this.currentPhrase.places = []; this.currentPhrase.objects = [];
+        }
+        this.updateUI();
+      }
+
+      handleEmotionSelection(card) {
+        if (this.currentTab === 'main') {
+          this.currentPhrase.subject = 'Я'; this.currentPhrase.desire = null; this.currentPhrase.action = card;
+          this.currentPhrase.people = []; this.currentPhrase.pets = []; this.currentPhrase.places = []; this.currentPhrase.objects = []; this.currentPhrase.time = null;
+          this.updateUI();
+        } else this.speakText(card.text);
+      }
+
+      handlePersonSelection(card) {
+        if (!this.currentPhrase.action) return;
+        const g = this.phraseBuilder.getActionGrammar(this.currentPhrase.action);
+        if (!(g.allowedTypes || []).includes('people')) return;
+        const max = g.maxCounts?.people || 0;
+        const idx = this.currentPhrase.people.findIndex(p => p.id === card.id);
+        if (idx !== -1) { this.currentPhrase.people.splice(idx,1); this.nextReplacementIndex.people = 0; this.updateUI(); return; }
+        if (max === 0 || this.currentPhrase.people.length < max) this.currentPhrase.people.push(card);
+        else if (max > 0) { const rep = this.nextReplacementIndex.people; this.currentPhrase.people[rep] = card; this.nextReplacementIndex.people = (rep+1)%max; }
+        this.updateUI();
+      }
+
+      handlePetSelection(card) {
+        if (!this.currentPhrase.action) return;
+        const g = this.phraseBuilder.getActionGrammar(this.currentPhrase.action);
+        if (!(g.allowedTypes || []).includes('pets')) return;
+        const max = g.maxCounts?.pets || 0;
+        const idx = this.currentPhrase.pets.findIndex(p => p.id === card.id);
+        if (idx !== -1) { this.currentPhrase.pets.splice(idx,1); this.updateUI(); return; }
+        if (max === 0 || this.currentPhrase.pets.length < max) this.currentPhrase.pets.push(card);
+        this.updateUI();
+      }
+
+      handlePlaceSelection(card) {
+        if (!this.currentPhrase.action) return;
+        const g = this.phraseBuilder.getActionGrammar(this.currentPhrase.action);
+        if (!(g.allowedTypes || []).includes('places')) return;
+        const max = g.maxCounts?.places || 0;
+        const idx = this.currentPhrase.places.findIndex(p => p.id === card.id);
+        if (idx !== -1) { this.currentPhrase.places.splice(idx,1); this.nextReplacementIndex.places = 0; this.updateUI(); return; }
+        if (max === 0 || this.currentPhrase.places.length < max) this.currentPhrase.places.push(card);
+        else if (max > 0) { const rep = this.nextReplacementIndex.places; this.currentPhrase.places[rep] = card; this.nextReplacementIndex.places = (rep+1)%max; }
+        this.updateUI();
+      }
+
+      handleObjectSelection(card) {
+        if (!this.currentPhrase.action) return;
+        const g = this.phraseBuilder.getActionGrammar(this.currentPhrase.action);
+        if (!(g.allowedTypes || []).includes('objects')) return;
+        if (!this.phraseBuilder.isObjectCompatible(this.currentPhrase.action, card)) return;
+        const max = g.maxCounts?.objects || 0;
+        const idx = this.currentPhrase.objects.findIndex(o => o.id === card.id);
+        if (idx !== -1) { this.currentPhrase.objects.splice(idx,1); this.nextReplacementIndex.objects = 0; this.updateUI(); return; }
+        if (max === 0 || this.currentPhrase.objects.length < max) this.currentPhrase.objects.push(card);
+        else if (max > 0) { const rep = this.nextReplacementIndex.objects; this.currentPhrase.objects[rep] = card; this.nextReplacementIndex.objects = (rep+1)%max; }
+        this.updateUI();
+      }
+
+      handleTimeSelection(card) {
+        this.currentPhrase.time = card;
+        this.updateUI();
+      }
+
+      handlePainSelection(card) {
+        if (card.type === 'pain') {
+          if (!this.currentPhrase.action || (this.currentPhrase.action.id !== 'ACT-HURT' && this.currentPhrase.action.id !== 'ACT-HURTS-A-LOT')) {
+            this.currentPhrase.action = this.cards['ACT-HURT'];
+          }
+          this.currentPhrase.subject = 'У меня'; this.currentPhrase.desire = null;
+          if (this.currentPhrase.action && this.phraseBuilder.isObjectCompatible(this.currentPhrase.action, card)) this.currentPhrase.objects = [card];
+          this.currentPhrase.people = []; this.currentPhrase.pets = []; this.currentPhrase.places = []; this.currentPhrase.time = null;
+          this.updateUI();
+        }
+      }
+
+      checkAndResetIncompatibleElements(oldAction, newAction) {
+        if (!oldAction || !newAction) return;
+        const ng = this.phraseBuilder.getActionGrammar(newAction);
+        const allowed = ng.allowedObjects || [];
+        if (allowed.length > 0) this.currentPhrase.objects = this.currentPhrase.objects.filter(obj => allowed.includes(obj.id));
+        else if (newAction.category !== oldAction.category) this.currentPhrase.objects = [];
+      }
+
+      clearPhrase() {
+        this.currentPhrase = { subject: null, desire: null, action: null, people: [], pets: [], places: [], objects: [], time: null };
+        this.nextReplacementIndex = { people: 0, places: 0, objects: 0 };
+        this.updateUI();
+      }
+
+      setSubject(s) { this.currentPhrase.subject = s; this.updateUI(); }
+      setDesire(d) { this.currentPhrase.desire = d; this.updateUI(); }
+
+      showAllActions() { this.isQuickNavMode = false; this.filterMode = 'actions'; this.navigationStack.push('ALL-ACTIONS'); this.renderCards(); this.toggleBackButton(); this.showCardsView(); this.hideDoneButton(); }
+      showFilteredPeople() { this.isQuickNavMode = true; this.filterMode = 'people'; this.navigationStack.push('FILTER-PEOPLE'); this.renderCards(); this.toggleBackButton(); this.showCardsView(); this.showDoneButton(); }
+      showFilteredPlaces() { this.isQuickNavMode = true; this.filterMode = 'places'; this.navigationStack.push('FILTER-PLACES'); this.renderCards(); this.toggleBackButton(); this.showCardsView(); this.showDoneButton(); }
+      showFilteredObjects() { if (!this.currentPhrase.action) return; this.isQuickNavMode = true; this.filterMode = 'actionObjects'; this.navigationStack.push('FILTER-OBJECTS'); this.renderCards(); this.toggleBackButton(); this.showCardsView(); this.showDoneButton(); }
+      showFilteredTime() { this.isQuickNavMode = true; this.filterMode = 'time'; this.navigationStack.push('FILTER-TIME'); this.renderCards(); this.toggleBackButton(); this.showCardsView(); this.showDoneButton(); }
+      showDoneButton() { document.getElementById('doneBtn').classList.add('visible'); }
+      hideDoneButton() { document.getElementById('doneBtn').classList.remove('visible'); }
+      finishQuickNav() { this.navigateBack(); this.isQuickNavMode = false; }
+      navigateBack() {
+        if (this.navigationStack.length > 1) { this.navigationStack.pop(); this.renderCards(); }
+        else this.navigateToHome();
+        this.filterMode = null; this.isQuickNavMode = false; this.toggleBackButton(); this.updateQuickNavigation(); this.hideDoneButton();
+      }
+      navigateToHome() { this.navigationStack = []; this.filterMode = null; this.isQuickNavMode = false; this.renderCategories(); this.toggleBackButton(); this.showCategoriesView(); this.updateQuickNavigation(); this.hideDoneButton(); }
+      showCategoriesView() { document.getElementById('categoriesView').style.display = 'block'; document.getElementById('cardsView').style.display = 'none'; this.currentView = 'categories'; }
+      showCardsView() { document.getElementById('categoriesView').style.display = 'none'; document.getElementById('cardsView').style.display = 'block'; this.currentView = 'cards'; }
+      toggleBackButton() { document.getElementById('backBtn').style.display = this.navigationStack.length > 0 ? 'block' : 'none'; }
+      updateQuickNavigation() {
+        const nav = document.getElementById('quickNavigation');
+        const peopleBtn = document.getElementById('quickPeopleBtn');
+        const placesBtn = document.getElementById('quickPlacesBtn');
+        const objectsBtn = document.getElementById('quickObjectsBtn');
+        const timeBtn = document.getElementById('quickTimeBtn');
+        const show = this.currentPhrase.action && this.currentPhrase.action.type !== 'emotion' && !this.phraseBuilder.getActionGrammar(this.currentPhrase.action).isStandalone;
+        if (show) {
+          nav.style.display = 'flex';
+          const g = this.phraseBuilder.getActionGrammar(this.currentPhrase.action);
+          const types = g.allowedTypes || [];
+          peopleBtn.disabled = !types.includes('people');
+          placesBtn.disabled = !types.includes('places');
+          objectsBtn.disabled = !types.includes('objects');
+          timeBtn.disabled = false;
+        } else nav.style.display = 'none';
+      }
+
+      // --- Вкладки обучения, диалога, эмоций ---
+      renderLearningTab() { this.renderTabCategories('learning'); }
+      renderDialogTab() { this.renderTabCategories('dialog'); }
+      renderEmotionsTab() { this.renderTabCategories('emotions'); }
+
+      renderTabCategories(tabId) {
+        const section = { emotions:'Эмоции', learning:'Обучение', dialog:'Диалог' }[tabId];
+        const container = document.getElementById(`${tabId}CategoriesContainer`);
+        document.getElementById(`${tabId}CategoriesView`).style.display = 'block';
+        document.getElementById(`${tabId}CardsView`).style.display = 'none';
+        document.getElementById(`backBtn${tabId.charAt(0).toUpperCase()+tabId.slice(1)}`).style.display = 'none';
+        container.innerHTML = '';
+        const cats = Object.values(this.cards).filter(c => c.type === 'category' && c.category === null && c.sections.includes(section));
+        if (cats.length === 0) { this.renderTabAllCards(tabId); return; }
+        cats.sort((a,b) => (a.order||50)-(b.order||50) || a.text.localeCompare(b.text));
+        cats.forEach(cat => {
+          const div = document.createElement('div');
+          div.className = 'category-card';
+          if (cat.color) div.style.backgroundColor = cat.color;
+          div.innerHTML = `<div class="card-emoji">${cat.emoji}</div><div class="card-text">${cat.text}</div>`;
+          div.addEventListener('click', () => { this.tabNavigationStacks[tabId].push(cat.id); this.tabCurrentViews[tabId] = 'cards'; this.renderTabCards(tabId, cat.id); });
+          container.appendChild(div);
+        });
+      }
+
+      renderTabCards(tabId, categoryId) {
+        const section = { emotions:'Эмоции', learning:'Обучение', dialog:'Диалог' }[tabId];
+        const container = document.getElementById(`${tabId}CardsContainer`);
+        document.getElementById(`${tabId}CategoriesView`).style.display = 'none';
+        document.getElementById(`${tabId}CardsView`).style.display = 'block';
+        document.getElementById(`backBtn${tabId.charAt(0).toUpperCase()+tabId.slice(1)}`).style.display = 'block';
+        container.innerHTML = '';
+        let cards = [];
+        if (categoryId === 'ALL') cards = Object.values(this.cards).filter(c => c.type !== 'category' && c.sections.includes(section));
+        else cards = Object.values(this.cards).filter(c => c.category === categoryId && c.sections.includes(section));
+        if (cards.length === 0) { container.innerHTML = '<div class="no-action-message">В этой категории пока нет карточек</div>'; return; }
+        cards.sort((a,b) => a.text.localeCompare(b.text));
+        cards.forEach(card => {
+          const div = document.createElement('div');
+          div.className = `card ${card.type}`;
+          if (card.color) div.style.backgroundColor = card.color;
+          div.innerHTML = `<div class="card-emoji">${card.emoji}</div><div class="card-text">${card.text}</div>`;
+          div.addEventListener('click', () => this.selectCard(card.id, tabId));
+          container.appendChild(div);
+        });
+      }
+
+      renderTabAllCards(tabId) {
+        const section = { emotions:'Эмоции', learning:'Обучение', dialog:'Диалог' }[tabId];
+        const container = document.getElementById(`${tabId}CardsContainer`);
+        document.getElementById(`${tabId}CategoriesView`).style.display = 'none';
+        document.getElementById(`${tabId}CardsView`).style.display = 'block';
+        document.getElementById(`backBtn${tabId.charAt(0).toUpperCase()+tabId.slice(1)}`).style.display = 'none';
+        container.innerHTML = '';
+        const cards = Object.values(this.cards).filter(c => c.type !== 'category' && c.sections.includes(section));
+        if (cards.length === 0) { container.innerHTML = '<div class="no-action-message">В этой вкладке пока нет карточек</div>'; return; }
+        cards.sort((a,b) => a.text.localeCompare(b.text));
+        cards.forEach(card => {
+          const div = document.createElement('div');
+          div.className = `card ${card.type}`;
+          if (card.color) div.style.backgroundColor = card.color;
+          div.innerHTML = `<div class="card-emoji">${card.emoji}</div><div class="card-text">${card.text}</div>`;
+          div.addEventListener('click', () => this.selectCard(card.id, tabId));
+          container.appendChild(div);
+        });
+      }
+
+      navigateBackTab(tabId) {
+        const stack = this.tabNavigationStacks[tabId];
+        if (stack.length > 1) { stack.pop(); this.renderTabCards(tabId, stack[stack.length-1]); }
+        else this.navigateToHomeTab(tabId);
+      }
+      navigateToHomeTab(tabId) { this.tabNavigationStacks[tabId] = []; this.tabCurrentViews[tabId] = 'categories'; this.renderTabCategories(tabId); }
+
+      // --- Экстренные ситуации ---
+      handleEmergency(type) {
+        const msgs = {
+          help:'🆘 ПОМОГИТЕ! Мне срочно нужна помощь!',
+          pain:'🤕 У меня СИЛЬНАЯ БОЛЬ! Нужен врач!',
+          scared:'😨 Мне ОЧЕНЬ СТРАШНО! Помогите!',
+          sick:'🤢 Меня ТОШНИТ! Плохо!',
+          lost: this.getLostMessage(),
+          call:'📞 Позвоните моим родителям, пожалуйста!',
+          stop:'🛑 СТОП! Немедленно остановитесь!'
+        };
+        const msg = msgs[type] || 'Тревога!';
+        this.speakEmergency(msg);
+        if (type === 'call') setTimeout(() => this.callParents(), 1000);
+        else this.showEmergencyAlert(msg);
+      }
+
+      getLostMessage() { return `🗺️ Я заблудился! Мой адрес: ${this.childDataManager.getInfo().address || 'адрес не указан'}. Пожалуйста, помогите мне!`; }
+      callParents() {
+        const { mother, father } = this.childDataManager.getPhoneNumbers();
+        let msg = "Позвоните моим родителям, пожалуйста!\n\n";
+        if (mother && father) msg += `Телефон мамы: ${mother}\nТелефон папы: ${father}`;
+        else if (mother) msg += `Телефон мамы: ${mother}`;
+        else if (father) msg += `Телефон папы: ${father}`;
+        else msg += "Телефоны родителей не указаны в разделе 'Данные о ребенке'";
+        this.showEmergencyAlertWithPhones(msg);
+      }
+
+      speakEmergency(msg) {
+        if ('speechSynthesis' in window) {
+          speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(msg);
+          u.lang = 'ru-RU'; u.rate = 1.2; u.pitch = 1.3; u.volume = 1;
+          speechSynthesis.speak(u);
+        }
+      }
+
+      showEmergencyAlert(msg) {
+        const div = document.createElement('div');
+        div.style.cssText = `position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(231,76,60,0.95); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; font-size:2rem; text-align:center; padding:20px; animation:pulse 1s infinite;`;
+        const style = document.createElement('style');
+        style.textContent = `@keyframes pulse{0%{background-color:rgba(231,76,60,0.95)}50%{background-color:rgba(192,57,43,0.95)}100%{background-color:rgba(231,76,60,0.95)}}`;
+        div.innerHTML = `<div style="font-size:4rem; margin-bottom:20px;">⚠️</div><div style="font-weight:bold; margin-bottom:20px;">${msg}</div><div style="font-size:1.5rem; margin-bottom:30px;">Немедленная помощь!</div><button id="closeEmergency" style="background:white; color:#e74c3c; border:none; padding:15px 30px; font-size:1.5rem; border-radius:10px; cursor:pointer; font-weight:bold;">Закрыть</button>`;
+        document.body.appendChild(style);
+        document.body.appendChild(div);
+        document.getElementById('closeEmergency').addEventListener('click', () => { div.remove(); style.remove(); speechSynthesis.cancel(); });
+        setTimeout(() => { if (div.parentNode) { div.remove(); style.remove(); } }, 30000);
+      }
+
+      showEmergencyAlertWithPhones(msg) {
+        const div = document.createElement('div');
+        div.style.cssText = `position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(52,152,219,0.95); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; font-size:1.5rem; text-align:center; padding:20px;`;
+        div.innerHTML = `<div style="font-size:4rem; margin-bottom:20px;">📞</div><div style="font-weight:bold; margin-bottom:20px;">Позвоните моим родителям!</div><div style="background:rgba(255,255,255,0.2); padding:20px; border-radius:10px; margin-bottom:20px; text-align:left; font-size:1.2rem;">${msg.split('\n').map(l=>`<div style="margin-bottom:10px;">${l}</div>`).join('')}</div><button id="closeEmergency" style="background:white; color:#3498db; border:none; padding:15px 30px; font-size:1.5rem; border-radius:10px; cursor:pointer; font-weight:bold; margin-top:20px;">Закрыть</button>`;
+        document.body.appendChild(div);
+        document.getElementById('closeEmergency').addEventListener('click', () => { div.remove(); speechSynthesis.cancel(); });
+        setTimeout(() => { if (div.parentNode) div.remove(); }, 30000);
+      }
+
+      // --- PIN и настройки ---
+      initPinSystem() {
+        const pinBtns = document.querySelectorAll('.pin-btn');
+        const pinInput = document.getElementById('pinInput');
+        const overlay = document.getElementById('pinOverlay');
+        const cancel = document.getElementById('pinCancel');
+        pinBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const val = btn.getAttribute('data-pin');
+            if (val === 'clear') pinInput.value = '';
+            else if (val === 'enter') this.checkPin(pinInput.value);
+            else if (pinInput.value.length < 4) pinInput.value += val;
+          });
+        });
+        cancel.addEventListener('click', () => { overlay.style.display = 'none'; pinInput.value = ''; this.pinAction = null; });
+        document.addEventListener('keydown', (e) => {
+          if (overlay.style.display === 'block') {
+            if (e.key >= '0' && e.key <= '9') { if (pinInput.value.length < 4) pinInput.value += e.key; e.preventDefault(); }
+            else if (e.key === 'Enter') { this.checkPin(pinInput.value); e.preventDefault(); }
+            else if (e.key === 'Backspace' || e.key === 'Delete') { pinInput.value = pinInput.value.slice(0,-1); e.preventDefault(); }
+            else if (e.key === 'Escape') { overlay.style.display = 'none'; pinInput.value = ''; this.pinAction = null; e.preventDefault(); }
+          }
+        });
+      }
+
+      checkPin(enteredPin) {
+        const overlay = document.getElementById('pinOverlay');
+        if (enteredPin === this.currentPin) {
+          overlay.style.display = 'none';
+          document.getElementById('pinInput').value = '';
+          if (this.pinAction === 'editChild') this.enableChildEditing();
+        } else { alert("Неверный PIN-код!"); document.getElementById('pinInput').value = ''; }
+        this.pinAction = null;
+      }
+
+      showPinModal(action) { this.pinAction = action; document.getElementById('pinInput').value = ''; document.getElementById('pinOverlay').style.display = 'flex'; }
+
+      changePinWithVerification() {
+        const cur = document.getElementById('currentPin').value;
+        const newPin = document.getElementById('newPin').value;
+        const conf = document.getElementById('confirmPin').value;
+        if (!cur) { alert('Введите текущий PIN-код'); return; }
+        if (cur !== this.currentPin) { alert('Текущий PIN-код неверен'); document.getElementById('currentPin').value = ''; return; }
+        if (newPin.length !== 4 || !/^\d+$/.test(newPin)) { alert('Новый PIN-код должен состоять из 4 цифр'); return; }
+        if (newPin !== conf) { alert('Новый PIN-код и подтверждение не совпадают'); return; }
+        this.currentPin = newPin;
+        localStorage.setItem('communicator_pin', this.currentPin);
+        document.getElementById('currentPin').value = '';
+        document.getElementById('newPin').value = '';
+        document.getElementById('confirmPin').value = '';
+        alert('PIN-код успешно изменен');
+        this.updateSystemInfo();
+      }
+
+      // --- Загрузка с сервера, импорт/экспорт карточек ---
+      async loadCardsWithOptions() {
+        const modal = document.getElementById('remoteLoadModal');
+        modal.style.display = 'flex';
+        document.querySelector('input[name="loadStrategy"][value="replace"]').checked = true;
+        document.querySelectorAll('input[name="section"]').forEach(cb => cb.checked = cb.value === 'Главная');
+        document.getElementById('skipCategories').checked = false;
+        document.getElementById('preserveExisting').checked = false;
+        document.getElementById('sectionsSelection').style.display = 'none';
+        document.getElementById('summaryInfo').style.display = 'none';
+      }
+
+      async confirmRemoteLoad() {
+        const modal = document.getElementById('remoteLoadModal');
+        const strategy = document.querySelector('input[name="loadStrategy"]:checked').value;
+        const selectedSections = Array.from(document.querySelectorAll('input[name="section"]:checked')).map(cb => cb.value);
+        const skipCategories = document.getElementById('skipCategories').checked;
+        const preserveExisting = document.getElementById('preserveExisting').checked;
+        if (strategy === 'sections' && selectedSections.length === 0) {
+          alert('Выберите хотя бы один раздел для загрузки!');
+          return;
+        }
+        modal.style.display = 'none';
+        try {
+          await this.cardManager.loadFromRemote(REMOTE_CARDS_URL);
+          this.cards = this.cardManager.cards;
+          // Применяем стратегию (упрощённо – полная замена, так как loadFromRemote уже заменил)
+          this.navigateToHome();
+          this.renderCategories();
+          this.updateUI();
+          this.updateSystemInfo();
+          alert(`Карточки успешно загружены с сервера!`);
+        } catch (error) {
+          console.error('Ошибка загрузки карточек с сервера:', error);
+          alert(`Не удалось загрузить карточки с сервера: ${error.message}`);
+        }
+      }
+
+      exportCards() {
+        const dataStr = this.cardManager.exportCards();
+        const blob = new Blob([dataStr], {type:'application/json'});
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
         link.download = 'communicator_cards_' + new Date().toISOString().slice(0,10) + '.json';
         link.click();
       }
-      
+
       importCards(event) {
         const file = event.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
           try {
-            const importedData = JSON.parse(e.target.result);
-            if (importedData.cards) {
-              if (confirm("Импортировать карточки? Существующие карточки будут заменены.")) {
-                this.cards = importedData.cards;
-                this.migrateOldCards();
-                this.saveCards();
-                this.navigateToHome();
-                this.renderCategories();
-                this.updateSystemInfo();
-                alert("Карточки успешно импортированы!");
-              }
-            } else alert("Формат файла не поддерживается.");
+            this.cardManager.importCards(e.target.result);
+            this.cards = this.cardManager.cards;
+            this.navigateToHome();
+            this.renderCategories();
+            this.updateUI();
+            this.updateSystemInfo();
+            alert("Карточки успешно импортированы!");
           } catch (error) {
             alert("Ошибка при импорте карточек: " + error.message);
           }
@@ -2200,7 +2596,20 @@
         reader.readAsText(file);
         event.target.value = '';
       }
-      
+
+      resetCards() {
+        if (confirm("Вы уверены, что хотите сбросить все карточки к начальным? Это удалит все добавленные карточки.")) {
+          this.cardManager.resetToFallback();
+          this.cards = this.cardManager.cards;
+          this.navigateToHome();
+          this.renderCategories();
+          this.updateUI();
+          this.updateSystemInfo();
+          alert("Карточки сброшены к начальным настройкам!");
+        }
+      }
+
+      // --- Обработчики событий (привязка) ---
       bindEvents() {
         document.getElementById('btnI').addEventListener('click', () => this.setSubject('Я'));
         document.getElementById('btnWant').addEventListener('click', () => this.setDesire('Хочу'));
@@ -2231,27 +2640,14 @@
         document.getElementById('cancelRemoteLoad').addEventListener('click', () => document.getElementById('remoteLoadModal').style.display = 'none');
         document.querySelectorAll('input[name="loadStrategy"]').forEach(radio => {
           radio.addEventListener('change', () => {
-            const sectionsDiv = document.getElementById('sectionsSelection');
-            if (radio.value === 'sections') {
-              sectionsDiv.style.display = 'block';
-              this.previewRemoteLoad();
-            } else {
-              sectionsDiv.style.display = 'none';
-              document.getElementById('summaryInfo').style.display = 'none';
-            }
+            const div = document.getElementById('sectionsSelection');
+            if (radio.value === 'sections') { div.style.display = 'block'; this.previewRemoteLoad(); }
+            else { div.style.display = 'none'; document.getElementById('summaryInfo').style.display = 'none'; }
           });
         });
-        document.querySelectorAll('input[name="section"], #skipCategories, #preserveExisting').forEach(input => {
-          input.addEventListener('change', () => this.previewRemoteLoad());
-        });
-        document.getElementById('remoteLoadModal').addEventListener('click', (e) => {
-          if (e.target.id === 'remoteLoadModal') document.getElementById('remoteLoadModal').style.display = 'none';
-        });
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && document.getElementById('remoteLoadModal').style.display === 'flex') {
-            document.getElementById('remoteLoadModal').style.display = 'none';
-          }
-        });
+        document.querySelectorAll('input[name="section"], #skipCategories, #preserveExisting').forEach(input => input.addEventListener('change', () => this.previewRemoteLoad()));
+        document.getElementById('remoteLoadModal').addEventListener('click', (e) => { if (e.target.id === 'remoteLoadModal') document.getElementById('remoteLoadModal').style.display = 'none'; });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && document.getElementById('remoteLoadModal').style.display === 'flex') document.getElementById('remoteLoadModal').style.display = 'none'; });
         document.getElementById('speakBtn').addEventListener('click', () => this.speakPhrase());
         document.getElementById('quickPeopleBtn').addEventListener('click', () => this.showFilteredPeople());
         document.getElementById('quickPlacesBtn').addEventListener('click', () => this.showFilteredPlaces());
@@ -2265,862 +2661,33 @@
         document.getElementById('emergencyLost').addEventListener('click', () => this.handleEmergency('lost'));
         document.getElementById('emergencyCall').addEventListener('click', () => this.handleEmergency('call'));
         document.getElementById('emergencyStop').addEventListener('click', () => this.handleEmergency('stop'));
-        document.getElementById('speedSlider').addEventListener('input', (e) => {
-          document.getElementById('speedValue').textContent = e.target.value;
-          speechRate = parseFloat(e.target.value);
-          localStorage.setItem('speech_rate', speechRate);
-        });
-        document.getElementById('fontSizeSlider').addEventListener('input', (e) => {
-          const value = e.target.value;
-          document.getElementById('fontSizeValue').textContent = value + '%';
-          fontSizeScale = value / 100;
-          localStorage.setItem('font_size_scale', fontSizeScale);
-          this.applyFontSettings();
-        });
+        document.getElementById('speedSlider').addEventListener('input', (e) => { document.getElementById('speedValue').textContent = e.target.value; this.speechRate = parseFloat(e.target.value); localStorage.setItem('speech_rate', this.speechRate); });
+        document.getElementById('fontSizeSlider').addEventListener('input', (e) => { const v = e.target.value; document.getElementById('fontSizeValue').textContent = v+'%'; this.fontSizeScale = v/100; localStorage.setItem('font_size_scale', this.fontSizeScale); this.applyFontSettings(); });
         document.getElementById('changePinBtn').addEventListener('click', () => this.changePinWithVerification());
-        document.getElementById('voiceSelect').addEventListener('change', (e) => {
-          selectedVoice = voices.find(v => v.name === e.target.value);
-          localStorage.setItem('selected_voice', e.target.value || '');
-        });
+        document.getElementById('voiceSelect').addEventListener('change', (e) => { this.selectedVoice = this.voices.find(v => v.name === e.target.value); localStorage.setItem('selected_voice', e.target.value || ''); });
         document.getElementById('clearHistoryBtn').addEventListener('click', () => this.clearHistory());
         document.getElementById('exportHistoryBtn').addEventListener('click', () => this.exportHistory());
       }
-      
-      changePinWithVerification() {
-        const currentPinInput = document.getElementById('currentPin').value;
-        const newPin = document.getElementById('newPin').value;
-        const confirmPin = document.getElementById('confirmPin').value;
-        if (!currentPinInput) { alert('Введите текущий PIN-код'); return; }
-        if (currentPinInput !== currentPin) { alert('Текущий PIN-код неверен'); document.getElementById('currentPin').value = ''; return; }
-        if (newPin.length !== 4 || !/^\d+$/.test(newPin)) { alert('Новый PIN-код должен состоять из 4 цифр'); return; }
-        if (newPin !== confirmPin) { alert('Новый PIN-код и подтверждение не совпадают'); return; }
-        currentPin = newPin;
-        localStorage.setItem('communicator_pin', currentPin);
-        document.getElementById('currentPin').value = '';
-        document.getElementById('newPin').value = '';
-        document.getElementById('confirmPin').value = '';
-        alert('PIN-код успешно изменен');
-        this.updateSystemInfo();
-      }
-      
-      speakText(text) {
-        if ('speechSynthesis' in window) {
-          speechSynthesis.cancel();
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.lang = 'ru-RU';
-          utterance.rate = speechRate;
-          utterance.pitch = 1.1;
-          if (selectedVoice) utterance.voice = selectedVoice;
-          speechSynthesis.speak(utterance);
-          this.addToHistory(text);
-        }
-      }
-      
-      showAllActions() {
-        this.isQuickNavMode = false;
-        this.filterMode = 'actions';
-        this.navigationStack.push('ALL-ACTIONS');
-        this.renderCards();
-        this.toggleBackButton();
-        this.showCardsView();
-        this.hideDoneButton();
-      }
-      
-      showFilteredPeople() {
-        this.isQuickNavMode = true;
-        this.filterMode = 'people';
-        this.navigationStack.push('FILTER-PEOPLE');
-        this.renderCards();
-        this.toggleBackButton();
-        this.showCardsView();
-        this.showDoneButton();
-      }
-      
-      showFilteredPlaces() {
-        this.isQuickNavMode = true;
-        this.filterMode = 'places';
-        this.navigationStack.push('FILTER-PLACES');
-        this.renderCards();
-        this.toggleBackButton();
-        this.showCardsView();
-        this.showDoneButton();
-      }
-      
-      showFilteredObjects() {
-        if (!this.currentPhrase.action) return;
-        this.isQuickNavMode = true;
-        this.filterMode = 'actionObjects';
-        this.navigationStack.push('FILTER-OBJECTS');
-        this.renderCards();
-        this.toggleBackButton();
-        this.showCardsView();
-        this.showDoneButton();
-      }
-      
-      showFilteredTime() {
-        this.isQuickNavMode = true;
-        this.filterMode = 'time';
-        this.navigationStack.push('FILTER-TIME');
-        this.renderCards();
-        this.toggleBackButton();
-        this.showCardsView();
-        this.showDoneButton();
-      }
-      
-      showDoneButton() { document.getElementById('doneBtn').classList.add('visible'); }
-      hideDoneButton() { document.getElementById('doneBtn').classList.remove('visible'); }
-      finishQuickNav() { this.navigateBack(); this.isQuickNavMode = false; }
-      
-      handleActionSelection(card) {
-        const oldAction = this.currentPhrase.action;
-        this.currentPhrase.action = card;
-        this.checkAndResetIncompatibleElements(oldAction, card);
-        const actionGrammar = this.grammar.getActionGrammar(card);
-        if (actionGrammar.isStandalone) {
-          this.currentPhrase.people = [];
-          this.currentPhrase.pets = [];
-          this.currentPhrase.places = [];
-          this.currentPhrase.objects = [];
-        }
-        this.updateUI();
-      }
-      
-      handleDialogSelection(card) { this.speakText(card.text); }
-      handleLearningSelection(card) { this.speakText(card.text); }
-      
-      handleEmotionSelection(card) {
-        if (this.currentTab === 'main') {
-          this.currentPhrase.subject = 'Я';
-          this.currentPhrase.desire = null;
-          this.currentPhrase.action = card;
-          this.currentPhrase.people = [];
-          this.currentPhrase.pets = [];
-          this.currentPhrase.places = [];
-          this.currentPhrase.objects = [];
-          this.currentPhrase.time = null;
-          this.updateUI();
-        } else {
-          this.speakText(card.text);
-        }
-      }
-      
-      handlePersonSelection(card) {
-        if (!this.currentPhrase.action) return;
-        const actionGrammar = this.grammar.getActionGrammar(this.currentPhrase.action);
-        const allowedTypes = actionGrammar.allowedTypes || [];
-        if (!allowedTypes.includes('people')) return;
-        const maxCount = actionGrammar.maxCounts?.people || 0;
-        const existingIndex = this.currentPhrase.people.findIndex(p => p.id === card.id);
-        if (existingIndex !== -1) {
-          this.currentPhrase.people.splice(existingIndex, 1);
-          this.nextReplacementIndex.people = 0;
-          this.updateUI();
-          return;
-        }
-        if (maxCount === 0 || this.currentPhrase.people.length < maxCount) {
-          this.currentPhrase.people.push(card);
-        } else if (maxCount > 0) {
-          const idx = this.nextReplacementIndex.people;
-          this.currentPhrase.people[idx] = card;
-          this.nextReplacementIndex.people = (idx + 1) % maxCount;
-        }
-        this.updateUI();
-      }
-      
-      handlePetSelection(card) {
-        if (!this.currentPhrase.action) return;
-        const actionGrammar = this.grammar.getActionGrammar(this.currentPhrase.action);
-        const allowedTypes = actionGrammar.allowedTypes || [];
-        if (!allowedTypes.includes('pets')) return;
-        const maxCount = actionGrammar.maxCounts?.pets || 0;
-        const existingIndex = this.currentPhrase.pets.findIndex(p => p.id === card.id);
-        if (existingIndex !== -1) {
-          this.currentPhrase.pets.splice(existingIndex, 1);
-          this.updateUI();
-          return;
-        }
-        if (maxCount === 0 || this.currentPhrase.pets.length < maxCount) {
-          this.currentPhrase.pets.push(card);
-        }
-        this.updateUI();
-      }
-      
-      handlePlaceSelection(card) {
-        if (!this.currentPhrase.action) return;
-        const actionGrammar = this.grammar.getActionGrammar(this.currentPhrase.action);
-        const allowedTypes = actionGrammar.allowedTypes || [];
-        if (!allowedTypes.includes('places')) return;
-        const maxCount = actionGrammar.maxCounts?.places || 0;
-        const existingIndex = this.currentPhrase.places.findIndex(p => p.id === card.id);
-        if (existingIndex !== -1) {
-          this.currentPhrase.places.splice(existingIndex, 1);
-          this.nextReplacementIndex.places = 0;
-          this.updateUI();
-          return;
-        }
-        if (maxCount === 0 || this.currentPhrase.places.length < maxCount) {
-          this.currentPhrase.places.push(card);
-        } else if (maxCount > 0) {
-          const idx = this.nextReplacementIndex.places;
-          this.currentPhrase.places[idx] = card;
-          this.nextReplacementIndex.places = (idx + 1) % maxCount;
-        }
-        this.updateUI();
-      }
-      
-      handleObjectSelection(card) {
-        if (!this.currentPhrase.action) return;
-        const actionGrammar = this.grammar.getActionGrammar(this.currentPhrase.action);
-        const allowedTypes = actionGrammar.allowedTypes || [];
-        if (!allowedTypes.includes('objects')) return;
-        if (!this.isObjectAllowed(card)) return;
-        const maxCount = actionGrammar.maxCounts?.objects || 0;
-        const existingIndex = this.currentPhrase.objects.findIndex(o => o.id === card.id);
-        if (existingIndex !== -1) {
-          this.currentPhrase.objects.splice(existingIndex, 1);
-          this.nextReplacementIndex.objects = 0;
-          this.updateUI();
-          return;
-        }
-        if (maxCount === 0 || this.currentPhrase.objects.length < maxCount) {
-          this.currentPhrase.objects.push(card);
-        } else if (maxCount > 0) {
-          const idx = this.nextReplacementIndex.objects;
-          this.currentPhrase.objects[idx] = card;
-          this.nextReplacementIndex.objects = (idx + 1) % maxCount;
-        }
-        this.updateUI();
-      }
-      
-      handleTimeSelection(card) {
-        this.currentPhrase.time = card;
-        this.updateUI();
-      }
-      
-      handlePainSelection(card) {
-        if (card.type === 'pain') {
-          if (!this.currentPhrase.action || (this.currentPhrase.action.id !== 'ACT-HURT' && this.currentPhrase.action.id !== 'ACT-HURTS-A-LOT')) {
-            this.currentPhrase.action = this.cards['ACT-HURT'];
-          }
-          this.currentPhrase.subject = 'У меня';
-          this.currentPhrase.desire = null;
-          if (this.currentPhrase.action && this.grammar.isObjectCompatible(this.currentPhrase.action, card)) {
-            this.currentPhrase.objects = [card];
-          }
-          this.currentPhrase.people = [];
-          this.currentPhrase.pets = [];
-          this.currentPhrase.places = [];
-          this.currentPhrase.time = null;
-          this.updateUI();
-        }
-      }
-      
-      isObjectAllowed(card) {
-        if (!this.currentPhrase.action) return true;
-        return this.grammar.isObjectCompatible(this.currentPhrase.action, card);
-      }
-      
-      checkAndResetIncompatibleElements(oldAction, newAction) {
-        if (!oldAction || !newAction) return;
-        const newGrammar = this.grammar.getActionGrammar(newAction);
-        const allowedObjects = newGrammar.allowedObjects || [];
-        if (allowedObjects.length > 0) {
-          this.currentPhrase.objects = this.currentPhrase.objects.filter(obj => allowedObjects.includes(obj.id));
-        } else if (newAction.category !== oldAction.category) {
-          this.currentPhrase.objects = [];
-        }
-        // Проверка на совместимость людей, мест и т.д. (можно оставить как есть)
-      }
-      
-      removeElement(type, id) {
-        switch(type) {
-          case 'subject': this.currentPhrase.subject = null; break;
-          case 'desire': this.currentPhrase.desire = null; break;
-          case 'action': this.currentPhrase.action = null; break;
-          case 'person': this.currentPhrase.people = this.currentPhrase.people.filter(p => p.id !== id); this.nextReplacementIndex.people = 0; break;
-          case 'pet': this.currentPhrase.pets = this.currentPhrase.pets.filter(p => p.id !== id); break;
-          case 'place': this.currentPhrase.places = this.currentPhrase.places.filter(p => p.id !== id); this.nextReplacementIndex.places = 0; break;
-          case 'object': this.currentPhrase.objects = this.currentPhrase.objects.filter(o => o.id !== id); this.nextReplacementIndex.objects = 0; break;
-          case 'time': this.currentPhrase.time = null; break;
-        }
-        this.updateUI();
-      }
-      
-      navigateBack() {
-        if (this.navigationStack.length > 1) {
-          this.navigationStack.pop();
-          this.renderCards();
-        } else {
-          this.navigateToHome();
-        }
-        this.filterMode = null;
-        this.isQuickNavMode = false;
-        this.toggleBackButton();
-        this.updateQuickNavigation();
-        this.hideDoneButton();
-      }
-      
-      navigateBackTab(tabId) {
-        const stack = this.tabNavigationStacks[tabId];
-        if (stack.length > 1) {
-          stack.pop();
-          this.renderTabCards(tabId, stack[stack.length - 1]);
-        } else {
-          this.navigateToHomeTab(tabId);
-        }
-      }
-      
-      navigateToHome() {
-        this.navigationStack = [];
-        this.filterMode = null;
-        this.isQuickNavMode = false;
-        this.renderCategories();
-        this.toggleBackButton();
-        this.showCategoriesView();
-        this.updateQuickNavigation();
-        this.hideDoneButton();
-      }
-      
-      navigateToHomeTab(tabId) {
-        this.tabNavigationStacks[tabId] = [];
-        this.tabCurrentViews[tabId] = 'categories';
-        this.renderTabCategories(tabId);
-      }
-      
-      showCategoriesView() {
-        document.getElementById('categoriesView').style.display = 'block';
-        document.getElementById('cardsView').style.display = 'none';
-        this.currentView = 'categories';
-      }
-      
-      showCardsView() {
-        document.getElementById('categoriesView').style.display = 'none';
-        document.getElementById('cardsView').style.display = 'block';
-        this.currentView = 'cards';
-      }
-      
-      toggleBackButton() {
-        document.getElementById('backBtn').style.display = this.navigationStack.length > 0 ? 'block' : 'none';
-      }
-      
-      clearPhrase() {
-        this.currentPhrase = {
-          subject: null, desire: null, action: null, people: [], pets: [], places: [], objects: [], time: null
-        };
-        this.nextReplacementIndex = { people: 0, places: 0, objects: 0 };
-        this.updateUI();
-      }
-      
-      updatePhraseDisplay() {
-        const phraseDisplay = document.getElementById('phraseDisplay');
-        const phrase = this.grammar.buildPhrase(this.currentPhrase);
-        phraseDisplay.textContent = phrase || 'Выберите элементы для фразы';
-      }
-      
-      speakPhrase() {
-        const phrase = document.getElementById('phraseDisplay').textContent;
-        if (phrase && phrase !== 'Выберите элементы для фразы') this.speakText(phrase);
-      }
-      
-      updateUI() {
-        this.updatePhraseDisplay();
-        this.updateSelectedItems();
-        this.updateRulesInfo();
-        this.renderCards();
-        this.updateQuickNavigation();
-      }
-      
-      updateSelectedItems() {
-        const container = document.getElementById('selectedItems');
-        container.innerHTML = '';
-        if (this.currentPhrase.subject) this.addSelectedItem(container, 'subject', null, this.currentPhrase.subject);
-        if (this.currentPhrase.desire) this.addSelectedItem(container, 'desire', null, this.currentPhrase.desire);
-        if (this.currentPhrase.action) this.addSelectedItem(container, 'action', this.currentPhrase.action.id, this.currentPhrase.action.text, this.currentPhrase.action.emoji);
-        this.currentPhrase.people.forEach((person, idx) => this.addSelectedItem(container, 'person', person.id, person.text, person.emoji, true, idx));
-        this.currentPhrase.pets.forEach(pet => this.addSelectedItem(container, 'pet', pet.id, pet.text, pet.emoji, true));
-        this.currentPhrase.places.forEach((place, idx) => this.addSelectedItem(container, 'place', place.id, place.text, place.emoji, true, idx));
-        this.currentPhrase.objects.forEach((obj, idx) => this.addSelectedItem(container, 'object', obj.id, obj.text, obj.emoji, true, idx));
-        if (this.currentPhrase.time) this.addSelectedItem(container, 'time', this.currentPhrase.time.id, this.currentPhrase.time.text, this.currentPhrase.time.emoji, true);
-      }
-      
-      addSelectedItem(container, type, id, text, emoji = null, canReplace = false, index = -1) {
-        const item = document.createElement('div');
-        item.className = 'selected-item';
-        if (canReplace) item.classList.add('can-replace');
-        item.innerHTML = `${emoji ? emoji + ' ' : ''}${text}<span class="remove" data-type="${type}" data-id="${id || ''}">×</span>`;
-        const removeBtn = item.querySelector('.remove');
-        removeBtn.addEventListener('click', (e) => { e.stopPropagation(); this.removeElement(type, id); });
-        if (canReplace) {
-          item.addEventListener('click', (e) => {
-            if (e.target !== removeBtn) this.showReplacementCategory(type, index);
-          });
-        }
-        container.appendChild(item);
-      }
-      
-      showReplacementCategory(type, index) {
-        let categoryId = '';
-        if (type === 'person') categoryId = 'CAT-PEOPLE';
-        else if (type === 'pet') categoryId = 'CAT-PETS';
-        else if (type === 'place') categoryId = 'CAT-PLACES';
-        else if (type === 'object' && this.currentPhrase.action) categoryId = this.currentPhrase.action.category;
-        else if (type === 'time') categoryId = 'CAT-TIME';
-        if (categoryId) {
-          this.currentReplacement = { type, index };
-          this.selectCategory(categoryId);
-        }
-      }
-      
-      updateRulesInfo() {
-        const rulesElement = document.getElementById('rulesInfo');
-        let rulesText = '';
-        if (this.currentPhrase.action && this.grammar.getActionGrammar(this.currentPhrase.action).painConstruction) {
-          rulesText = 'Выберите часть тела, которая болит. Можно выбрать только одну часть тела.';
-        } else if (this.currentPhrase.action && this.currentPhrase.action.type === 'emotion') {
-          rulesText = 'Эмоции выражают состояние. Выберите эмоцию для выражения своего состояния.';
-        } else if (this.navigationStack.includes('CAT-PAIN')) {
-          rulesText = 'Выберите часть тела, которая болит.';
-        } else if (this.currentPhrase.action && this.grammar.getActionGrammar(this.currentPhrase.action).isStandalone) {
-          rulesText = 'Это самостоятельная фраза, не требует дополнительных элементов. Можно добавить время.';
-        } else if (this.currentPhrase.action) {
-          const grammar = this.grammar.getActionGrammar(this.currentPhrase.action);
-          const allowed = grammar.allowedTypes || [];
-          const max = grammar.maxCounts || {};
-          const parts = [];
-          if (allowed.includes('people')) {
-            const cur = this.currentPhrase.people.length;
-            const lim = max.people || 0;
-            parts.push(lim === 0 ? `людей (без ограничений)` : `до ${lim} ${this.getPeopleWord(lim)}`);
-          }
-          if (allowed.includes('places')) {
-            const cur = this.currentPhrase.places.length;
-            const lim = max.places || 0;
-            parts.push(lim === 0 ? `мест (без ограничений)` : `до ${lim} ${this.getPlacesWord(lim)}`);
-          }
-          if (allowed.includes('objects')) {
-            const cur = this.currentPhrase.objects.length;
-            const lim = max.objects || 0;
-            parts.push(lim === 0 ? `объектов (без ограничений)` : `до ${lim} ${this.getObjectsWord(lim)}`);
-          }
-          if (allowed.includes('pets')) {
-            const cur = this.currentPhrase.pets.length;
-            const lim = max.pets || 0;
-            parts.push(lim === 0 ? `питомцев (без ограничений)` : `до ${lim} ${this.getPetsWord(lim)}`);
-          }
-          rulesText = `К действию "${this.currentPhrase.action.text}" можно добавить: ${parts.join(', ')}. Время можно добавить или заменить.`;
-        } else {
-          rulesText = 'Выберите действие для составления фразы.';
-        }
-        rulesElement.textContent = rulesText;
-      }
-      
-      getPeopleWord(count) { return count === 1 ? 'человека' : 'людей'; }
-      getPetsWord(count) { return count === 1 ? 'питомца' : 'питомцев'; }
-      getPlacesWord(count) { return count === 1 ? 'места' : 'мест'; }
-      getObjectsWord(count) { return count === 1 ? 'объекта' : 'объектов'; }
-      
-      renderCategories() {
-        const container = document.getElementById('categoriesContainer');
-        container.innerHTML = '';
-        const categories = Object.values(this.cards).filter(card =>
-          card.type === 'category' && card.category === null && card.sections.includes('Главная')
-        );
-        categories.sort((a, b) => (a.order || 50) - (b.order || 50) || a.text.localeCompare(b.text));
-        categories.forEach(category => {
-          const catDiv = document.createElement('div');
-          catDiv.className = 'category-card';
-          if (category.color) catDiv.style.backgroundColor = category.color;
-          catDiv.innerHTML = `<div class="card-emoji">${category.emoji}</div><div class="card-text">${category.text}</div>`;
-          catDiv.addEventListener('click', () => this.selectCategory(category.id));
-          container.appendChild(catDiv);
-        });
-      }
-      
-      selectCategory(categoryId) {
-        this.filterMode = null;
-        this.isQuickNavMode = false;
-        this.navigationStack.push(categoryId);
-        this.renderCards();
-        this.toggleBackButton();
-        this.showCardsView();
-        this.updateQuickNavigation();
-        this.hideDoneButton();
-      }
-      
-      renderCards() {
-        const container = document.getElementById('cardsContainer');
-        container.innerHTML = '';
-        let cardsToShow = [];
-        const currentStack = this.navigationStack[this.navigationStack.length - 1];
-        if (currentStack === 'ALL-ACTIONS') cardsToShow = this.getAllActions();
-        else if (currentStack === 'FILTER-PEOPLE') cardsToShow = this.getFilteredPeople();
-        else if (currentStack === 'FILTER-PLACES') cardsToShow = this.getFilteredPlaces();
-        else if (currentStack === 'FILTER-OBJECTS') cardsToShow = this.getFilteredObjects();
-        else if (currentStack === 'FILTER-TIME') cardsToShow = this.getFilteredTime();
-        else if (this.navigationStack.length > 0 && currentStack.startsWith('CAT-')) {
-          if (currentStack === 'CAT-ALL') cardsToShow = Object.values(this.cards).filter(c => c.type !== 'category' && c.sections.includes('Главная'));
-          else cardsToShow = Object.values(this.cards).filter(c => c.category === currentStack && c.sections.includes('Главная'));
-        }
-        if (cardsToShow.length === 0) {
-          container.innerHTML = '<div class="no-action-message">В этой категории пока нет карточек</div>';
-          return;
-        }
-        this.renderCardList(container, cardsToShow, 'main');
-      }
-      
-      getAllActions() {
-        return Object.values(this.cards).filter(card =>
-          (card.type === 'action' || card.type === 'emotion' || card.type === 'learning' || card.type === 'help' || card.type === 'request' || card.type === 'dialog') &&
-          card.sections.includes('Главная')
-        );
-      }
-      
-      renderCardList(container, cardsToShow, tabId = 'main') {
-        cardsToShow.sort((a, b) => {
-          const order = { 'action':1,'emotion':1,'learning':1,'help':1,'request':1,'dialog':1,'person':2,'pet':3,'place':4,'object':5,'clothing':6,'book':7,'creative':8,'pain':9,'time':10 };
-          return (order[a.type]||10) - (order[b.type]||10);
-        });
-        cardsToShow.forEach(card => {
-          const cardDiv = document.createElement('div');
-          cardDiv.className = `card ${card.type}`;
-          if (card.color) cardDiv.style.backgroundColor = card.color;
-          const isSelected = (this.currentPhrase.action && card.id === this.currentPhrase.action.id) ||
-            this.currentPhrase.people.some(p => p.id === card.id) ||
-            this.currentPhrase.pets.some(p => p.id === card.id) ||
-            this.currentPhrase.places.some(p => p.id === card.id) ||
-            this.currentPhrase.objects.some(o => o.id === card.id) ||
-            (this.currentPhrase.time && card.id === this.currentPhrase.time.id);
-          if (isSelected) cardDiv.classList.add('selected');
-          let isDisabled = false;
-          if (this.currentPhrase.action && tabId === 'main') {
-            const actionGrammar = this.grammar.getActionGrammar(this.currentPhrase.action);
-            const allowedTypes = actionGrammar.allowedTypes || [];
-            if (card.type === 'person' && !allowedTypes.includes('people')) isDisabled = true;
-            if (card.type === 'pet' && !allowedTypes.includes('pets')) isDisabled = true;
-            if (card.type === 'place' && !allowedTypes.includes('places')) isDisabled = true;
-            if ((card.type === 'object' || card.type === 'clothing' || card.type === 'pain') && !allowedTypes.includes('objects')) isDisabled = true;
-            if ((card.type === 'object' || card.type === 'clothing') && allowedTypes.includes('objects')) {
-              const allowedObjects = actionGrammar.allowedObjects || [];
-              if (allowedObjects.length > 0 && !allowedObjects.includes(card.id)) isDisabled = true;
-            }
-          }
-          if (isDisabled && !isSelected) cardDiv.classList.add('disabled');
-          cardDiv.innerHTML = `<div class="card-emoji">${card.emoji}</div><div class="card-text">${card.text}</div>`;
-          if (!isDisabled || isSelected) cardDiv.addEventListener('click', () => this.selectCard(card.id, tabId));
-          container.appendChild(cardDiv);
-        });
-      }
-      
-      getFilteredPeople() { return Object.values(this.cards).filter(c => c.type === 'person' && c.sections.includes('Главная')); }
-      getFilteredPlaces() { return Object.values(this.cards).filter(c => c.type === 'place' && c.sections.includes('Главная')); }
-      getFilteredTime() { return Object.values(this.cards).filter(c => c.type === 'time' && c.sections.includes('Главная')); }
-      getFilteredObjects() {
-        if (!this.currentPhrase.action || !this.currentPhrase.action.metadata) return [];
-        const actionGrammar = this.grammar.getActionGrammar(this.currentPhrase.action);
-        const allowed = actionGrammar.allowedObjects || [];
-        if (allowed.length === 0) {
-          const cat = this.currentPhrase.action.category;
-          return Object.values(this.cards).filter(c => (c.type === 'object' || c.type === 'clothing') && c.category === cat && c.sections.includes('Главная'));
-        } else {
-          return Object.values(this.cards).filter(c => allowed.includes(c.id) && c.sections.includes('Главная'));
-        }
-      }
-      
-      updateQuickNavigation() {
-        const quickNav = document.getElementById('quickNavigation');
-        const peopleBtn = document.getElementById('quickPeopleBtn');
-        const placesBtn = document.getElementById('quickPlacesBtn');
-        const objectsBtn = document.getElementById('quickObjectsBtn');
-        const timeBtn = document.getElementById('quickTimeBtn');
-        const show = this.currentPhrase.action && this.currentPhrase.action.type !== 'emotion' && !this.grammar.getActionGrammar(this.currentPhrase.action).isStandalone;
-        if (show) {
-          quickNav.style.display = 'flex';
-          const grammar = this.grammar.getActionGrammar(this.currentPhrase.action);
-          const allowed = grammar.allowedTypes || [];
-          peopleBtn.disabled = !allowed.includes('people');
-          placesBtn.disabled = !allowed.includes('places');
-          objectsBtn.disabled = !allowed.includes('objects');
-          timeBtn.disabled = false;
-        } else {
-          quickNav.style.display = 'none';
-        }
-      }
-      
-      setSubject(subject) { this.currentPhrase.subject = subject; this.updateUI(); }
-      setDesire(desire) { this.currentPhrase.desire = desire; this.updateUI(); }
-      
-      selectCard(cardId, tabId = 'main') {
-        const card = this.cards[cardId];
-        if (!card) return;
-        if (tabId === 'learning' || tabId === 'dialog' || tabId === 'emotions') {
-          this.speakText(card.text);
-          return;
-        }
-        if (this.navigationStack.includes('CAT-PAIN')) {
-          this.handlePainSelection(card);
-          this.updateUI();
-          return;
-        }
-        if (this.cardTypeHandlers[card.type]) this.cardTypeHandlers[card.type](card);
-        else this.currentPhrase.objects.push(card);
-        this.updateUI();
-        if (this.filterMode && !this.isQuickNavMode) this.navigateBack();
-      }
-      
-      renderLearningTab() { this.renderTabCategories('learning'); }
-      renderDialogTab() { this.renderTabCategories('dialog'); }
-      renderEmotionsTab() { this.renderTabCategories('emotions'); }
-      
-      renderTabCategories(tabId) {
-        const sectionMap = { emotions:'Эмоции', learning:'Обучение', dialog:'Диалог' };
-        const section = sectionMap[tabId];
-        const container = document.getElementById(`${tabId}CategoriesContainer`);
-        document.getElementById(`${tabId}CategoriesView`).style.display = 'block';
-        document.getElementById(`${tabId}CardsView`).style.display = 'none';
-        document.getElementById(`backBtn${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`).style.display = 'none';
-        container.innerHTML = '';
-        const categories = Object.values(this.cards).filter(c => c.type === 'category' && c.category === null && c.sections.includes(section));
-        if (categories.length === 0) { this.renderTabAllCards(tabId); return; }
-        categories.sort((a,b) => (a.order||50)-(b.order||50) || a.text.localeCompare(b.text));
-        categories.forEach(cat => {
-          const div = document.createElement('div');
-          div.className = 'category-card';
-          if (cat.color) div.style.backgroundColor = cat.color;
-          div.innerHTML = `<div class="card-emoji">${cat.emoji}</div><div class="card-text">${cat.text}</div>`;
-          div.addEventListener('click', () => {
-            this.tabNavigationStacks[tabId].push(cat.id);
-            this.tabCurrentViews[tabId] = 'cards';
-            this.renderTabCards(tabId, cat.id);
-          });
-          container.appendChild(div);
-        });
-      }
-      
-      renderTabCards(tabId, categoryId) {
-        const sectionMap = { emotions:'Эмоции', learning:'Обучение', dialog:'Диалог' };
-        const section = sectionMap[tabId];
-        const container = document.getElementById(`${tabId}CardsContainer`);
-        document.getElementById(`${tabId}CategoriesView`).style.display = 'none';
-        document.getElementById(`${tabId}CardsView`).style.display = 'block';
-        document.getElementById(`backBtn${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`).style.display = 'block';
-        container.innerHTML = '';
-        let cards = [];
-        if (categoryId === 'ALL') cards = Object.values(this.cards).filter(c => c.type !== 'category' && c.sections.includes(section));
-        else cards = Object.values(this.cards).filter(c => c.category === categoryId && c.sections.includes(section));
-        if (cards.length === 0) { container.innerHTML = '<div class="no-action-message">В этой категории пока нет карточек</div>'; return; }
-        cards.sort((a,b) => a.text.localeCompare(b.text));
-        cards.forEach(card => {
-          const div = document.createElement('div');
-          div.className = `card ${card.type}`;
-          if (card.color) div.style.backgroundColor = card.color;
-          div.innerHTML = `<div class="card-emoji">${card.emoji}</div><div class="card-text">${card.text}</div>`;
-          div.addEventListener('click', () => this.selectCard(card.id, tabId));
-          container.appendChild(div);
-        });
-      }
-      
-      renderTabAllCards(tabId) {
-        const sectionMap = { emotions:'Эмоции', learning:'Обучение', dialog:'Диалог' };
-        const section = sectionMap[tabId];
-        const container = document.getElementById(`${tabId}CardsContainer`);
-        document.getElementById(`${tabId}CategoriesView`).style.display = 'none';
-        document.getElementById(`${tabId}CardsView`).style.display = 'block';
-        document.getElementById(`backBtn${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`).style.display = 'none';
-        container.innerHTML = '';
-        const cards = Object.values(this.cards).filter(c => c.type !== 'category' && c.sections.includes(section));
-        if (cards.length === 0) { container.innerHTML = '<div class="no-action-message">В этой вкладке пока нет карточек</div>'; return; }
-        cards.sort((a,b) => a.text.localeCompare(b.text));
-        cards.forEach(card => {
-          const div = document.createElement('div');
-          div.className = `card ${card.type}`;
-          if (card.color) div.style.backgroundColor = card.color;
-          div.innerHTML = `<div class="card-emoji">${card.emoji}</div><div class="card-text">${card.text}</div>`;
-          div.addEventListener('click', () => this.selectCard(card.id, tabId));
-          container.appendChild(div);
-        });
-      }
-      
-      handleEmergency(type) {
-        const messages = {
-          help:'🆘 ПОМОГИТЕ! Мне срочно нужна помощь!',
-          pain:'🤕 У меня СИЛЬНАЯ БОЛЬ! Нужен врач!',
-          scared:'😨 Мне ОЧЕНЬ СТРАШНО! Помогите!',
-          sick:'🤢 Меня ТОШНИТ! Плохо!',
-          lost: this.getLostMessage(),
-          call:'📞 Позвоните моим родителям, пожалуйста!',
-          stop:'🛑 СТОП! Немедленно остановитесь!'
-        };
-        const msg = messages[type] || 'Тревога!';
-        this.speakEmergency(msg);
-        if (type === 'call') setTimeout(() => this.callParents(), 1000);
-        else this.showEmergencyAlert(msg);
-      }
-      
-      getLostMessage() { return `🗺️ Я заблудился! Мой адрес: ${this.childInfo.address || 'адрес не указан'}. Пожалуйста, помогите мне!`; }
-      callParents() {
-        const mother = this.childInfo.motherPhone, father = this.childInfo.fatherPhone;
-        let msg = "Позвоните моим родителям, пожалуйста!\n\n";
-        if (mother && father) msg += `Телефон мамы: ${mother}\nТелефон папы: ${father}`;
-        else if (mother) msg += `Телефон мамы: ${mother}`;
-        else if (father) msg += `Телефон папы: ${father}`;
-        else msg += "Телефоны родителей не указаны в разделе 'Данные о ребенке'";
-        this.showEmergencyAlertWithPhones(msg);
-      }
-      
-      speakEmergency(message) {
-        if ('speechSynthesis' in window) {
-          speechSynthesis.cancel();
-          const u = new SpeechSynthesisUtterance(message);
-          u.lang = 'ru-RU'; u.rate = 1.2; u.pitch = 1.3; u.volume = 1;
-          speechSynthesis.speak(u);
-        }
-      }
-      
-      showEmergencyAlert(message) {
-        const div = document.createElement('div');
-        div.style.cssText = `position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(231,76,60,0.95); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; font-size:2rem; text-align:center; padding:20px; animation:pulse 1s infinite;`;
-        const style = document.createElement('style');
-        style.textContent = `@keyframes pulse{0%{background-color:rgba(231,76,60,0.95)}50%{background-color:rgba(192,57,43,0.95)}100%{background-color:rgba(231,76,60,0.95)}}`;
-        div.innerHTML = `<div style="font-size:4rem; margin-bottom:20px;">⚠️</div><div style="font-weight:bold; margin-bottom:20px;">${message}</div><div style="font-size:1.5rem; margin-bottom:30px;">Немедленная помощь!</div><button id="closeEmergency" style="background:white; color:#e74c3c; border:none; padding:15px 30px; font-size:1.5rem; border-radius:10px; cursor:pointer; font-weight:bold;">Закрыть</button>`;
-        document.body.appendChild(style);
-        document.body.appendChild(div);
-        document.getElementById('closeEmergency').addEventListener('click', () => { div.remove(); style.remove(); speechSynthesis.cancel(); });
-        setTimeout(() => { if (div.parentNode) { div.remove(); style.remove(); } }, 30000);
-      }
-      
-      showEmergencyAlertWithPhones(message) {
-        const div = document.createElement('div');
-        div.style.cssText = `position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(52,152,219,0.95); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; font-size:1.5rem; text-align:center; padding:20px;`;
-        div.innerHTML = `<div style="font-size:4rem; margin-bottom:20px;">📞</div><div style="font-weight:bold; margin-bottom:20px;">Позвоните моим родителям!</div><div style="background:rgba(255,255,255,0.2); padding:20px; border-radius:10px; margin-bottom:20px; text-align:left; font-size:1.2rem;">${message.split('\n').map(l=>`<div style="margin-bottom:10px;">${l}</div>`).join('')}</div><button id="closeEmergency" style="background:white; color:#3498db; border:none; padding:15px 30px; font-size:1.5rem; border-radius:10px; cursor:pointer; font-weight:bold; margin-top:20px;">Закрыть</button>`;
-        document.body.appendChild(div);
-        document.getElementById('closeEmergency').addEventListener('click', () => { div.remove(); speechSynthesis.cancel(); });
-        setTimeout(() => { if (div.parentNode) div.remove(); }, 30000);
-      }
-      
-      renderChildInfo(editable = false) {
-        const container = document.getElementById('childInfoGrid');
-        const info = this.childInfo;
-        container.innerHTML = `
-          <div class="child-card"><h3>Основная информация</h3>
-            <div class="form-group"><label>Имя ребенка</label><input type="text" id="childName" value="${info.name||''}" ${editable?'':'disabled class="view-only"'}></div>
-            <div class="form-group"><label>Возраст</label><input type="number" id="childAge" value="${info.age||''}" ${editable?'':'disabled class="view-only"'}></div>
-            <div class="form-group"><label>Пол</label><select id="childGender" ${editable?'':'disabled class="view-only"'}><option value="">Выберите</option><option value="male" ${info.gender==='male'?'selected':''}>Мальчик</option><option value="female" ${info.gender==='female'?'selected':''}>Девочка</option></select></div>
-            <div class="form-group"><label>Адрес</label><input type="text" id="childAddress" value="${info.address||''}" ${editable?'':'disabled class="view-only"'}></div>
-            ${editable?'<button class="save-btn" onclick="window.communicator.saveChildInfo()">Сохранить</button>':''}
-          </div>
-          <div class="child-card"><h3>Контакты</h3>
-            <div class="form-group"><label>Телефон мамы</label><input type="tel" id="motherPhone" value="${info.motherPhone||''}" ${editable?'':'disabled class="view-only"'}></div>
-            <div class="form-group"><label>Телефон папы</label><input type="tel" id="fatherPhone" value="${info.fatherPhone||''}" ${editable?'':'disabled class="view-only"'}></div>
-            <div class="form-group"><label>Телефон врача</label><input type="tel" id="doctorPhone" value="${info.doctorPhone||''}" ${editable?'':'disabled class="view-only"'}></div>
-            ${editable?'<button class="save-btn" onclick="window.communicator.saveContacts()">Сохранить</button>':''}
-          </div>
-          <div class="child-card"><h3>Медицинская информация</h3>
-            <div class="form-group"><label>Диагноз</label><textarea id="childDiagnosis" ${editable?'':'disabled class="view-only"'}">${info.diagnosis||''}</textarea></div>
-            <div class="form-group"><label>Аллергии</label><textarea id="childAllergies" ${editable?'':'disabled class="view-only"'}">${info.allergies||''}</textarea></div>
-            ${editable?'<button class="save-btn" onclick="window.communicator.saveMedicalInfo()">Сохранить</button>':''}
-          </div>
-          <div class="child-card"><h3>Навыки и предпочтения</h3>
-            <div class="form-group"><label>Любимые занятия</label><textarea id="childInterests" ${editable?'':'disabled class="view-only"'}">${info.interests||''}</textarea></div>
-            <div class="form-group"><label>Не любит/Боится</label><textarea id="childDislikes" ${editable?'':'disabled class="view-only"'}">${info.dislikes||''}</textarea></div>
-            ${editable?'<button class="save-btn" onclick="window.communicator.saveSkillsInfo()">Сохранить</button>':''}
-          </div>
-        `;
-      }
-      
-      enableChildEditing() { this.renderChildInfo(true); document.getElementById('editChildBtn').style.display = 'none'; }
-      saveChildInfo() {
-        this.childInfo.name = document.getElementById('childName').value;
-        this.childInfo.age = document.getElementById('childAge').value;
-        this.childInfo.gender = document.getElementById('childGender').value;
-        this.childInfo.address = document.getElementById('childAddress').value;
-        localStorage.setItem('childInfo', JSON.stringify(this.childInfo));
-        alert('Основная информация сохранена');
-        this.renderChildInfo(false);
-        document.getElementById('editChildBtn').style.display = 'block';
-        isEditingEnabled = false;
-      }
-      saveContacts() {
-        this.childInfo.motherPhone = document.getElementById('motherPhone').value;
-        this.childInfo.fatherPhone = document.getElementById('fatherPhone').value;
-        this.childInfo.doctorPhone = document.getElementById('doctorPhone').value;
-        localStorage.setItem('childInfo', JSON.stringify(this.childInfo));
-        alert('Контакты сохранены');
-      }
-      saveMedicalInfo() {
-        this.childInfo.diagnosis = document.getElementById('childDiagnosis').value;
-        this.childInfo.allergies = document.getElementById('childAllergies').value;
-        localStorage.setItem('childInfo', JSON.stringify(this.childInfo));
-        alert('Медицинская информация сохранена');
-      }
-      saveSkillsInfo() {
-        this.childInfo.interests = document.getElementById('childInterests').value;
-        this.childInfo.dislikes = document.getElementById('childDislikes').value;
-        localStorage.setItem('childInfo', JSON.stringify(this.childInfo));
-        alert('Информация о навыках сохранена');
-      }
-      
-      addToHistory(text) {
-        const now = new Date();
-        const item = { text, timestamp: now.toISOString(), timeString: now.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit',second:'2-digit'}), dateString: now.toLocaleDateString('ru-RU') };
-        history.unshift(item);
-        if (history.length > 100) history = history.slice(0,100);
-        localStorage.setItem('communicator_history', JSON.stringify(history));
-        if (this.currentTab === 'history') this.renderHistory();
-      }
-      
-      renderHistory() {
-        const container = document.getElementById('historyContainer');
-        container.innerHTML = '';
-        if (history.length === 0) { container.innerHTML = '<div class="no-action-message">История пуста</div>'; return; }
-        history.forEach(item => {
-          const div = document.createElement('div');
-          div.className = 'history-item';
-          div.innerHTML = `<div class="history-text">${item.text}</div><div class="history-time" title="${item.dateString}">${item.timeString}</div>`;
-          div.addEventListener('click', () => this.speakText(item.text));
-          container.appendChild(div);
-        });
-      }
-      
-      clearHistory() {
-        if (confirm("Очистить всю историю запросов?")) {
-          history = [];
-          localStorage.setItem('communicator_history', JSON.stringify(history));
-          this.renderHistory();
-          alert('История очищена');
-        }
-      }
-      
-      exportHistory() {
-        const dataStr = JSON.stringify(history, null, 2);
-        const blob = new Blob([dataStr], {type:'application/json'});
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'communicator_history_' + new Date().toISOString().slice(0,10) + '.json';
-        link.click();
-      }
-      
-      updateSystemInfo() {
-        const container = document.getElementById('systemInfo');
-        const count = Object.keys(this.cards).length;
-        const size = (new Blob([JSON.stringify({cards:this.cards})]).size / 1024).toFixed(2);
-        const info = {
-          'Версия приложения':'4.6.0 (грамматика в карточках)',
-          'Количество карточек':count,
-          'Размер данных':`${size} КБ`,
-          'Последнее обновление':new Date().toLocaleString(),
-          'Скорость чтения':speechRate,
-          'Размер шрифта':`${(fontSizeScale*100).toFixed(0)}%`,
-          'PIN-код установлен':currentPin!==DEFAULT_PIN?'Да':'Нет (по умолчанию 0000)',
-          'Всего фраз в истории':history.length
-        };
-        let html = '';
-        for (let [k,v] of Object.entries(info)) html += `<div class="settings-info-item"><span class="settings-info-label">${k}:</span> <span class="settings-info-value">${v}</span></div>`;
-        container.innerHTML = html;
+
+      previewRemoteLoad() {
+        const strategy = document.querySelector('input[name="loadStrategy"]:checked').value;
+        const selectedSections = Array.from(document.querySelectorAll('input[name="section"]:checked')).map(cb => cb.value);
+        const skipCategories = document.getElementById('skipCategories').checked;
+        const summary = document.getElementById('summaryInfo');
+        const counts = document.getElementById('sectionCounts');
+        if (strategy === 'sections') {
+          if (selectedSections.length === 0) { summary.style.display = 'none'; return; }
+          let sectionText = selectedSections.map(s => ({'Главная':'📱 Главная','Обучение':'🎓 Обучение','Диалог':'💬 Диалог','Эмоции':'😊 Эмоции'}[s]||s)).join(', ');
+          counts.textContent = `${selectedSections.length} разделов: ${sectionText}`;
+          if (skipCategories) counts.textContent += ' (без категорий)';
+          summary.style.display = 'block';
+        } else summary.style.display = 'none';
       }
     }
-    
+
+    // Глобальная инициализация голосов
     function loadVoices() {
-      voices = speechSynthesis.getVoices();
+      const voices = speechSynthesis.getVoices();
       const select = document.getElementById('voiceSelect');
       select.innerHTML = '<option value="">Системный голос</option>';
       voices.forEach(voice => {
@@ -3132,17 +2699,20 @@
         }
       });
       const saved = localStorage.getItem('selected_voice');
-      if (saved) { select.value = saved; selectedVoice = voices.find(v=>v.name===saved); }
+      if (saved) { select.value = saved; window.app.selectedVoice = voices.find(v=>v.name===saved); }
     }
-    
+
+    // Запуск приложения
+    window.app = null;
     document.addEventListener('DOMContentLoaded', async () => {
-      const communicator = new Communicator();
-      window.communicator = communicator;
-      document.getElementById('speedSlider').value = speechRate;
-      document.getElementById('speedValue').textContent = speechRate;
-      document.getElementById('fontSizeSlider').value = fontSizeScale * 100;
-      document.getElementById('fontSizeValue').textContent = (fontSizeScale * 100).toFixed(0) + '%';
+      window.app = new App();
+      await window.app.init();
+      document.getElementById('speedSlider').value = window.app.speechRate;
+      document.getElementById('speedValue').textContent = window.app.speechRate;
+      document.getElementById('fontSizeSlider').value = window.app.fontSizeScale * 100;
+      document.getElementById('fontSizeValue').textContent = (window.app.fontSizeScale * 100).toFixed(0) + '%';
       loadVoices();
+      window.app.voices = speechSynthesis.getVoices();
     });
   </script>
 </body>
