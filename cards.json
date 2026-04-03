@@ -43,7 +43,7 @@
         "requiresSubject": true,
         "requiresDesire": true,
         "isStandalone": false,
-        "directObject": false,
+        "directObject": true,
         "allowedTypes": [
           "people",
           "places",
