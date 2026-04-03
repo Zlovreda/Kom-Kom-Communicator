@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ком-Ком: Коммуникатор для детей с РАС</title>
   <style>
-    /* Все стили кроме связанных с распорядком */
+    /* Все стили остаются без изменений */
     * {
       box-sizing: border-box;
       margin: 0;
-	  
-	  
       padding: 0;
       font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
     }
@@ -953,7 +951,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Ком-Ком: Коммуникатор для детей с РАС (Тестовая версия)</h1>
+    <h1>Ком-Ком: Коммуникатор для детей с РАС</h1>
 
     <div class="tabs-container">
       <button class="tab-btn active" data-tab="main">Главная</button>
@@ -1394,644 +1392,297 @@
     let selectedVoice = null;
     let history = JSON.parse(localStorage.getItem('communicator_history') || '[]');
     
-class AdvancedGrammarSystem {
-  constructor() {
-    this.rules = {
-      // Правила для разных типов карточек
-      'person': { 
-        storeIn: 'people',
-        preposition: 'с', 
-        case: 'instrumental', 
-        joinPreposition: true 
-      },
-      'pet': { 
-        storeIn: 'pets',
-        preposition: null, 
-        case: 'accusative', 
-        directObject: true 
-      },
-      'place': { 
-        storeIn: 'places',
-        preposition: null, 
-        case: 'locative', 
-        specialForm: true 
-      },
-      'object': { 
-        storeIn: 'objects',
-        preposition: 'с', 
-        case: 'instrumental', 
-        joinPreposition: true 
-      },
-'clothing': { 
-  storeIn: 'objects',
-  preposition: null, 
-  case: 'accusative', 
-  joinPreposition: false,
-  directObject: true 
-},
-      'time': { 
-        storeIn: 'time',
-        preposition: null, 
-        case: 'adverbial' 
-      },
-      'food': { 
-        storeIn: 'objects',
-        preposition: null, 
-        case: 'accusative', 
-        directObject: true 
-      },
-      'drink': { 
-        storeIn: 'objects',
-        preposition: null, 
-        case: 'accusative', 
-        directObject: true 
-      },
-      'hygiene-tool': { 
-        storeIn: 'objects',
-        preposition: 'с', 
-        case: 'instrumental', 
-        joinPreposition: true 
-      },
-      'transport': { 
-        storeIn: 'objects',
-        preposition: 'на', 
-        case: 'locative', 
-        joinPreposition: false 
-      },
-      'toilet': { 
-        storeIn: 'objects',
-        preposition: null, 
-        case: 'adverbial', 
-        standalone: true 
-      },
-      'pain': {
-        storeIn: 'objects',
-        preposition: null,
-        case: 'nominative',
-        directObject: false,
-        forPain: true
-      },
-      'learning': {
-        storeIn: null,
-        standalone: true
-      },
-      'dialog': {
-        storeIn: null,
-        standalone: true
-      },
-      'emotion': {
-        storeIn: null,
-        standalone: true
-      }
-    };
-    
-    // Специальные правила для определенных действий
-    this.actionRules = {
-      // Стандартные действия
-      'ACT-EAT': { 
-        type: 'consumption', 
-        directObject: true,
-        allowedStores: ['objects', 'people', 'places', 'time'],
-        requiresDesire: true,
-        requiresSubject: true
-      },
-      'ACT-DRINK': { 
-        type: 'consumption', 
-        directObject: true,
-        allowedStores: ['objects', 'people', 'places', 'time'],
-        requiresDesire: true,
-        requiresSubject: true
-      },
-      'ACT-RIDE': { 
-        type: 'movement', 
-        transportPreposition: 'на',
-        allowedStores: ['objects', 'people', 'places', 'time'],
-        requiresDesire: true,
-        requiresSubject: true
-      },
-      'ACT-WEAR': { 
-        type: 'dressing', 
-        clothingPreposition: 'в',
-        allowedStores: ['objects', 'places', 'time'],
-        requiresDesire: true,
-        requiresSubject: true
-      },
-      'ACT-UNDRESS': { 
-        type: 'dressing', 
-        allowedStores: ['objects', 'places', 'time'],
-        requiresDesire: true,
-        requiresSubject: true
-      },
-      'ACT-PLAY': { 
-        type: 'activity', 
-        allowedStores: ['objects', 'people', 'places', 'time'],
-        requiresDesire: true,
-        requiresSubject: true
-      },
-      'ACT-PET': { 
-        type: 'interaction', 
-        directObject: true,
-        allowedStores: ['pets', 'places', 'time'],
-        requiresDesire: true,
-        requiresSubject: true
-      },
-      'ACT-WASH-HANDS': { 
-        type: 'hygiene', 
-        allowedStores: ['objects', 'places', 'time'],
-        requiresDesire: true,
-        requiresSubject: true
-      },
-      'ACT-BRUSH-TEETH': { 
-        type: 'hygiene', 
-        allowedStores: ['objects', 'places', 'time'],
-        requiresDesire: true,
-        requiresSubject: true
-      },
-'ACT-PEE': { 
-  type: 'toilet', 
-  allowedStores: ['places', 'time'],
-  requiresDesire: true,
-  requiresSubject: true
-},
-'ACT-POO': { 
-  type: 'toilet', 
-  allowedStores: ['places', 'time'],
-  requiresDesire: true,
-  requiresSubject: true
-},
-      'ACT-SHOWER': { 
-        type: 'hygiene', 
-        standalone: true,
-        allowedStores: ['places', 'time']
-      },
-      'ACT-HELP': { 
-        type: 'emergency', 
-        standalone: true
-      },
-      
-      // Правила для боли
-      'ACT-HURT': {
-        type: 'medical',
-        requiresSubject: true,
-        requiresPainObject: true,
-        maxObjects: 1,
-        allowedStores: ['objects'],
-        directObject: false,
-        painConstruction: true
-      },
-      'ACT-HURTS-A-LOT': {
-        type: 'medical',
-        requiresSubject: true,
-        requiresPainObject: true,
-        maxObjects: 1,
-        allowedStores: ['objects'],
-        directObject: false,
-        painConstruction: true
-      },
-      'ACT-HELP-PAIN': {
-        type: 'medical',
-        standalone: true,
-        requiresSubject: false
-      }
-    };
-    
-    // Специальные формы для мест
-    this.specialPlaceForms = {
-      'дом': 'дома',
-      'площадка': 'на площадке',
-      'парк': 'в парке',
-      'школа': 'в школе',
-      'магазин': 'в магазине',
-      'кафе': 'в кафе',
-      'туалет': 'в туалете',
-      'ванная': 'в ванной'
-    };
-    
-    // Формы для построения фраз с болью
-    this.painPatterns = {
-      'голова': 'голова',
-      'зуб': 'зуб',
-      'зубы': 'зубы',
-      'живот': 'живот',
-      'ухо': 'ухо',
-      'уши': 'уши',
-      'горло': 'горло',
-      'нога': 'нога',
-      'ноги': 'ноги',
-      'рука': 'рука',
-      'руки': 'руки',
-      'спина': 'спина',
-      'глаз': 'глаз',
-      'глаза': 'глаза',
-      'нос': 'нос',
-      'палец ноги': 'палец на ноге',
-      'пальцы ног': 'пальцы на ногах',
-      'палец руки': 'палец на руке',
-      'пальцы рук': 'пальцы на руках',
-      'грудь': 'грудь',
-      'сердце': 'сердце',
-      'шея': 'шея',
-      'колено': 'колено',
-      'колени': 'колени',
-      'локоть': 'локоть',
-      'локти': 'локти',
-      'плечо': 'плечо',
-      'плечи': 'плечи',
-      'лодыжка': 'лодыжка',
-      'лодыжки': 'лодыжки',
-      'запястье': 'запястье',
-      'запястья': 'запястья',
-      'везде': 'везде',
-      'всё': 'всё'
-    };
-    
-    // Неправильные формы множественного числа
-    this.pluralForms = {
-      'зуб': 'зубы',
-      'ухо': 'уши',
-      'нога': 'ноги',
-      'рука': 'руки',
-      'глаз': 'глаза',
-      'колено': 'колени',
-      'локоть': 'локти',
-      'плечо': 'плечи',
-      'лодыжка': 'лодыжки',
-      'запястье': 'запястья',
-      'палец ноги': 'пальцы ног',
-      'палец руки': 'пальцы рук'
-    };
-  }
-
-  getWordForm(card, context = {}) {
-    if (!card) return '';
-    
-    const { type, text, forms } = card;
-    
-    // Для времени - возвращаем как есть
-    if (type === 'time') {
-      return text;
-    }
-    
-	// Обработка для clothing
-if (type === 'clothing') {
-  // Для одежды в винительном падеже без предлога
-  if (context.directObject) {
-    if (forms && forms.direct) {
-      return forms.direct;
-    }
-    return text;
-  }
-  
-  // Для предложного падежа (где есть)
-  if (context.preposition && forms && forms[context.preposition]) {
-    return forms[context.preposition];
-  }
-  
-  return text || '';
-}
-	
-	
-    // Для мест - используем специальные формы
-    if (type === 'place' && this.specialPlaceForms[text]) {
-      return this.specialPlaceForms[text];
-    }
-    
-    // Для боли - возвращаем только часть тела без глагола
-    if (type === 'pain') {
-      // Для painConstruction возвращаем только часть тела
-      if (context.painConstruction) {
-        return this.painPatterns[text] || text;
+    // ================= НОВАЯ ГРАММАТИЧЕСКАЯ СИСТЕМА =================
+    class AdvancedGrammarSystem {
+      constructor() {
+        // Дефолтные правила для действий (если в карточке нет grammar)
+        this.defaultActionGrammar = {
+          requiresSubject: true,
+          requiresDesire: true,
+          isStandalone: false,
+          directObject: false,
+          painConstruction: false,
+          allowedTypes: [],
+          maxCounts: {},
+          objectPreposition: null,
+          objectCase: null,
+          personPreposition: null,
+          personCase: null,
+          placePreposition: null,
+          allowedObjects: []
+        };
+        
+        // Дефолтные правила для объектов (существительных, мест, людей и т.д.)
+        this.defaultItemGrammar = {
+          forms: {},
+          preposition: null,
+          caseForPreposition: null,
+          pluralForm: null,
+          isPluralOnly: false
+        };
       }
       
-      // Для стандартного контекста возвращаем текст карточки
-      return text;
-    }
-    
-    // Если есть готовая форма для контекста
-    if (context.preposition && forms && forms[context.preposition]) {
-      return forms[context.preposition];
-    }
-    
-    // Для прямых дополнений
-    if (context.directObject) {
-      if (forms && forms.direct) {
-        return forms.direct;
-      }
-      return text;
-    }
-    
-    return text || '';
-  }
-
-  // Улучшенный метод для соединения элементов
-  joinElements(elements, conjunction = 'и') {
-    if (!elements || elements.length === 0) return '';
-    if (elements.length === 1) return elements[0];
-    
-    // Проверяем, все ли элементы начинаются с одинакового предлога
-    const firstElement = elements[0];
-    let commonPreposition = '';
-    
-    if (firstElement.startsWith('с ')) commonPreposition = 'с ';
-    else if (firstElement.startsWith('в ')) commonPreposition = 'в ';
-    else if (firstElement.startsWith('на ')) commonPreposition = 'на ';
-    
-    // Если все элементы имеют одинаковый предлог, объединяем правильно
-    const allSamePreposition = commonPreposition && 
-      elements.every(el => el.startsWith(commonPreposition));
-    
-    if (allSamePreposition && commonPreposition) {
-      // Убираем предлоги у всех элементов
-      const withoutPrepositions = elements.map(el => 
-        el.substring(commonPreposition.length)
-      );
-      
-      if (withoutPrepositions.length === 2) {
-        return `${commonPreposition}${withoutPrepositions[0]} ${conjunction} ${withoutPrepositions[1]}`;
-      }
-      
-      const last = withoutPrepositions.pop();
-      return `${commonPreposition}${withoutPrepositions.join(', ')} ${conjunction} ${last}`;
-    }
-    
-    // Если это прямые дополнения без предлогов
-    if (!elements.some(el => el.startsWith('с ') || el.startsWith('в ') || el.startsWith('на '))) {
-      if (elements.length === 2) {
-        return `${elements[0]} ${conjunction} ${elements[1]}`;
-      }
-      const last = elements.pop();
-      return `${elements.join(', ')} ${conjunction} ${last}`;
-    }
-    
-    // Смешанные элементы
-    if (elements.length === 2) {
-      return `${elements[0]} ${conjunction} ${elements[1]}`;
-    }
-    
-    const last = elements.pop();
-    return `${elements.join(', ')} ${conjunction} ${last}`;
-  }
-
-  // Основной метод построения фразы с поддержкой боли
-  buildPhrase(phrase) {
-    if (!phrase.action) return 'Выберите действие';
-    
-    const action = phrase.action;
-    const actionId = action.id;
-    const actionRule = this.actionRules[actionId] || {};
-    const metadata = action.metadata || {};
-    
-    // Проверяем, требует ли действие желание
-    const requiresDesire = actionRule.requiresDesire || metadata.requiresDesire;
-    const isStandalone = actionRule.standalone || metadata.isStandalone;
-    const isDirectObject = actionRule.directObject || metadata.directObject;
-    const requiresSubject = actionRule.requiresSubject !== false;
-    const isPainConstruction = actionRule.painConstruction || metadata.painConstruction;
-    const requiresPainObject = actionRule.requiresPainObject;
-    
-    // Для боли - специальная обработка
-    if (isPainConstruction) {
-      return this.buildPainPhrase(phrase);
-    }
-    
-    // Для самостоятельных фраз (эмоции, обучение, диалог)
-    if (isStandalone) {
-      if (phrase.subject && requiresSubject) {
-        return `${phrase.subject} ${phrase.action.text}`;
-      }
-      return phrase.action.text;
-    }
-    
-    // Стандартное построение фразы
-    const parts = [];
-    const subject = phrase.subject || (requiresSubject ? 'Я' : '');
-    if (subject) parts.push(subject);
-    
-    // Добавляем желание
-    if (phrase.desire) {
-      parts.push(phrase.desire);
-    } else if (requiresDesire && !isStandalone) {
-      parts.push('хочу');
-    }
-    
-    parts.push(action.text);
-    
-    // Обработка в зависимости от типа действия
-    if (actionId === 'ACT-PET') {
-      // Для "гладить" - прямое дополнение из pets
-      if (phrase.pets && phrase.pets.length > 0) {
-        const pets = phrase.pets.map(pet => 
-          this.getWordForm(pet, { directObject: true })
-        );
-        parts.push(this.joinElements(pets));
-      }
-    }
-else if (actionId === 'ACT-WEAR') {
-  // Для "надеть" - прямой объект в винительном падеже без предлога
-  if (phrase.objects && phrase.objects.length > 0) {
-    const clothing = phrase.objects.map(item => {
-      if (item.type === 'clothing' && item.forms && item.forms.direct) {
-        return item.forms.direct; // Например: "куртку", "штаны"
-      }
-      return item.text;
-    });
-    parts.push(this.joinElements(clothing));
-  }
-}
-else if (actionId === 'ACT-UNDRESS') {
-  // Для "снять" - тоже прямой объект в винительном падеже
-  if (phrase.objects && phrase.objects.length > 0) {
-    const clothing = phrase.objects.map(item => {
-      if (item.type === 'clothing' && item.forms && item.forms.direct) {
-        return item.forms.direct;
-      }
-      return item.text;
-    });
-    parts.push(this.joinElements(clothing));
-  }
-}
-    else if (actionId === 'ACT-RIDE') {
-      // Для "кататься" - предлог "на" + предложный падеж
-      if (phrase.objects && phrase.objects.length > 0) {
-        const transport = phrase.objects.map(item => {
-          if (item.forms && item.forms['на']) {
-            return `на ${item.forms['на']}`;
+      // Получить грамматику действия, объединяя с дефолтной
+      getActionGrammar(actionCard) {
+        if (!actionCard) return this.defaultActionGrammar;
+        const grammar = actionCard.grammar || {};
+        // Миграция старых полей metadata в grammar, если есть
+        if (actionCard.metadata && !actionCard.grammar) {
+          const m = actionCard.metadata;
+          const newGrammar = {};
+          if (m.requiresSubject !== undefined) newGrammar.requiresSubject = m.requiresSubject;
+          if (m.requiresDesire !== undefined) newGrammar.requiresDesire = m.requiresDesire;
+          if (m.isStandalone !== undefined) newGrammar.isStandalone = m.isStandalone;
+          if (m.directObject !== undefined) newGrammar.directObject = m.directObject;
+          if (m.painConstruction !== undefined) newGrammar.painConstruction = m.painConstruction;
+          if (m.allowedWith) newGrammar.allowedTypes = m.allowedWith;
+          if (m.maxPeople !== undefined || m.maxPets !== undefined || m.maxPlaces !== undefined || m.maxObjects !== undefined) {
+            newGrammar.maxCounts = {
+              people: m.maxPeople || 0,
+              pets: m.maxPets || 0,
+              places: m.maxPlaces || 0,
+              objects: m.maxObjects || 0
+            };
           }
-          return `на ${item.text}`;
-        });
-        parts.push(this.joinElements(transport));
-      }
-    }
-    else if (actionId === 'ACT-EAT' || actionId === 'ACT-DRINK') {
-      // Для "есть" и "пить" - прямое дополнение
-      if (phrase.objects && phrase.objects.length > 0) {
-        const items = phrase.objects.map(item => 
-          this.getWordForm(item, { directObject: true })
-        );
-        parts.push(this.joinElements(items));
-      }
-    }
-    else if (actionId === 'ACT-PLAY') {
-      // Для "играть" - предлог "с" + творительный падеж
-      if (phrase.objects && phrase.objects.length > 0) {
-        const toys = phrase.objects.map(toy => {
-          if (toy.forms && toy.forms['с']) {
-            return `с ${toy.forms['с']}`;
-          }
-          return `с ${toy.text}`;
-        });
-        parts.push(this.joinElements(toys));
-      }
-    }
-    else if (actionId === 'ACT-WASH-HANDS' || actionId === 'ACT-BRUSH-TEETH') {
-      // Для гигиены - предлог "с" + творительный падеж
-      if (phrase.objects && phrase.objects.length > 0) {
-        const tools = phrase.objects.map(tool => {
-          if (tool.forms && tool.forms['с']) {
-            return `с ${tool.forms['с']}`;
-          }
-          return `с ${tool.text}`;
-        });
-        parts.push(this.joinElements(tools));
-      }
-    }
-    else if (isStandalone) {
-      // Для standalone действий ничего не добавляем кроме времени
-    }
-    
-    // Люди с предлогом "с"
-    if (!isStandalone && phrase.people && phrase.people.length > 0) {
-      const people = phrase.people.map(person => {
-        if (person.forms && person.forms['с']) {
-          return `с ${person.forms['с']}`;
+          if (m.transportPreposition) newGrammar.objectPreposition = m.transportPreposition;
+          if (m.clothingPreposition) newGrammar.objectPreposition = m.clothingPreposition;
+          if (m.removePreposition) newGrammar.objectPreposition = m.removePreposition;
+          if (m.allowedObjects) newGrammar.allowedObjects = m.allowedObjects;
+          return { ...this.defaultActionGrammar, ...newGrammar };
         }
-        return `с ${person.text}`;
-      });
+        return { ...this.defaultActionGrammar, ...grammar };
+      }
       
-      // Проверяем, есть ли уже элементы с предлогом "с"
-      const lastPart = parts[parts.length - 1];
-      if (lastPart && lastPart.startsWith('с ')) {
-        const combined = this.joinElements([lastPart, ...people]);
-        parts[parts.length - 1] = combined;
-      } else {
-        parts.push(this.joinElements(people));
+      // Получить грамматику объекта (существительного, места, человека и т.д.)
+      getItemGrammar(itemCard) {
+        if (!itemCard) return this.defaultItemGrammar;
+        // Если есть поле grammar – используем его
+        if (itemCard.grammar) {
+          return { ...this.defaultItemGrammar, ...itemCard.grammar };
+        }
+        // Иначе создаём на основе старого поля forms (миграция)
+        const grammar = { ...this.defaultItemGrammar };
+        if (itemCard.forms) {
+          grammar.forms = { ...itemCard.forms };
+          // Попытаемся определить стандартный предлог и падеж
+          if (itemCard.forms['с']) {
+            grammar.preposition = 'с';
+            grammar.caseForPreposition = 'instrumental';
+          } else if (itemCard.forms['в']) {
+            grammar.preposition = 'в';
+            grammar.caseForPreposition = 'prepositional';
+          } else if (itemCard.forms['на']) {
+            grammar.preposition = 'на';
+            grammar.caseForPreposition = 'locative';
+          }
+        }
+        return grammar;
       }
-    }
-    
-    // Места
-    if (!isStandalone && phrase.places && phrase.places.length > 0) {
-      const place = phrase.places[0];
-      const placeForm = this.getWordForm(place);
-      parts.push(placeForm);
-    }
-    
-    // Время
-    if (phrase.time) {
-      parts.push(this.getWordForm(phrase.time));
-    }
-    
-    return parts.join(' ');
-  }
-
-  // Специальный метод для построения фраз о боли (ИСПРАВЛЕННЫЙ)
-  buildPainPhrase(phrase) {
-    const parts = [];
-    
-    // Добавляем подлежащее
-    if (phrase.subject) {
-      parts.push(phrase.subject);
-    } else {
-      parts.push('У меня');
-    }
-    
-    // Определяем глагол в зависимости от действия
-    let verb = phrase.action ? phrase.action.text : 'болит';
-    
-    // Если есть объект боли, определяем правильную форму глагола
-    if (phrase.objects && phrase.objects.length > 0) {
-      const painObject = phrase.objects[0];
-      const isPlural = this.isPluralPain(painObject.text);
       
-      // Меняем глагол на "болят" для множественного числа
-      if (isPlural && verb === 'болит') {
-        verb = 'болят';
-      } else if (isPlural && verb === 'сильно болит') {
-        verb = 'сильно болят';
+      // Получить форму слова в нужном падеже/с предлогом
+      getWordForm(card, context = {}) {
+        const grammar = this.getItemGrammar(card);
+        const { forms } = grammar;
+        
+        // Приоритет: context.preposition -> context.case -> стандартный предлог карточки
+        if (context.preposition && forms[context.preposition]) {
+          return forms[context.preposition];
+        }
+        if (context.case && forms[context.case]) {
+          return forms[context.case];
+        }
+        if (grammar.preposition && grammar.caseForPreposition && forms[grammar.caseForPreposition]) {
+          return `${grammar.preposition} ${forms[grammar.caseForPreposition]}`;
+        }
+        
+        // Для мест с особой формой locative (например, "дома")
+        if (card.type === 'place' && forms.locative) {
+          return forms.locative;
+        }
+        
+        // Для прямого дополнения (винительный падеж)
+        if (context.directObject && forms.accusative) {
+          return forms.accusative;
+        }
+        
+        return card.text || '';
+      }
+      
+      // Проверить, совместим ли объект с действием
+      isObjectCompatible(actionCard, objectCard) {
+        const actionGrammar = this.getActionGrammar(actionCard);
+        const allowedObjects = actionGrammar.allowedObjects;
+        if (allowedObjects && allowedObjects.length > 0) {
+          return allowedObjects.includes(objectCard.id);
+        }
+        // Если список разрешённых не задан, проверяем по типу
+        const allowedTypes = actionGrammar.allowedTypes;
+        if (allowedTypes && allowedTypes.length > 0) {
+          const objectType = objectCard.type;
+          const typeMap = {
+            'person': 'people',
+            'pet': 'pets',
+            'place': 'places',
+            'object': 'objects',
+            'clothing': 'objects',
+            'pain': 'objects',
+            'time': 'time'
+          };
+          const category = typeMap[objectType];
+          return allowedTypes.includes(category);
+        }
+        return true;
+      }
+      
+      // Основной метод построения фразы
+      buildPhrase(phrase) {
+        if (!phrase.action) return 'Выберите действие';
+        
+        const actionCard = phrase.action;
+        const actionGrammar = this.getActionGrammar(actionCard);
+        
+        // Специальная обработка для боли
+        if (actionGrammar.painConstruction) {
+          return this.buildPainPhrase(phrase);
+        }
+        
+        // Для самостоятельных фраз (эмоции, диалог, обучение)
+        if (actionGrammar.isStandalone) {
+          if (phrase.subject && actionGrammar.requiresSubject) {
+            return `${phrase.subject} ${actionCard.text}`;
+          }
+          return actionCard.text;
+        }
+        
+        const parts = [];
+        
+        // Подлежащее
+        if (actionGrammar.requiresSubject && phrase.subject) {
+          parts.push(phrase.subject);
+        } else if (actionGrammar.requiresSubject && !phrase.subject) {
+          parts.push('Я');
+        }
+        
+        // Желание
+        if (actionGrammar.requiresDesire && phrase.desire) {
+          parts.push(phrase.desire);
+        } else if (actionGrammar.requiresDesire && !phrase.desire) {
+          parts.push('хочу');
+        }
+        
+        // Глагол
+        parts.push(actionCard.text);
+        
+        // Объекты (игрушки, еда, одежда)
+        if (phrase.objects && phrase.objects.length > 0) {
+          const items = phrase.objects.map(obj => {
+            const context = {};
+            if (actionGrammar.objectPreposition) {
+              context.preposition = actionGrammar.objectPreposition;
+            }
+            if (actionGrammar.directObject) {
+              context.directObject = true;
+            }
+            if (actionGrammar.objectCase) {
+              context.case = actionGrammar.objectCase;
+            }
+            return this.getWordForm(obj, context);
+          });
+          parts.push(this.joinElements(items));
+        }
+        
+        // Люди
+        if (phrase.people && phrase.people.length > 0) {
+          const people = phrase.people.map(person => {
+            const context = {};
+            if (actionGrammar.personPreposition) {
+              context.preposition = actionGrammar.personPreposition;
+            }
+            if (actionGrammar.personCase) {
+              context.case = actionGrammar.personCase;
+            }
+            return this.getWordForm(person, context);
+          });
+          parts.push(this.joinElements(people));
+        }
+        
+        // Места
+        if (phrase.places && phrase.places.length > 0) {
+          const place = phrase.places[0];
+          const context = {};
+          if (actionGrammar.placePreposition) {
+            context.preposition = actionGrammar.placePreposition;
+          } else {
+            // Для мест без предлога используем locative
+            context.case = 'locative';
+          }
+          parts.push(this.getWordForm(place, context));
+        }
+        
+        // Время
+        if (phrase.time) {
+          parts.push(this.getWordForm(phrase.time));
+        }
+        
+        return parts.join(' ');
+      }
+      
+      // Специальный метод для построения фраз о боли
+      buildPainPhrase(phrase) {
+        const parts = [];
+        // Подлежащее
+        if (phrase.subject) {
+          parts.push(phrase.subject);
+        } else {
+          parts.push('У меня');
+        }
+        
+        const actionCard = phrase.action;
+        let verb = actionCard ? actionCard.text : 'болит';
+        
+        // Определяем множественное число для боли
+        let isPlural = false;
+        if (phrase.objects && phrase.objects.length > 0) {
+          const painObj = phrase.objects[0];
+          const pluralForms = ['зубы', 'уши', 'ноги', 'руки', 'глаза', 'колени', 'локти', 'плечи', 'лодыжки', 'запястья', 'пальцы ног', 'пальцы рук'];
+          isPlural = pluralForms.includes(painObj.text);
+          if (isPlural && verb === 'болит') verb = 'болят';
+        }
+        
+        parts.push(verb);
+        
+        if (phrase.objects && phrase.objects.length > 0) {
+          const painObj = phrase.objects[0];
+          const grammar = this.getItemGrammar(painObj);
+          let painWord = painObj.text;
+          if (grammar.forms && grammar.forms.nominative) painWord = grammar.forms.nominative;
+          parts.push(painWord);
+        } else {
+          parts.push('что-то');
+        }
+        
+        if (phrase.time) {
+          parts.push(this.getWordForm(phrase.time));
+        }
+        
+        return parts.join(' ');
+      }
+      
+      // Вспомогательный метод для соединения элементов с "и"
+      joinElements(elements, conjunction = 'и') {
+        if (!elements || elements.length === 0) return '';
+        if (elements.length === 1) return elements[0];
+        if (elements.length === 2) return `${elements[0]} ${conjunction} ${elements[1]}`;
+        const last = elements.pop();
+        return `${elements.join(', ')} ${conjunction} ${last}`;
       }
     }
     
-    parts.push(verb);
-    
-    // Добавляем часть тела (только часть тела, без глагола)
-    if (phrase.objects && phrase.objects.length > 0) {
-      const painObject = phrase.objects[0];
-      // Используем painConstruction: true, чтобы получить только часть тела
-      const painWord = this.getWordForm(painObject, { painConstruction: true });
-      parts.push(painWord);
-    } else {
-      parts.push('что-то');
-    }
-    
-    // Добавляем время, если есть
-    if (phrase.time) {
-      parts.push(this.getWordForm(phrase.time));
-    }
-    
-    return parts.join(' ');
-  }
-
-  // Метод для проверки совместимости объектов с действием
-  isObjectCompatible(action, object) {
-    if (!action || !object) return false;
-    
-    const actionRule = this.actionRules[action.id] || {};
-    
-    // Для боли - только карточки типа pain
-    if (actionRule.painConstruction) {
-      return object.type === 'pain';
-    }
-    
-    // Проверяем разрешенные типы объектов
-    const allowedStores = actionRule.allowedStores || [];
-    const objectRule = this.rules[object.type] || {};
-    const storeIn = objectRule.storeIn;
-    
-    if (allowedStores.length > 0 && storeIn) {
-      return allowedStores.includes(storeIn);
-    }
-    
-    return true;
-  }
-
-  // Метод для получения правильных форм для множественного числа боли
-  getPainPattern(painText, isPlural = false) {
-    if (isPlural) {
-      const pluralForm = this.pluralForms[painText];
-      if (pluralForm) {
-        return this.painPatterns[pluralForm] || pluralForm;
-      }
-      return painText;
-    }
-    return this.painPatterns[painText] || painText;
-  }
-
-  // Метод для автоматического определения множественного числа
-  isPluralPain(painText) {
-    // Проверяем по тексту
-    const pluralForms = [
-      'зубы', 'уши', 'ноги', 'руки', 'глаза', 'колени', 'локти', 'плечи', 'лодыжки', 'запястья',
-      'пальцы ног', 'пальцы рук'
-    ];
-    
-    return pluralForms.includes(painText);
-  }
-}
-
     const FALLBACK_CARDS = {
-  "cards": {
-}
-};
-
+      "cards": {}
+    };
+    
+    // ================= КЛАСС COMMUNICATOR (ОБНОВЛЁННЫЙ) =================
     class Communicator {
       constructor() {
         this.currentPhrase = {
@@ -2100,7 +1751,66 @@ else if (actionId === 'ACT-UNDRESS') {
           'color': this.handleLearningSelection.bind(this)
         };
       }
-
+      
+      // Миграция старых карточек в новый формат (добавляем поле grammar)
+      migrateOldCards() {
+        let changed = false;
+        for (const [id, card] of Object.entries(this.cards)) {
+          if (card.grammar) continue;
+          let newGrammar = null;
+          
+          // Для действий
+          if (card.type === 'action' && card.metadata) {
+            const m = card.metadata;
+            newGrammar = {};
+            if (m.requiresSubject !== undefined) newGrammar.requiresSubject = m.requiresSubject;
+            if (m.requiresDesire !== undefined) newGrammar.requiresDesire = m.requiresDesire;
+            if (m.isStandalone !== undefined) newGrammar.isStandalone = m.isStandalone;
+            if (m.directObject !== undefined) newGrammar.directObject = m.directObject;
+            if (m.painConstruction !== undefined) newGrammar.painConstruction = m.painConstruction;
+            if (m.allowedWith) newGrammar.allowedTypes = m.allowedWith;
+            if (m.maxPeople !== undefined || m.maxPets !== undefined || m.maxPlaces !== undefined || m.maxObjects !== undefined) {
+              newGrammar.maxCounts = {
+                people: m.maxPeople || 0,
+                pets: m.maxPets || 0,
+                places: m.maxPlaces || 0,
+                objects: m.maxObjects || 0
+              };
+            }
+            if (m.transportPreposition) newGrammar.objectPreposition = m.transportPreposition;
+            if (m.clothingPreposition) newGrammar.objectPreposition = m.clothingPreposition;
+            if (m.removePreposition) newGrammar.objectPreposition = m.removePreposition;
+            if (m.allowedObjects) newGrammar.allowedObjects = m.allowedObjects;
+          }
+          
+          // Для объектов (существительных, мест, людей)
+          if ((card.type === 'object' || card.type === 'clothing' || card.type === 'place' || card.type === 'person' || card.type === 'pet') && card.forms) {
+            if (!newGrammar) newGrammar = {};
+            newGrammar.forms = { ...card.forms };
+            // Определяем стандартный предлог
+            if (card.forms['с']) {
+              newGrammar.preposition = 'с';
+              newGrammar.caseForPreposition = 'instrumental';
+            } else if (card.forms['в']) {
+              newGrammar.preposition = 'в';
+              newGrammar.caseForPreposition = 'prepositional';
+            } else if (card.forms['на']) {
+              newGrammar.preposition = 'на';
+              newGrammar.caseForPreposition = 'locative';
+            }
+          }
+          
+          if (newGrammar && Object.keys(newGrammar).length > 0) {
+            card.grammar = newGrammar;
+            changed = true;
+          }
+        }
+        if (changed) {
+          this.saveCards();
+          console.log('Карточки сконвертированы в новый формат grammar');
+        }
+      }
+      
       async initializeCards() {
         const savedCards = localStorage.getItem('communicatorCards');
         
@@ -2109,6 +1819,7 @@ else if (actionId === 'ACT-UNDRESS') {
             const parsed = JSON.parse(savedCards);
             this.cards = parsed.cards || parsed;
             console.log('Карточки загружены из localStorage');
+            this.migrateOldCards();
             return;
           } catch (e) {
             console.error('Ошибка загрузки карточек из localStorage:', e);
@@ -2117,8 +1828,9 @@ else if (actionId === 'ACT-UNDRESS') {
         
         this.cards = FALLBACK_CARDS.cards;
         console.log('Используются fallback карточки');
+        this.migrateOldCards();
       }
-
+      
       async loadCardsFromRemote() {
         try {
           console.log('Загрузка карточек с сервера...');
@@ -2132,6 +1844,7 @@ else if (actionId === 'ACT-UNDRESS') {
           
           if (data.cards) {
             this.cards = data.cards;
+            this.migrateOldCards();
             this.saveCards();
             
             this.navigateToHome();
@@ -2151,295 +1864,238 @@ else if (actionId === 'ACT-UNDRESS') {
           return false;
         }
       }
-
-async loadCardsWithOptions() {
-  const modal = document.getElementById('remoteLoadModal');
-  modal.style.display = 'flex';
-  
-  // Сброс формы
-  document.querySelector('input[name="loadStrategy"][value="replace"]').checked = true;
-  document.querySelectorAll('input[name="section"]').forEach(cb => {
-    cb.checked = cb.value === 'Главная';
-  });
-  document.getElementById('skipCategories').checked = false;
-  document.getElementById('preserveExisting').checked = false;
-  document.getElementById('sectionsSelection').style.display = 'none';
-  document.getElementById('summaryInfo').style.display = 'none';
-}
-
-async confirmRemoteLoad() {
-  const modal = document.getElementById('remoteLoadModal');
-  const strategy = document.querySelector('input[name="loadStrategy"]:checked').value;
-  const selectedSections = Array.from(document.querySelectorAll('input[name="section"]:checked'))
-    .map(cb => cb.value);
-  const skipCategories = document.getElementById('skipCategories').checked;
-  const preserveExisting = document.getElementById('preserveExisting').checked;
-  
-  if (strategy === 'sections' && selectedSections.length === 0) {
-    alert('Выберите хотя бы один раздел для загрузки!');
-    return;
-  }
-  
-  modal.style.display = 'none';
-  
-  try {
-    console.log('Загрузка карточек с сервера...');
-    const response = await fetch(REMOTE_CARDS_URL);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    
-    if (!data.cards) {
-      throw new Error('Некорректный формат данных: отсутствует ключ "cards"');
-    }
-    
-    const remoteCards = data.cards;
-    const result = await this.processRemoteCards(remoteCards, {
-      strategy,
-      selectedSections,
-      skipCategories,
-      preserveExisting
-    });
-    
-    this.saveCards();
-    this.navigateToHome();
-    this.renderCategories();
-    this.updateUI();
-    this.updateSystemInfo();
-    
-    alert(`Успешно загружено!\nНовых карточек: ${result.new}\nОбновлено: ${result.updated}\nВсего карточек: ${Object.keys(this.cards).length}`);
-    
-  } catch (error) {
-    console.error('Ошибка загрузки карточек с сервера:', error);
-    alert(`Не удалось загрузить карточки с сервера: ${error.message}`);
-  }
-}
-
-processRemoteCards(remoteCards, options) {
-  const stats = { new: 0, updated: 0, skipped: 0 };
-  
-  switch (options.strategy) {
-    case 'replace':
-      // Полная замена
-      this.cards = remoteCards;
-      stats.new = Object.keys(remoteCards).length;
-      break;
       
-    case 'merge':
-      // Объединение: добавляем новые, обновляем существующие
-      for (const [id, card] of Object.entries(remoteCards)) {
-        if (!this.cards[id]) {
-          this.cards[id] = card;
-          stats.new++;
-        } else {
-          // Обновляем существующую карточку
-          this.cards[id] = { ...this.cards[id], ...card };
-          stats.updated++;
+      async loadCardsWithOptions() {
+        const modal = document.getElementById('remoteLoadModal');
+        modal.style.display = 'flex';
+        
+        document.querySelector('input[name="loadStrategy"][value="replace"]').checked = true;
+        document.querySelectorAll('input[name="section"]').forEach(cb => {
+          cb.checked = cb.value === 'Главная';
+        });
+        document.getElementById('skipCategories').checked = false;
+        document.getElementById('preserveExisting').checked = false;
+        document.getElementById('sectionsSelection').style.display = 'none';
+        document.getElementById('summaryInfo').style.display = 'none';
+      }
+      
+      async confirmRemoteLoad() {
+        const modal = document.getElementById('remoteLoadModal');
+        const strategy = document.querySelector('input[name="loadStrategy"]:checked').value;
+        const selectedSections = Array.from(document.querySelectorAll('input[name="section"]:checked'))
+          .map(cb => cb.value);
+        const skipCategories = document.getElementById('skipCategories').checked;
+        const preserveExisting = document.getElementById('preserveExisting').checked;
+        
+        if (strategy === 'sections' && selectedSections.length === 0) {
+          alert('Выберите хотя бы один раздел для загрузки!');
+          return;
+        }
+        
+        modal.style.display = 'none';
+        
+        try {
+          console.log('Загрузка карточек с сервера...');
+          const response = await fetch(REMOTE_CARDS_URL);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          
+          if (!data.cards) {
+            throw new Error('Некорректный формат данных: отсутствует ключ "cards"');
+          }
+          
+          const remoteCards = data.cards;
+          const result = await this.processRemoteCards(remoteCards, {
+            strategy,
+            selectedSections,
+            skipCategories,
+            preserveExisting
+          });
+          
+          this.migrateOldCards();
+          this.saveCards();
+          this.navigateToHome();
+          this.renderCategories();
+          this.updateUI();
+          this.updateSystemInfo();
+          
+          alert(`Успешно загружено!\nНовых карточек: ${result.new}\nОбновлено: ${result.updated}\nВсего карточек: ${Object.keys(this.cards).length}`);
+          
+        } catch (error) {
+          console.error('Ошибка загрузки карточек с сервера:', error);
+          alert(`Не удалось загрузить карточки с сервера: ${error.message}`);
         }
       }
-      break;
       
-    case 'sections':
-      // Выборочная загрузка по разделам
-      this.selectiveLoad(remoteCards, options, stats);
-      break;
-  }
-  
-  console.log('Статистика загрузки:', stats);
-  return stats;
-}
-
-selectiveLoad(remoteCards, options, stats) {
-  const { selectedSections, skipCategories, preserveExisting } = options;
-  
-  // Создаем копию текущих карточек, если нужно сохранить невыбранные разделы
-  let newCards = preserveExisting ? { ...this.cards } : {};
-  
-  // Фильтруем карточки с сервера
-  for (const [id, card] of Object.entries(remoteCards)) {
-    // Проверяем, относится ли карточка к выбранным разделам
-    const hasSelectedSection = card.sections && 
-      card.sections.some(section => selectedSections.includes(section));
-    
-    // Проверяем, нужно ли пропускать категории
-    const isCategory = card.type === 'category';
-    
-    if (hasSelectedSection && (!skipCategories || !isCategory)) {
-      // Добавляем или обновляем карточку
-      if (!newCards[id]) {
-        newCards[id] = card;
-        stats.new++;
-      } else {
-        // Объединяем разделы с существующей карточкой
-        if (card.sections && newCards[id].sections) {
-          const mergedSections = [...new Set([...newCards[id].sections, ...card.sections])];
-          newCards[id] = { ...newCards[id], ...card, sections: mergedSections };
-        } else {
-          newCards[id] = { ...newCards[id], ...card };
+      processRemoteCards(remoteCards, options) {
+        const stats = { new: 0, updated: 0, skipped: 0 };
+        
+        switch (options.strategy) {
+          case 'replace':
+            this.cards = remoteCards;
+            stats.new = Object.keys(remoteCards).length;
+            break;
+          case 'merge':
+            for (const [id, card] of Object.entries(remoteCards)) {
+              if (!this.cards[id]) {
+                this.cards[id] = card;
+                stats.new++;
+              } else {
+                this.cards[id] = { ...this.cards[id], ...card };
+                stats.updated++;
+              }
+            }
+            break;
+          case 'sections':
+            this.selectiveLoad(remoteCards, options, stats);
+            break;
         }
-        stats.updated++;
+        return stats;
       }
-    } else if (preserveExisting && this.cards[id]) {
-      // Сохраняем существующую карточку из невыбранных разделов
-      newCards[id] = this.cards[id];
-      stats.skipped++;
-    }
-  }
-  
-  this.cards = newCards;
-}
-
-// Метод для предпросмотра загрузки
-previewRemoteLoad() {
-  const strategy = document.querySelector('input[name="loadStrategy"]:checked').value;
-  const selectedSections = Array.from(document.querySelectorAll('input[name="section"]:checked'))
-    .map(cb => cb.value);
-  const skipCategories = document.getElementById('skipCategories').checked;
-  
-  const summary = document.getElementById('summaryInfo');
-  const counts = document.getElementById('sectionCounts');
-  
-  if (strategy === 'sections') {
-    if (selectedSections.length === 0) {
-      summary.style.display = 'none';
-      return;
-    }
-    
-    let sectionText = selectedSections.map(s => {
-      switch(s) {
-        case 'Главная': return '📱 Главная';
-        case 'Обучение': return '🎓 Обучение';
-        case 'Диалог': return '💬 Диалог';
-        case 'Эмоции': return '😊 Эмоции';
-        default: return s;
+      
+      selectiveLoad(remoteCards, options, stats) {
+        const { selectedSections, skipCategories, preserveExisting } = options;
+        let newCards = preserveExisting ? { ...this.cards } : {};
+        
+        for (const [id, card] of Object.entries(remoteCards)) {
+          const hasSelectedSection = card.sections && 
+            card.sections.some(section => selectedSections.includes(section));
+          const isCategory = card.type === 'category';
+          
+          if (hasSelectedSection && (!skipCategories || !isCategory)) {
+            if (!newCards[id]) {
+              newCards[id] = card;
+              stats.new++;
+            } else {
+              if (card.sections && newCards[id].sections) {
+                const mergedSections = [...new Set([...newCards[id].sections, ...card.sections])];
+                newCards[id] = { ...newCards[id], ...card, sections: mergedSections };
+              } else {
+                newCards[id] = { ...newCards[id], ...card };
+              }
+              stats.updated++;
+            }
+          } else if (preserveExisting && this.cards[id]) {
+            newCards[id] = this.cards[id];
+            stats.skipped++;
+          }
+        }
+        this.cards = newCards;
       }
-    }).join(', ');
-    
-    counts.textContent = `${selectedSections.length} разделов: ${sectionText}`;
-    if (skipCategories) {
-      counts.textContent += ' (без категорий)';
-    }
-    summary.style.display = 'block';
-  } else {
-    summary.style.display = 'none';
-  }
-}
-
+      
+      previewRemoteLoad() {
+        const strategy = document.querySelector('input[name="loadStrategy"]:checked').value;
+        const selectedSections = Array.from(document.querySelectorAll('input[name="section"]:checked'))
+          .map(cb => cb.value);
+        const skipCategories = document.getElementById('skipCategories').checked;
+        
+        const summary = document.getElementById('summaryInfo');
+        const counts = document.getElementById('sectionCounts');
+        
+        if (strategy === 'sections') {
+          if (selectedSections.length === 0) {
+            summary.style.display = 'none';
+            return;
+          }
+          let sectionText = selectedSections.map(s => {
+            switch(s) {
+              case 'Главная': return '📱 Главная';
+              case 'Обучение': return '🎓 Обучение';
+              case 'Диалог': return '💬 Диалог';
+              case 'Эмоции': return '😊 Эмоции';
+              default: return s;
+            }
+          }).join(', ');
+          counts.textContent = `${selectedSections.length} разделов: ${sectionText}`;
+          if (skipCategories) counts.textContent += ' (без категорий)';
+          summary.style.display = 'block';
+        } else {
+          summary.style.display = 'none';
+        }
+      }
+      
       loadChildInfo() {
         const saved = localStorage.getItem('childInfo');
         return saved ? JSON.parse(saved) : {
-          name: '',
-          age: '',
-          gender: '',
-          birthDate: '',
-          motherPhone: '',
-          fatherPhone: '',
-          parentEmail: '',
-          address: '',
-          doctorPhone: '',
-          diagnosis: '',
-          allergies: '',
-          medications: '',
-          specialNeeds: '',
-          interests: '',
-          dislikes: '',
-          sensoryPreferences: 'visual',
+          name: '', age: '', gender: '', birthDate: '', motherPhone: '', fatherPhone: '',
+          parentEmail: '', address: '', doctorPhone: '', diagnosis: '', allergies: '',
+          medications: '', specialNeeds: '', interests: '', dislikes: '', sensoryPreferences: 'visual',
           difficultyLevel: 'medium'
         };
       }
-
+      
       init() {
         this.applyFontSettings();
         this.bindEvents();
         this.renderCategories();
         this.updateUI();
       }
-
+      
       applyFontSettings() {
         document.documentElement.style.setProperty('--font-scale', fontSizeScale);
         document.documentElement.style.setProperty('--base-font-size', (16 * fontSizeScale) + 'px');
       }
-
+      
       initTabs() {
         const tabBtns = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
-
+        
         tabBtns.forEach(btn => {
           btn.addEventListener('click', () => {
             const tabId = btn.getAttribute('data-tab');
             this.currentTab = tabId;
-            
             tabBtns.forEach(b => b.classList.remove('active'));
             tabContents.forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
             document.getElementById(tabId).classList.add('active');
-
             this.switchButtons(tabId);
             this.loadTabData(tabId);
           });
         });
-        
         this.switchButtons(this.currentTab);
       }
-
+      
       switchButtons(tabId) {
         const mainButtons = document.getElementById('mainButtonsContainer');
         const learningButtons = document.getElementById('learningButtonsContainer');
         const dialogButtons = document.getElementById('dialogButtonsContainer');
-
         mainButtons.style.display = 'none';
         learningButtons.style.display = 'none';
         dialogButtons.style.display = 'none';
-
-        switch(tabId) {
-          case 'main':
-            mainButtons.style.display = 'block';
-            break;
-          case 'learning':
-            learningButtons.style.display = 'block';
-            break;
-          case 'dialog':
-            dialogButtons.style.display = 'block';
-            break;
-        }
+        if (tabId === 'main') mainButtons.style.display = 'block';
+        else if (tabId === 'learning') learningButtons.style.display = 'block';
+        else if (tabId === 'dialog') dialogButtons.style.display = 'block';
       }
-
+      
       initPinSystem() {
         const pinBtns = document.querySelectorAll('.pin-btn');
         const pinInput = document.getElementById('pinInput');
         const pinOverlay = document.getElementById('pinOverlay');
         const pinCancel = document.getElementById('pinCancel');
-
+        
         pinBtns.forEach(btn => {
           btn.addEventListener('click', () => {
             const value = btn.getAttribute('data-pin');
-            if (value === 'clear') {
-              pinInput.value = '';
-            } else if (value === 'enter') {
-              this.checkPin(pinInput.value);
-            } else {
-              if (pinInput.value.length < 4) {
-                pinInput.value += value;
-              }
-            }
+            if (value === 'clear') pinInput.value = '';
+            else if (value === 'enter') this.checkPin(pinInput.value);
+            else if (pinInput.value.length < 4) pinInput.value += value;
           });
         });
-
+        
         pinCancel.addEventListener('click', () => {
           pinOverlay.style.display = 'none';
           pinInput.value = '';
           pinAction = null;
         });
-
+        
         document.addEventListener('keydown', (e) => {
           if (pinOverlay.style.display === 'block') {
             if (e.key >= '0' && e.key <= '9') {
-              if (pinInput.value.length < 4) {
-                pinInput.value += e.key;
-              }
+              if (pinInput.value.length < 4) pinInput.value += e.key;
               e.preventDefault();
             } else if (e.key === 'Enter') {
               this.checkPin(pinInput.value);
@@ -2456,77 +2112,52 @@ previewRemoteLoad() {
           }
         });
       }
-
+      
       checkPin(enteredPin) {
         const pinOverlay = document.getElementById('pinOverlay');
         if (enteredPin === currentPin) {
           isEditingEnabled = true;
           pinOverlay.style.display = 'none';
           document.getElementById('pinInput').value = '';
-          if (pinAction === 'editChild') {
-            this.enableChildEditing();
-          }
+          if (pinAction === 'editChild') this.enableChildEditing();
         } else {
           alert("Неверный PIN-код!");
           document.getElementById('pinInput').value = '';
         }
         pinAction = null;
       }
-
+      
       showPinModal(action) {
         pinAction = action;
         document.getElementById('pinInput').value = '';
         document.getElementById('pinOverlay').style.display = 'flex';
       }
-
+      
       loadTabData(tabId) {
-        switch(tabId) {
-          case 'main':
-            this.switchButtons('main');
-            break;
-          case 'child':
-            this.renderChildInfo(false);
-            break;
-          case 'emotions':
-            this.renderEmotionsTab();
-            break;
-          case 'learning':
-            this.renderLearningTab();
-            break;
-          case 'dialog':
-            this.renderDialogTab();
-            break;
-          case 'history':
-            this.renderHistory();
-            break;
-          case 'settings':
-            this.updateSystemInfo();
-            break;
-        }
+        if (tabId === 'main') this.switchButtons('main');
+        else if (tabId === 'child') this.renderChildInfo(false);
+        else if (tabId === 'emotions') this.renderEmotionsTab();
+        else if (tabId === 'learning') this.renderLearningTab();
+        else if (tabId === 'dialog') this.renderDialogTab();
+        else if (tabId === 'history') this.renderHistory();
+        else if (tabId === 'settings') this.updateSystemInfo();
       }
-
+      
       loadAllData() {
         this.renderChildInfo(false);
         this.renderEmotionsTab();
       }
-
-	    addGrammarRule(cardType, rule) {
-    this.grammar.addRule(cardType, rule);
-  }
-  
-  addActionGrammarRule(actionId, rule) {
-    this.grammar.addActionRule(actionId, rule);
-  }
-
+      
       saveCards() {
         const dataToSave = { cards: this.cards };
         localStorage.setItem('communicatorCards', JSON.stringify(dataToSave));
         this.updateSystemInfo();
       }
-
+      
       resetCards() {
         if (confirm("Вы уверены, что хотите сбросить все карточки к начальным? Это удалит все добавленные карточки.")) {
           this.cards = FALLBACK_CARDS.cards;
+          this.migrateOldCards();
           this.saveCards();
           this.navigateToHome();
           this.renderCategories();
@@ -2534,7 +2165,7 @@ previewRemoteLoad() {
           alert("Карточки сброшены к начальным настройкам!");
         }
       }
-
+      
       exportCards() {
         const dataStr = JSON.stringify({ cards: this.cards }, null, 2);
         const dataBlob = new Blob([dataStr], {type: 'application/json'});
@@ -2543,11 +2174,10 @@ previewRemoteLoad() {
         link.download = 'communicator_cards_' + new Date().toISOString().slice(0,10) + '.json';
         link.click();
       }
-
+      
       importCards(event) {
         const file = event.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = (e) => {
           try {
@@ -2555,15 +2185,14 @@ previewRemoteLoad() {
             if (importedData.cards) {
               if (confirm("Импортировать карточки? Существующие карточки будут заменены.")) {
                 this.cards = importedData.cards;
+                this.migrateOldCards();
                 this.saveCards();
                 this.navigateToHome();
                 this.renderCategories();
                 this.updateSystemInfo();
                 alert("Карточки успешно импортированы!");
               }
-            } else {
-              alert("Формат файла не поддерживается. Убедитесь, что файл содержит карточки.");
-            }
+            } else alert("Формат файла не поддерживается.");
           } catch (error) {
             alert("Ошибка при импорте карточек: " + error.message);
           }
@@ -2571,175 +2200,64 @@ previewRemoteLoad() {
         reader.readAsText(file);
         event.target.value = '';
       }
-
+      
       bindEvents() {
-        document.getElementById('btnI').addEventListener('click', () => {
-          this.setSubject('Я');
+        document.getElementById('btnI').addEventListener('click', () => this.setSubject('Я'));
+        document.getElementById('btnWant').addEventListener('click', () => this.setDesire('Хочу'));
+        document.getElementById('btnDontWant').addEventListener('click', () => this.setDesire('Не хочу'));
+        document.getElementById('clearBtn').addEventListener('click', () => this.clearPhrase());
+        document.getElementById('btnDontUnderstand').addEventListener('click', () => this.speakText('Я не понимаю'));
+        document.getElementById('btnFoundError').addEventListener('click', () => this.speakText('Нашел ошибку'));
+        document.getElementById('btnExplainMe').addEventListener('click', () => this.speakText('Объясните мне'));
+        document.getElementById('btnYes').addEventListener('click', () => this.speakText('Да'));
+        document.getElementById('btnNo').addEventListener('click', () => this.speakText('Нет'));
+        document.getElementById('btnDontKnow').addEventListener('click', () => this.speakText('Не знаю'));
+        document.getElementById('backBtn').addEventListener('click', () => this.navigateBack());
+        document.getElementById('homeBtn').addEventListener('click', () => this.navigateToHome());
+        document.getElementById('actionsBtn').addEventListener('click', () => this.showAllActions());
+        document.getElementById('doneBtn').addEventListener('click', () => this.finishQuickNav());
+        document.getElementById('backBtnEmotions').addEventListener('click', () => this.navigateBackTab('emotions'));
+        document.getElementById('homeBtnEmotions').addEventListener('click', () => this.navigateToHomeTab('emotions'));
+        document.getElementById('backBtnLearning').addEventListener('click', () => this.navigateBackTab('learning'));
+        document.getElementById('homeBtnLearning').addEventListener('click', () => this.navigateToHomeTab('learning'));
+        document.getElementById('backBtnDialog').addEventListener('click', () => this.navigateBackTab('dialog'));
+        document.getElementById('homeBtnDialog').addEventListener('click', () => this.navigateToHomeTab('dialog'));
+        document.getElementById('exportBtn').addEventListener('click', () => this.exportCards());
+        document.getElementById('importBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+        document.getElementById('fileInput').addEventListener('change', (e) => this.importCards(e));
+        document.getElementById('resetBtn').addEventListener('click', () => this.resetCards());
+        document.getElementById('remoteLoadBtn').addEventListener('click', () => this.loadCardsWithOptions());
+        document.getElementById('confirmRemoteLoad').addEventListener('click', () => this.confirmRemoteLoad());
+        document.getElementById('cancelRemoteLoad').addEventListener('click', () => document.getElementById('remoteLoadModal').style.display = 'none');
+        document.querySelectorAll('input[name="loadStrategy"]').forEach(radio => {
+          radio.addEventListener('change', () => {
+            const sectionsDiv = document.getElementById('sectionsSelection');
+            if (radio.value === 'sections') {
+              sectionsDiv.style.display = 'block';
+              this.previewRemoteLoad();
+            } else {
+              sectionsDiv.style.display = 'none';
+              document.getElementById('summaryInfo').style.display = 'none';
+            }
+          });
         });
-
-        document.getElementById('btnWant').addEventListener('click', () => {
-          this.setDesire('Хочу');
+        document.querySelectorAll('input[name="section"], #skipCategories, #preserveExisting').forEach(input => {
+          input.addEventListener('change', () => this.previewRemoteLoad());
         });
-
-        document.getElementById('btnDontWant').addEventListener('click', () => {
-          this.setDesire('Не хочу');
+        document.getElementById('remoteLoadModal').addEventListener('click', (e) => {
+          if (e.target.id === 'remoteLoadModal') document.getElementById('remoteLoadModal').style.display = 'none';
         });
-
-        document.getElementById('clearBtn').addEventListener('click', () => {
-          this.clearPhrase();
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && document.getElementById('remoteLoadModal').style.display === 'flex') {
+            document.getElementById('remoteLoadModal').style.display = 'none';
+          }
         });
-
-        document.getElementById('btnDontUnderstand').addEventListener('click', () => {
-          this.speakText('Я не понимаю');
-        });
-
-        document.getElementById('btnFoundError').addEventListener('click', () => {
-          this.speakText('Нашел ошибку');
-        });
-
-        document.getElementById('btnExplainMe').addEventListener('click', () => {
-          this.speakText('Объясните мне');
-        });
-
-        document.getElementById('btnYes').addEventListener('click', () => {
-          this.speakText('Да');
-        });
-
-        document.getElementById('btnNo').addEventListener('click', () => {
-          this.speakText('Нет');
-        });
-
-        document.getElementById('btnDontKnow').addEventListener('click', () => {
-          this.speakText('Не знаю');
-        });
-
-        document.getElementById('backBtn').addEventListener('click', () => {
-          this.navigateBack();
-        });
-
-        document.getElementById('homeBtn').addEventListener('click', () => {
-          this.navigateToHome();
-        });
-
-        document.getElementById('actionsBtn').addEventListener('click', () => {
-          this.showAllActions();
-        });
-
-        document.getElementById('doneBtn').addEventListener('click', () => {
-          this.finishQuickNav();
-        });
-
-        document.getElementById('backBtnEmotions').addEventListener('click', () => {
-          this.navigateBackTab('emotions');
-        });
-
-        document.getElementById('homeBtnEmotions').addEventListener('click', () => {
-          this.navigateToHomeTab('emotions');
-        });
-
-        document.getElementById('backBtnLearning').addEventListener('click', () => {
-          this.navigateBackTab('learning');
-        });
-
-        document.getElementById('homeBtnLearning').addEventListener('click', () => {
-          this.navigateToHomeTab('learning');
-        });
-
-        document.getElementById('backBtnDialog').addEventListener('click', () => {
-          this.navigateBackTab('dialog');
-        });
-
-        document.getElementById('homeBtnDialog').addEventListener('click', () => {
-          this.navigateToHomeTab('dialog');
-        });
-
-        document.getElementById('exportBtn').addEventListener('click', () => {
-          this.exportCards();
-        });
-
-        document.getElementById('importBtn').addEventListener('click', () => {
-          document.getElementById('fileInput').click();
-        });
-
-        document.getElementById('fileInput').addEventListener('change', (e) => {
-          this.importCards(e);
-        });
-
-        document.getElementById('resetBtn').addEventListener('click', () => {
-          this.resetCards();
-        });
-
-document.getElementById('remoteLoadBtn').addEventListener('click', () => {
-  this.loadCardsWithOptions();
-});
-
-// Добавьте обработчики для модального окна загрузки
-document.getElementById('confirmRemoteLoad').addEventListener('click', () => {
-  this.confirmRemoteLoad();
-});
-
-document.getElementById('cancelRemoteLoad').addEventListener('click', () => {
-  document.getElementById('remoteLoadModal').style.display = 'none';
-});
-
-// Обработчики для динамического обновления формы
-document.querySelectorAll('input[name="loadStrategy"]').forEach(radio => {
-  radio.addEventListener('change', () => {
-    const sectionsDiv = document.getElementById('sectionsSelection');
-    if (radio.value === 'sections') {
-      sectionsDiv.style.display = 'block';
-      this.previewRemoteLoad();
-    } else {
-      sectionsDiv.style.display = 'none';
-      document.getElementById('summaryInfo').style.display = 'none';
-    }
-  });
-});
-
-document.querySelectorAll('input[name="section"], #skipCategories, #preserveExisting').forEach(input => {
-  input.addEventListener('change', () => {
-    this.previewRemoteLoad();
-  });
-});
-
-// Закрытие по клику вне модального окна
-document.getElementById('remoteLoadModal').addEventListener('click', (e) => {
-  if (e.target.id === 'remoteLoadModal') {
-    document.getElementById('remoteLoadModal').style.display = 'none';
-  }
-});
-
-// Закрытие по Escape
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && document.getElementById('remoteLoadModal').style.display === 'flex') {
-    document.getElementById('remoteLoadModal').style.display = 'none';
-  }
-});
-
-        document.getElementById('speakBtn').addEventListener('click', () => {
-          this.speakPhrase();
-        });
-
-        document.getElementById('quickPeopleBtn').addEventListener('click', () => {
-          this.showFilteredPeople();
-        });
-
-        document.getElementById('quickPlacesBtn').addEventListener('click', () => {
-          this.showFilteredPlaces();
-        });
-
-        document.getElementById('quickObjectsBtn').addEventListener('click', () => {
-          this.showFilteredObjects();
-        });
-
-        document.getElementById('quickTimeBtn').addEventListener('click', () => {
-          this.showFilteredTime();
-        });
-
-        document.getElementById('editChildBtn').addEventListener('click', () => {
-          this.showPinModal('editChild');
-        });
-
+        document.getElementById('speakBtn').addEventListener('click', () => this.speakPhrase());
+        document.getElementById('quickPeopleBtn').addEventListener('click', () => this.showFilteredPeople());
+        document.getElementById('quickPlacesBtn').addEventListener('click', () => this.showFilteredPlaces());
+        document.getElementById('quickObjectsBtn').addEventListener('click', () => this.showFilteredObjects());
+        document.getElementById('quickTimeBtn').addEventListener('click', () => this.showFilteredTime());
+        document.getElementById('editChildBtn').addEventListener('click', () => this.showPinModal('editChild'));
         document.getElementById('emergencyHelp').addEventListener('click', () => this.handleEmergency('help'));
         document.getElementById('emergencyPain').addEventListener('click', () => this.handleEmergency('pain'));
         document.getElementById('emergencyScared').addEventListener('click', () => this.handleEmergency('scared'));
@@ -2747,13 +2265,11 @@ document.addEventListener('keydown', (e) => {
         document.getElementById('emergencyLost').addEventListener('click', () => this.handleEmergency('lost'));
         document.getElementById('emergencyCall').addEventListener('click', () => this.handleEmergency('call'));
         document.getElementById('emergencyStop').addEventListener('click', () => this.handleEmergency('stop'));
-
         document.getElementById('speedSlider').addEventListener('input', (e) => {
           document.getElementById('speedValue').textContent = e.target.value;
           speechRate = parseFloat(e.target.value);
           localStorage.setItem('speech_rate', speechRate);
         });
-
         document.getElementById('fontSizeSlider').addEventListener('input', (e) => {
           const value = e.target.value;
           document.getElementById('fontSizeValue').textContent = value + '%';
@@ -2761,99 +2277,45 @@ document.addEventListener('keydown', (e) => {
           localStorage.setItem('font_size_scale', fontSizeScale);
           this.applyFontSettings();
         });
-
-        document.getElementById('changePinBtn').addEventListener('click', () => {
-          this.changePinWithVerification();
-        });
-
+        document.getElementById('changePinBtn').addEventListener('click', () => this.changePinWithVerification());
         document.getElementById('voiceSelect').addEventListener('change', (e) => {
           selectedVoice = voices.find(v => v.name === e.target.value);
           localStorage.setItem('selected_voice', e.target.value || '');
         });
-
-        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
-          this.clearHistory();
-        });
-
-        document.getElementById('exportHistoryBtn').addEventListener('click', () => {
-          this.exportHistory();
-        });
+        document.getElementById('clearHistoryBtn').addEventListener('click', () => this.clearHistory());
+        document.getElementById('exportHistoryBtn').addEventListener('click', () => this.exportHistory());
       }
-
+      
       changePinWithVerification() {
         const currentPinInput = document.getElementById('currentPin').value;
         const newPin = document.getElementById('newPin').value;
         const confirmPin = document.getElementById('confirmPin').value;
-        
-        if (!currentPinInput) {
-          alert('Введите текущий PIN-код');
-          return;
-        }
-        
-        if (currentPinInput !== currentPin) {
-          alert('Текущий PIN-код неверен');
-          document.getElementById('currentPin').value = '';
-          return;
-        }
-        
-        if (newPin.length !== 4 || !/^\d+$/.test(newPin)) {
-          alert('Новый PIN-код должен состоять из 4 цифр');
-          return;
-        }
-        
-        if (newPin !== confirmPin) {
-          alert('Новый PIN-код и подтверждение не совпадают');
-          return;
-        }
-        
+        if (!currentPinInput) { alert('Введите текущий PIN-код'); return; }
+        if (currentPinInput !== currentPin) { alert('Текущий PIN-код неверен'); document.getElementById('currentPin').value = ''; return; }
+        if (newPin.length !== 4 || !/^\d+$/.test(newPin)) { alert('Новый PIN-код должен состоять из 4 цифр'); return; }
+        if (newPin !== confirmPin) { alert('Новый PIN-код и подтверждение не совпадают'); return; }
         currentPin = newPin;
         localStorage.setItem('communicator_pin', currentPin);
-        
         document.getElementById('currentPin').value = '';
         document.getElementById('newPin').value = '';
         document.getElementById('confirmPin').value = '';
-        
         alert('PIN-код успешно изменен');
         this.updateSystemInfo();
       }
-
+      
       speakText(text) {
         if ('speechSynthesis' in window) {
           speechSynthesis.cancel();
-          
           const utterance = new SpeechSynthesisUtterance(text);
           utterance.lang = 'ru-RU';
           utterance.rate = speechRate;
           utterance.pitch = 1.1;
-          
-          if (selectedVoice) {
-            utterance.voice = selectedVoice;
-          }
-          
-          if (speechSynthesis.speaking) {
-            speechSynthesis.resume();
-          }
-          
-          utterance.onstart = () => {
-            console.log('Начало озвучки:', text);
-          };
-          
-          utterance.onend = () => {
-            console.log('Окончание озвучки');
-          };
-          
-          utterance.onerror = (event) => {
-            console.error('Ошибка озвучки:', event);
-          };
-          
+          if (selectedVoice) utterance.voice = selectedVoice;
           speechSynthesis.speak(utterance);
-          
           this.addToHistory(text);
-        } else {
-          console.warn('Speech synthesis not supported');
         }
       }
-
+      
       showAllActions() {
         this.isQuickNavMode = false;
         this.filterMode = 'actions';
@@ -2863,7 +2325,7 @@ document.addEventListener('keydown', (e) => {
         this.showCardsView();
         this.hideDoneButton();
       }
-
+      
       showFilteredPeople() {
         this.isQuickNavMode = true;
         this.filterMode = 'people';
@@ -2873,7 +2335,7 @@ document.addEventListener('keydown', (e) => {
         this.showCardsView();
         this.showDoneButton();
       }
-
+      
       showFilteredPlaces() {
         this.isQuickNavMode = true;
         this.filterMode = 'places';
@@ -2883,10 +2345,9 @@ document.addEventListener('keydown', (e) => {
         this.showCardsView();
         this.showDoneButton();
       }
-
+      
       showFilteredObjects() {
         if (!this.currentPhrase.action) return;
-        
         this.isQuickNavMode = true;
         this.filterMode = 'actionObjects';
         this.navigationStack.push('FILTER-OBJECTS');
@@ -2895,7 +2356,7 @@ document.addEventListener('keydown', (e) => {
         this.showCardsView();
         this.showDoneButton();
       }
-
+      
       showFilteredTime() {
         this.isQuickNavMode = true;
         this.filterMode = 'time';
@@ -2905,42 +2366,28 @@ document.addEventListener('keydown', (e) => {
         this.showCardsView();
         this.showDoneButton();
       }
-
-      showDoneButton() {
-        document.getElementById('doneBtn').classList.add('visible');
-      }
-
-      hideDoneButton() {
-        document.getElementById('doneBtn').classList.remove('visible');
-      }
-
-      finishQuickNav() {
-        this.navigateBack();
-        this.isQuickNavMode = false;
-      }
-
+      
+      showDoneButton() { document.getElementById('doneBtn').classList.add('visible'); }
+      hideDoneButton() { document.getElementById('doneBtn').classList.remove('visible'); }
+      finishQuickNav() { this.navigateBack(); this.isQuickNavMode = false; }
+      
       handleActionSelection(card) {
         const oldAction = this.currentPhrase.action;
         this.currentPhrase.action = card;
-        
         this.checkAndResetIncompatibleElements(oldAction, card);
-        
-        if (card.metadata && card.metadata.isStandalone) {
+        const actionGrammar = this.grammar.getActionGrammar(card);
+        if (actionGrammar.isStandalone) {
           this.currentPhrase.people = [];
           this.currentPhrase.pets = [];
           this.currentPhrase.places = [];
           this.currentPhrase.objects = [];
         }
+        this.updateUI();
       }
-
-      handleDialogSelection(card) {
-        this.speakText(card.text);
-      }
-
-      handleLearningSelection(card) {
-        this.speakText(card.text);
-      }
-
+      
+      handleDialogSelection(card) { this.speakText(card.text); }
+      handleLearningSelection(card) { this.speakText(card.text); }
+      
       handleEmotionSelection(card) {
         if (this.currentTab === 'main') {
           this.currentPhrase.subject = 'Я';
@@ -2956,481 +2403,149 @@ document.addEventListener('keydown', (e) => {
           this.speakText(card.text);
         }
       }
-
+      
       handlePersonSelection(card) {
-        if (!this.currentPhrase.action || !this.currentPhrase.action.metadata) return;
-        
-        const metadata = this.currentPhrase.action.metadata;
-        const allowedWith = metadata.allowedWith || [];
-        const maxPeople = metadata.maxPeople || 0;
-        
-        if (!allowedWith.includes('people')) return;
-        
+        if (!this.currentPhrase.action) return;
+        const actionGrammar = this.grammar.getActionGrammar(this.currentPhrase.action);
+        const allowedTypes = actionGrammar.allowedTypes || [];
+        if (!allowedTypes.includes('people')) return;
+        const maxCount = actionGrammar.maxCounts?.people || 0;
         const existingIndex = this.currentPhrase.people.findIndex(p => p.id === card.id);
         if (existingIndex !== -1) {
           this.currentPhrase.people.splice(existingIndex, 1);
+          this.nextReplacementIndex.people = 0;
           this.updateUI();
           return;
         }
-        
-        if (maxPeople === 0 || this.currentPhrase.people.length < maxPeople) {
+        if (maxCount === 0 || this.currentPhrase.people.length < maxCount) {
           this.currentPhrase.people.push(card);
-        } else if (maxPeople > 0) {
-          const replaceIndex = this.nextReplacementIndex.people;
-          this.currentPhrase.people[replaceIndex] = card;
-          this.nextReplacementIndex.people = (replaceIndex + 1) % maxPeople;
+        } else if (maxCount > 0) {
+          const idx = this.nextReplacementIndex.people;
+          this.currentPhrase.people[idx] = card;
+          this.nextReplacementIndex.people = (idx + 1) % maxCount;
         }
+        this.updateUI();
       }
-
-handlePetSelection(card) {
-  if (!this.currentPhrase.action || !this.currentPhrase.action.metadata) return;
-  
-  const metadata = this.currentPhrase.action.metadata;
-  const allowedWith = metadata.allowedWith || [];
-  
-  // Проверяем, можно ли добавлять питомцев к этому действию
-  if (!allowedWith.includes('pets')) return;
-  
-  // Проверяем, есть ли уже этот питомец
-  const existingIndex = this.currentPhrase.pets.findIndex(p => p.id === card.id);
-  if (existingIndex !== -1) {
-    this.currentPhrase.pets.splice(existingIndex, 1);
-  } else {
-    // Проверяем максимальное количество
-    const maxPets = metadata.maxPets || 0;
-    if (maxPets === 0 || this.currentPhrase.pets.length < maxPets) {
-      this.currentPhrase.pets.push(card);
-    }
-  }
-  
-  this.updateUI();
-}
-
+      
+      handlePetSelection(card) {
+        if (!this.currentPhrase.action) return;
+        const actionGrammar = this.grammar.getActionGrammar(this.currentPhrase.action);
+        const allowedTypes = actionGrammar.allowedTypes || [];
+        if (!allowedTypes.includes('pets')) return;
+        const maxCount = actionGrammar.maxCounts?.pets || 0;
+        const existingIndex = this.currentPhrase.pets.findIndex(p => p.id === card.id);
+        if (existingIndex !== -1) {
+          this.currentPhrase.pets.splice(existingIndex, 1);
+          this.updateUI();
+          return;
+        }
+        if (maxCount === 0 || this.currentPhrase.pets.length < maxCount) {
+          this.currentPhrase.pets.push(card);
+        }
+        this.updateUI();
+      }
+      
       handlePlaceSelection(card) {
-        if (!this.currentPhrase.action || !this.currentPhrase.action.metadata) return;
-        
-        const metadata = this.currentPhrase.action.metadata;
-        const allowedWith = metadata.allowedWith || [];
-        const maxPlaces = metadata.maxPlaces || 0;
-        
-        if (!allowedWith.includes('places')) return;
-        
+        if (!this.currentPhrase.action) return;
+        const actionGrammar = this.grammar.getActionGrammar(this.currentPhrase.action);
+        const allowedTypes = actionGrammar.allowedTypes || [];
+        if (!allowedTypes.includes('places')) return;
+        const maxCount = actionGrammar.maxCounts?.places || 0;
         const existingIndex = this.currentPhrase.places.findIndex(p => p.id === card.id);
         if (existingIndex !== -1) {
           this.currentPhrase.places.splice(existingIndex, 1);
+          this.nextReplacementIndex.places = 0;
           this.updateUI();
           return;
         }
-        
-        if (maxPlaces === 0 || this.currentPhrase.places.length < maxPlaces) {
+        if (maxCount === 0 || this.currentPhrase.places.length < maxCount) {
           this.currentPhrase.places.push(card);
-        } else if (maxPlaces > 0) {
-          const replaceIndex = this.nextReplacementIndex.places;
-          this.currentPhrase.places[replaceIndex] = card;
-          this.nextReplacementIndex.places = (replaceIndex + 1) % maxPlaces;
+        } else if (maxCount > 0) {
+          const idx = this.nextReplacementIndex.places;
+          this.currentPhrase.places[idx] = card;
+          this.nextReplacementIndex.places = (idx + 1) % maxCount;
         }
+        this.updateUI();
       }
-
+      
       handleObjectSelection(card) {
-        if (!this.currentPhrase.action || !this.currentPhrase.action.metadata) return;
-        
-        const metadata = this.currentPhrase.action.metadata;
-        const allowedWith = metadata.allowedWith || [];
-        const maxObjects = metadata.maxObjects || 0;
-        
-        if (!allowedWith.includes('objects')) return;
-        
-        if (!this.isObjectAllowed(card)) {
-          return;
-        }
-        
+        if (!this.currentPhrase.action) return;
+        const actionGrammar = this.grammar.getActionGrammar(this.currentPhrase.action);
+        const allowedTypes = actionGrammar.allowedTypes || [];
+        if (!allowedTypes.includes('objects')) return;
+        if (!this.isObjectAllowed(card)) return;
+        const maxCount = actionGrammar.maxCounts?.objects || 0;
         const existingIndex = this.currentPhrase.objects.findIndex(o => o.id === card.id);
         if (existingIndex !== -1) {
           this.currentPhrase.objects.splice(existingIndex, 1);
+          this.nextReplacementIndex.objects = 0;
           this.updateUI();
           return;
         }
-        
-        if (maxObjects === 0 || this.currentPhrase.objects.length < maxObjects) {
+        if (maxCount === 0 || this.currentPhrase.objects.length < maxCount) {
           this.currentPhrase.objects.push(card);
-        } else if (maxObjects > 0) {
-          const replaceIndex = this.nextReplacementIndex.objects;
-          this.currentPhrase.objects[replaceIndex] = card;
-          this.nextReplacementIndex.objects = (replaceIndex + 1) % maxObjects;
+        } else if (maxCount > 0) {
+          const idx = this.nextReplacementIndex.objects;
+          this.currentPhrase.objects[idx] = card;
+          this.nextReplacementIndex.objects = (idx + 1) % maxCount;
         }
+        this.updateUI();
       }
-
+      
       handleTimeSelection(card) {
         this.currentPhrase.time = card;
-      }
-
-handlePainSelection(card) {
-  if (card.type === 'pain') {
-    // Автоматически выбираем действие "болит", если еще не выбрано
-    if (!this.currentPhrase.action || 
-        (this.currentPhrase.action.id !== 'ACT-HURT' && 
-         this.currentPhrase.action.id !== 'ACT-HURTS-A-LOT')) {
-      this.currentPhrase.action = this.cards['ACT-HURT'];
-    }
-    
-    this.currentPhrase.subject = 'У меня';
-    this.currentPhrase.desire = null;
-    
-    // Проверяем, можно ли добавить этот объект к текущему действию
-    if (this.currentPhrase.action && this.grammar.isObjectCompatible(this.currentPhrase.action, card)) {
-      // Для боли - максимум один объект
-      this.currentPhrase.objects = [card];
-    }
-    
-    this.currentPhrase.people = [];
-    this.currentPhrase.pets = [];
-    this.currentPhrase.places = [];
-    this.currentPhrase.time = null;
-    this.updateUI();
-  }
-}
-
-      showWarningMessage(text) {
-        const message = document.createElement('div');
-        message.textContent = text;
-        message.style.cssText = `
-          position: fixed;
-          top: 20%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: rgba(255, 152, 0, 0.9);
-          color: white;
-          padding: 10px 20px;
-          border-radius: 5px;
-          z-index: 9999;
-          font-size: 16px;
-          animation: fadeInOut 2s ease-in-out;
-        `;
-
-        const style = document.createElement('style');
-        style.textContent = `
-          @keyframes fadeInOut {
-            0% { opacity: 0; }
-            20% { opacity: 1; }
-            80% { opacity: 1; }
-            100% { opacity: 0; }
-          }
-        `;
-
-        document.head.appendChild(style);
-        document.body.appendChild(message);
-
-        setTimeout(() => {
-          if (message.parentNode) {
-            document.body.removeChild(message);
-          }
-          if (style.parentNode) {
-            document.head.removeChild(style);
-          }
-        }, 2000);
-      }
-
-      renderCards() {
-        const container = document.getElementById('cardsContainer');
-        container.innerHTML = '';
-
-        let cardsToShow = [];
-        const currentStack = this.navigationStack[this.navigationStack.length - 1];
-
-        if (currentStack === 'ALL-ACTIONS') {
-          cardsToShow = this.getAllActions();
-        } else if (currentStack === 'FILTER-PEOPLE') {
-          cardsToShow = this.getFilteredPeople();
-        } else if (currentStack === 'FILTER-PLACES') {
-          cardsToShow = this.getFilteredPlaces();
-        } else if (currentStack === 'FILTER-OBJECTS') {
-          cardsToShow = this.getFilteredObjects();
-        } else if (currentStack === 'FILTER-TIME') {
-          cardsToShow = this.getFilteredTime();
-        } else if (this.navigationStack.length > 0 && currentStack.startsWith('CAT-')) {
-          const currentCategoryId = currentStack;
-          
-          if (currentCategoryId === 'CAT-ALL') {
-            cardsToShow = Object.values(this.cards).filter(card =>
-              card.type !== 'category' && card.sections.includes('Главная')
-            );
-          } else {
-            cardsToShow = Object.values(this.cards).filter(card =>
-              card.category === currentCategoryId && card.sections.includes('Главная')
-            );
-          }
-        }
-
-        if (cardsToShow.length === 0) {
-          container.innerHTML = '<div class="no-action-message">В этой категории пока нет карточек</div>';
-          return;
-        }
-
-        this.renderCardList(container, cardsToShow, 'main');
-      }
-
-      getAllActions() {
-        return Object.values(this.cards).filter(card =>
-          (card.type === 'action' || card.type === 'emotion' || 
-           card.type === 'learning' || card.type === 'help' || 
-           card.type === 'request' || card.type === 'dialog') &&
-          card.sections.includes('Главная')
-        );
-      }
-
-      renderCardList(container, cardsToShow, tabId = 'main') {
-        cardsToShow.sort((a, b) => {
-          const typeOrder = {
-            'action': 1, 'emotion': 1, 'learning': 1, 'help': 1, 'request': 1, 'dialog': 1,
-            'person': 2, 'pet': 3, 'place': 4, 'object': 5, 'clothing': 6,
-            'book': 7, 'creative': 8, 'pain': 9, 'time': 10
-          };
-          return (typeOrder[a.type] || 10) - (typeOrder[b.type] || 10);
-        });
-
-        cardsToShow.forEach(card => {
-          const cardElement = document.createElement('div');
-          cardElement.className = `card ${card.type}`;
-          
-          if (card.color) {
-            cardElement.style.backgroundColor = card.color;
-            cardElement.style.borderColor = card.borderColor || card.color;
-          }
-          
-          const isSelected = (this.currentPhrase.action && card.id === this.currentPhrase.action.id) ||
-            this.currentPhrase.people.some(p => p.id === card.id) ||
-            this.currentPhrase.pets.some(p => p.id === card.id) ||
-            this.currentPhrase.places.some(p => p.id === card.id) ||
-            this.currentPhrase.objects.some(o => o.id === card.id) ||
-            (this.currentPhrase.time && card.id === this.currentPhrase.time.id);
-
-          if (isSelected) {
-            cardElement.classList.add('selected');
-            cardElement.style.borderColor = '#ffc107';
-          }
-
-          let isDisabled = false;
-          let disabledReason = '';
-
-          if (this.currentPhrase.action && this.currentPhrase.action.metadata) {
-            const metadata = this.currentPhrase.action.metadata;
-            const allowedWith = metadata.allowedWith || [];
-
-            if (card.type === 'person' && !allowedWith.includes('people')) {
-              isDisabled = true;
-              disabledReason = 'Нельзя добавить людей к этому действию';
-            }
-
-            if (card.type === 'pet' && !allowedWith.includes('pets')) {
-              isDisabled = true;
-              disabledReason = 'Нельзя добавить питомцев к этому действию';
-            }
-
-            if (card.type === 'place' && !allowedWith.includes('places')) {
-              isDisabled = true;
-              disabledReason = 'Нельзя добавить места к этому действию';
-            }
-
-            if ((card.type === 'object' || card.type === 'clothing' || card.type === 'book' || card.type === 'creative' || card.type === 'pain') && !allowedWith.includes('objects')) {
-              isDisabled = true;
-              disabledReason = 'Нельзя добавить объекты к этому действию';
-            }
-
-            if ((card.type === 'object' || card.type === 'clothing' || card.type === 'book' || card.type === 'creative') && allowedWith.includes('objects')) {
-              const allowedObjects = metadata.allowedObjects || [];
-              if (allowedObjects.length > 0 && !allowedObjects.includes(card.id)) {
-                isDisabled = true;
-                disabledReason = 'Этот объект не подходит для данного действия';
-              }
-            }
-          }
-
-          if (isDisabled && !isSelected) {
-            cardElement.classList.add('disabled');
-            cardElement.title = disabledReason;
-          }
-
-          cardElement.innerHTML = `
-            <div class="card-emoji">${card.emoji}</div>
-            <div class="card-text">${card.text}</div>
-          `;
-
-          if (!isDisabled || isSelected) {
-            cardElement.addEventListener('click', () => {
-              this.selectCard(card.id, tabId);
-            });
-          }
-
-          container.appendChild(cardElement);
-        });
-      }
-
-      getFilteredPeople() {
-        return Object.values(this.cards).filter(card =>
-          card.type === 'person' && card.sections.includes('Главная')
-        );
-      }
-
-      getFilteredPlaces() {
-        return Object.values(this.cards).filter(card =>
-          card.type === 'place' && card.sections.includes('Главная')
-        );
-      }
-
-      getFilteredObjects() {
-        if (!this.currentPhrase.action || !this.currentPhrase.action.metadata) {
-          return [];
-        }
-
-        const metadata = this.currentPhrase.action.metadata;
-        const allowedObjects = metadata.allowedObjects || [];
-        
-        if (allowedObjects.length === 0) {
-          const actionCategory = this.currentPhrase.action.category;
-          return Object.values(this.cards).filter(card =>
-            (card.type === 'object' || card.type === 'clothing' || card.type === 'book' || card.type === 'creative') &&
-            card.category === actionCategory &&
-            card.sections.includes('Главная')
-          );
-        } else {
-          return Object.values(this.cards).filter(card =>
-            allowedObjects.includes(card.id) &&
-            card.sections.includes('Главная')
-          );
-        }
-      }
-
-      getFilteredTime() {
-        return Object.values(this.cards).filter(card =>
-          card.type === 'time' && card.sections.includes('Главная')
-        );
-      }
-
-      updateQuickNavigation() {
-        const quickNav = document.getElementById('quickNavigation');
-        const peopleBtn = document.getElementById('quickPeopleBtn');
-        const placesBtn = document.getElementById('quickPlacesBtn');
-        const objectsBtn = document.getElementById('quickObjectsBtn');
-        const timeBtn = document.getElementById('quickTimeBtn');
-
-        const showQuickNav = this.currentPhrase.action &&
-          this.currentPhrase.action.type !== 'emotion' &&
-          this.currentPhrase.action.id !== 'ACT-HURT' &&
-          !(this.currentPhrase.action.metadata && this.currentPhrase.action.metadata.isStandalone);
-
-        if (showQuickNav) {
-          quickNav.style.display = 'flex';
-          
-          const metadata = this.currentPhrase.action?.metadata || {};
-          const allowedWith = metadata.allowedWith || [];
-          
-          const canAddPeople = allowedWith.includes('people');
-          peopleBtn.disabled = !canAddPeople;
-          
-          const canAddPlaces = allowedWith.includes('places');
-          placesBtn.disabled = !canAddPlaces;
-          
-          const canAddObjects = allowedWith.includes('objects');
-          objectsBtn.disabled = !canAddObjects;
-          
-          timeBtn.disabled = false;
-        } else {
-          quickNav.style.display = 'none';
-        }
-      }
-
-      setSubject(subject) {
-        this.currentPhrase.subject = subject;
         this.updateUI();
       }
-
-      setDesire(desire) {
-        this.currentPhrase.desire = desire;
-        this.updateUI();
-      }
-
-      selectCategory(categoryId) {
-        this.filterMode = null;
-        this.isQuickNavMode = false;
-        this.navigationStack.push(categoryId);
-        this.renderCards();
-        this.toggleBackButton();
-        this.showCardsView();
-        this.updateQuickNavigation();
-        this.hideDoneButton();
-      }
-
-      selectCard(cardId, tabId = 'main') {
-        const card = this.cards[cardId];
-        if (!card) return;
-
-        if (tabId === 'learning' || tabId === 'dialog' || tabId === 'emotions') {
-          this.speakText(card.text);
-          return;
-        }
-
-        if (this.navigationStack.includes('CAT-PAIN')) {
-          this.handlePainSelection(card);
+      
+      handlePainSelection(card) {
+        if (card.type === 'pain') {
+          if (!this.currentPhrase.action || (this.currentPhrase.action.id !== 'ACT-HURT' && this.currentPhrase.action.id !== 'ACT-HURTS-A-LOT')) {
+            this.currentPhrase.action = this.cards['ACT-HURT'];
+          }
+          this.currentPhrase.subject = 'У меня';
+          this.currentPhrase.desire = null;
+          if (this.currentPhrase.action && this.grammar.isObjectCompatible(this.currentPhrase.action, card)) {
+            this.currentPhrase.objects = [card];
+          }
+          this.currentPhrase.people = [];
+          this.currentPhrase.pets = [];
+          this.currentPhrase.places = [];
+          this.currentPhrase.time = null;
           this.updateUI();
-          return;
-        }
-
-        if (this.cardTypeHandlers[card.type]) {
-          this.cardTypeHandlers[card.type](card);
-        } else {
-          this.currentPhrase.objects.push(card);
-        }
-
-        this.updateUI();
-        
-        if (this.filterMode && !this.isQuickNavMode) {
-          this.navigateBack();
         }
       }
-
-isObjectAllowed(card) {
-  if (!this.currentPhrase.action) return true;
-   return this.grammar.isObjectCompatible(this.currentPhrase.action, card);
-}
-
+      
+      isObjectAllowed(card) {
+        if (!this.currentPhrase.action) return true;
+        return this.grammar.isObjectCompatible(this.currentPhrase.action, card);
+      }
+      
       checkAndResetIncompatibleElements(oldAction, newAction) {
         if (!oldAction || !newAction) return;
-        
-        const newMetadata = newAction.metadata || {};
-        const newAllowedObjects = newMetadata.allowedObjects || [];
-        
-        if (newAllowedObjects.length > 0) {
-          this.currentPhrase.objects = this.currentPhrase.objects.filter(obj => 
-            newAllowedObjects.includes(obj.id)
-          );
+        const newGrammar = this.grammar.getActionGrammar(newAction);
+        const allowedObjects = newGrammar.allowedObjects || [];
+        if (allowedObjects.length > 0) {
+          this.currentPhrase.objects = this.currentPhrase.objects.filter(obj => allowedObjects.includes(obj.id));
         } else if (newAction.category !== oldAction.category) {
           this.currentPhrase.objects = [];
         }
+        // Проверка на совместимость людей, мест и т.д. (можно оставить как есть)
       }
-
+      
       removeElement(type, id) {
         switch(type) {
           case 'subject': this.currentPhrase.subject = null; break;
           case 'desire': this.currentPhrase.desire = null; break;
           case 'action': this.currentPhrase.action = null; break;
-          case 'person': 
-            this.currentPhrase.people = this.currentPhrase.people.filter(p => p.id !== id);
-            this.nextReplacementIndex.people = 0;
-            break;
+          case 'person': this.currentPhrase.people = this.currentPhrase.people.filter(p => p.id !== id); this.nextReplacementIndex.people = 0; break;
           case 'pet': this.currentPhrase.pets = this.currentPhrase.pets.filter(p => p.id !== id); break;
-          case 'place': 
-            this.currentPhrase.places = this.currentPhrase.places.filter(p => p.id !== id);
-            this.nextReplacementIndex.places = 0;
-            break;
-          case 'object': 
-            this.currentPhrase.objects = this.currentPhrase.objects.filter(o => o.id !== id);
-            this.nextReplacementIndex.objects = 0;
-            break;
+          case 'place': this.currentPhrase.places = this.currentPhrase.places.filter(p => p.id !== id); this.nextReplacementIndex.places = 0; break;
+          case 'object': this.currentPhrase.objects = this.currentPhrase.objects.filter(o => o.id !== id); this.nextReplacementIndex.objects = 0; break;
           case 'time': this.currentPhrase.time = null; break;
         }
         this.updateUI();
       }
-
+      
       navigateBack() {
         if (this.navigationStack.length > 1) {
           this.navigationStack.pop();
@@ -3444,7 +2559,7 @@ isObjectAllowed(card) {
         this.updateQuickNavigation();
         this.hideDoneButton();
       }
-
+      
       navigateBackTab(tabId) {
         const stack = this.tabNavigationStacks[tabId];
         if (stack.length > 1) {
@@ -3454,7 +2569,7 @@ isObjectAllowed(card) {
           this.navigateToHomeTab(tabId);
         }
       }
-
+      
       navigateToHome() {
         this.navigationStack = [];
         this.filterMode = null;
@@ -3465,62 +2580,48 @@ isObjectAllowed(card) {
         this.updateQuickNavigation();
         this.hideDoneButton();
       }
-
+      
       navigateToHomeTab(tabId) {
         this.tabNavigationStacks[tabId] = [];
         this.tabCurrentViews[tabId] = 'categories';
         this.renderTabCategories(tabId);
       }
-
+      
       showCategoriesView() {
         document.getElementById('categoriesView').style.display = 'block';
         document.getElementById('cardsView').style.display = 'none';
         this.currentView = 'categories';
       }
-
+      
       showCardsView() {
         document.getElementById('categoriesView').style.display = 'none';
         document.getElementById('cardsView').style.display = 'block';
         this.currentView = 'cards';
       }
-
+      
       toggleBackButton() {
-        const backBtn = document.getElementById('backBtn');
-        backBtn.style.display = this.navigationStack.length > 0 ? 'block' : 'none';
+        document.getElementById('backBtn').style.display = this.navigationStack.length > 0 ? 'block' : 'none';
       }
-
+      
       clearPhrase() {
         this.currentPhrase = {
-          subject: null,
-          desire: null,
-          action: null,
-          people: [],
-          pets: [],
-          places: [],
-          objects: [],
-          time: null
+          subject: null, desire: null, action: null, people: [], pets: [], places: [], objects: [], time: null
         };
-        this.nextReplacementIndex = {
-          people: 0,
-          places: 0,
-          objects: 0
-        };
+        this.nextReplacementIndex = { people: 0, places: 0, objects: 0 };
         this.updateUI();
       }
-
+      
       updatePhraseDisplay() {
         const phraseDisplay = document.getElementById('phraseDisplay');
         const phrase = this.grammar.buildPhrase(this.currentPhrase);
         phraseDisplay.textContent = phrase || 'Выберите элементы для фразы';
       }
-
+      
       speakPhrase() {
         const phrase = document.getElementById('phraseDisplay').textContent;
-        if (phrase && phrase !== 'Выберите элементы для фразы') {
-          this.speakText(phrase);
-        }
+        if (phrase && phrase !== 'Выберите элементы для фразы') this.speakText(phrase);
       }
-
+      
       updateUI() {
         this.updatePhraseDisplay();
         this.updateSelectedItems();
@@ -3528,730 +2629,405 @@ isObjectAllowed(card) {
         this.renderCards();
         this.updateQuickNavigation();
       }
-
+      
       updateSelectedItems() {
         const container = document.getElementById('selectedItems');
         container.innerHTML = '';
-
-        if (this.currentPhrase.subject) {
-          this.addSelectedItem(container, 'subject', null, this.currentPhrase.subject);
-        }
-
-        if (this.currentPhrase.desire) {
-          this.addSelectedItem(container, 'desire', null, this.currentPhrase.desire);
-        }
-
-        if (this.currentPhrase.action) {
-          this.addSelectedItem(container, 'action', this.currentPhrase.action.id, this.currentPhrase.action.text, this.currentPhrase.action.emoji);
-        }
-
-        this.currentPhrase.people.forEach((person, index) => {
-          this.addSelectedItem(container, 'person', person.id, person.text, person.emoji, true, index);
-        });
-
-        this.currentPhrase.pets.forEach(pet => {
-          this.addSelectedItem(container, 'pet', pet.id, pet.text, pet.emoji, true);
-        });
-
-        this.currentPhrase.places.forEach((place, index) => {
-          this.addSelectedItem(container, 'place', place.id, place.text, place.emoji, true, index);
-        });
-
-        this.currentPhrase.objects.forEach((object, index) => {
-          this.addSelectedItem(container, 'object', object.id, object.text, object.emoji, true, index);
-        });
-
-        if (this.currentPhrase.time) {
-          this.addSelectedItem(container, 'time', this.currentPhrase.time.id, this.currentPhrase.time.text, this.currentPhrase.time.emoji, true);
-        }
+        if (this.currentPhrase.subject) this.addSelectedItem(container, 'subject', null, this.currentPhrase.subject);
+        if (this.currentPhrase.desire) this.addSelectedItem(container, 'desire', null, this.currentPhrase.desire);
+        if (this.currentPhrase.action) this.addSelectedItem(container, 'action', this.currentPhrase.action.id, this.currentPhrase.action.text, this.currentPhrase.action.emoji);
+        this.currentPhrase.people.forEach((person, idx) => this.addSelectedItem(container, 'person', person.id, person.text, person.emoji, true, idx));
+        this.currentPhrase.pets.forEach(pet => this.addSelectedItem(container, 'pet', pet.id, pet.text, pet.emoji, true));
+        this.currentPhrase.places.forEach((place, idx) => this.addSelectedItem(container, 'place', place.id, place.text, place.emoji, true, idx));
+        this.currentPhrase.objects.forEach((obj, idx) => this.addSelectedItem(container, 'object', obj.id, obj.text, obj.emoji, true, idx));
+        if (this.currentPhrase.time) this.addSelectedItem(container, 'time', this.currentPhrase.time.id, this.currentPhrase.time.text, this.currentPhrase.time.emoji, true);
       }
-
+      
       addSelectedItem(container, type, id, text, emoji = null, canReplace = false, index = -1) {
         const item = document.createElement('div');
         item.className = 'selected-item';
-        if (canReplace) {
-          item.classList.add('can-replace');
-        }
-
-        item.innerHTML = `
-          ${emoji ? emoji + ' ' : ''}${text}
-          <span class="remove" data-type="${type}" data-id="${id || ''}">×</span>
-        `;
-
+        if (canReplace) item.classList.add('can-replace');
+        item.innerHTML = `${emoji ? emoji + ' ' : ''}${text}<span class="remove" data-type="${type}" data-id="${id || ''}">×</span>`;
         const removeBtn = item.querySelector('.remove');
-        removeBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.removeElement(type, id);
-        });
-
+        removeBtn.addEventListener('click', (e) => { e.stopPropagation(); this.removeElement(type, id); });
         if (canReplace) {
           item.addEventListener('click', (e) => {
-            if (e.target !== removeBtn) {
-              this.showReplacementCategory(type, index);
-            }
+            if (e.target !== removeBtn) this.showReplacementCategory(type, index);
           });
         }
-
         container.appendChild(item);
       }
-
+      
       showReplacementCategory(type, index) {
         let categoryId = '';
-        switch(type) {
-          case 'person':
-            categoryId = 'CAT-PEOPLE';
-            break;
-          case 'pet':
-            categoryId = 'CAT-PETS';
-            break;
-          case 'place':
-            categoryId = 'CAT-PLACES';
-            break;
-          case 'object':
-            if (this.currentPhrase.action) {
-              const category = this.currentPhrase.action.category;
-              if (category) {
-                categoryId = category;
-              }
-            }
-            break;
-          case 'time':
-            categoryId = 'CAT-TIME';
-            break;
-        }
-
+        if (type === 'person') categoryId = 'CAT-PEOPLE';
+        else if (type === 'pet') categoryId = 'CAT-PETS';
+        else if (type === 'place') categoryId = 'CAT-PLACES';
+        else if (type === 'object' && this.currentPhrase.action) categoryId = this.currentPhrase.action.category;
+        else if (type === 'time') categoryId = 'CAT-TIME';
         if (categoryId) {
           this.currentReplacement = { type, index };
           this.selectCategory(categoryId);
         }
       }
-
+      
       updateRulesInfo() {
         const rulesElement = document.getElementById('rulesInfo');
         let rulesText = '';
-
-		  if (this.currentPhrase.action && 
-      (this.currentPhrase.action.id === 'ACT-HURT' || 
-       this.currentPhrase.action.id === 'ACT-HURTS-A-LOT')) {
-    rulesText = 'Выберите часть тела, которая болит. Можно выбрать только одну часть тела.';
-  }
-  else if (this.currentPhrase.action && this.currentPhrase.action.type === 'emotion') {
-    rulesText = 'Эмоции выражают состояние. Выберите эмоцию для выражения своего состояния.';
-  }
-  else if (this.navigationStack.includes('CAT-PAIN')) {
-    rulesText = 'Выберите часть тела, которая болит.';
-  }
-		
-        if (this.currentPhrase.action && this.currentPhrase.action.type === 'emotion') {
+        if (this.currentPhrase.action && this.grammar.getActionGrammar(this.currentPhrase.action).painConstruction) {
+          rulesText = 'Выберите часть тела, которая болит. Можно выбрать только одну часть тела.';
+        } else if (this.currentPhrase.action && this.currentPhrase.action.type === 'emotion') {
           rulesText = 'Эмоции выражают состояние. Выберите эмоцию для выражения своего состояния.';
         } else if (this.navigationStack.includes('CAT-PAIN')) {
           rulesText = 'Выберите часть тела, которая болит.';
-        } else if (this.currentPhrase.action && this.currentPhrase.action.metadata && this.currentPhrase.action.metadata.isStandalone) {
+        } else if (this.currentPhrase.action && this.grammar.getActionGrammar(this.currentPhrase.action).isStandalone) {
           rulesText = 'Это самостоятельная фраза, не требует дополнительных элементов. Можно добавить время.';
         } else if (this.currentPhrase.action) {
-          const metadata = this.currentPhrase.action.metadata || {};
-          const allowedWith = metadata.allowedWith || [];
-          const maxPeople = metadata.maxPeople || 0;
-          const maxPets = metadata.maxPets || 0;
-          const maxPlaces = metadata.maxPlaces || 0;
-          const maxObjects = metadata.maxObjects || 0;
-
-          rulesText = `К действию "${this.currentPhrase.action.text}" можно добавить: `;
-          const availableElements = [];
-          const limitElements = [];
-
-          if (allowedWith.includes('people')) {
-            const currentPeople = this.currentPhrase.people.length;
-            if (maxPeople === 0) {
-              availableElements.push('людей (без ограничений)');
-            } else if (currentPeople < maxPeople) {
-              availableElements.push(`до ${maxPeople} ${this.getPeopleWord(maxPeople)}`);
-            } else {
-              limitElements.push(`${maxPeople} ${this.getPeopleWord(maxPeople)} (достигнут лимит, следующий заменит по очереди)`);
-            }
+          const grammar = this.grammar.getActionGrammar(this.currentPhrase.action);
+          const allowed = grammar.allowedTypes || [];
+          const max = grammar.maxCounts || {};
+          const parts = [];
+          if (allowed.includes('people')) {
+            const cur = this.currentPhrase.people.length;
+            const lim = max.people || 0;
+            parts.push(lim === 0 ? `людей (без ограничений)` : `до ${lim} ${this.getPeopleWord(lim)}`);
           }
-
-          if (allowedWith.includes('places')) {
-            const currentPlaces = this.currentPhrase.places.length;
-            if (maxPlaces === 0) {
-              availableElements.push('мест (без ограничений)');
-            } else if (currentPlaces < maxPlaces) {
-              availableElements.push(`до ${maxPlaces} ${this.getPlacesWord(maxPlaces)}`);
-            } else {
-              limitElements.push(`${maxPlaces} ${this.getPlacesWord(maxPlaces)} (достигнут лимит, следующее заменит по очереди)`);
-            }
+          if (allowed.includes('places')) {
+            const cur = this.currentPhrase.places.length;
+            const lim = max.places || 0;
+            parts.push(lim === 0 ? `мест (без ограничений)` : `до ${lim} ${this.getPlacesWord(lim)}`);
           }
-
-          if (allowedWith.includes('objects')) {
-            const currentObjects = this.currentPhrase.objects.length;
-            if (maxObjects === 0) {
-              availableElements.push('объектов (без ограничений)');
-            } else if (currentObjects < maxObjects) {
-              availableElements.push(`до ${maxObjects} ${this.getObjectsWord(maxObjects)}`);
-            } else {
-              limitElements.push(`${maxObjects} ${this.getObjectsWord(maxObjects)} (достигнут лимит, следующий заменит по очереди)`);
-            }
+          if (allowed.includes('objects')) {
+            const cur = this.currentPhrase.objects.length;
+            const lim = max.objects || 0;
+            parts.push(lim === 0 ? `объектов (без ограничений)` : `до ${lim} ${this.getObjectsWord(lim)}`);
           }
-
-          if (allowedWith.includes('pets')) {
-            const currentPets = this.currentPhrase.pets.length;
-            if (maxPets === 0) {
-              availableElements.push('питомцев (без ограничений)');
-            } else if (currentPets < maxPets) {
-              availableElements.push(`до ${maxPets} ${this.getPetsWord(maxPets)}`);
-            } else {
-              limitElements.push(`${maxPets} ${this.getPetsWord(maxPets)} (достигнут лимит, следующий заменит последнего)`);
-            }
+          if (allowed.includes('pets')) {
+            const cur = this.currentPhrase.pets.length;
+            const lim = max.pets || 0;
+            parts.push(lim === 0 ? `питомцев (без ограничений)` : `до ${lim} ${this.getPetsWord(lim)}`);
           }
-
-          let mainText = '';
-          if (availableElements.length > 0) {
-            mainText = availableElements.join(', ');
-            if (limitElements.length > 0) {
-              mainText += `, ${limitElements.join(', ')}`;
-            }
-          } else if (limitElements.length > 0) {
-            mainText = limitElements.join(', ');
-          }
-
-          if (mainText) {
-            rulesText += mainText;
-            if (!this.currentPhrase.time) {
-              rulesText += ' и время (выбранное время заменит предыдущее)';
-            } else {
-              rulesText += '. Время выбрано (можно заменить).';
-            }
-          } else {
-            rulesText += 'ничего нельзя добавить';
-            if (!this.currentPhrase.time) {
-              rulesText += ', но можно добавить время (выбранное время заменит предыдущее)';
-            } else {
-              rulesText += '. Время выбрано (можно заменить).';
-            }
-          }
+          rulesText = `К действию "${this.currentPhrase.action.text}" можно добавить: ${parts.join(', ')}. Время можно добавить или заменить.`;
         } else {
           rulesText = 'Выберите действие для составления фразы.';
         }
-
         rulesElement.textContent = rulesText;
       }
-
-      getPeopleWord(count) {
-        if (count === 1) return 'человека';
-        return 'людей';
-      }
-
-      getPetsWord(count) {
-        if (count === 1) return 'питомца';
-        return 'питомцев';
-      }
-
-      getPlacesWord(count) {
-        if (count === 1) return 'места';
-        return 'мест';
-      }
-
-      getObjectsWord(count) {
-        if (count === 1) return 'объекта';
-        return 'объектов';
-      }
-
+      
+      getPeopleWord(count) { return count === 1 ? 'человека' : 'людей'; }
+      getPetsWord(count) { return count === 1 ? 'питомца' : 'питомцев'; }
+      getPlacesWord(count) { return count === 1 ? 'места' : 'мест'; }
+      getObjectsWord(count) { return count === 1 ? 'объекта' : 'объектов'; }
+      
       renderCategories() {
         const container = document.getElementById('categoriesContainer');
         container.innerHTML = '';
-
         const categories = Object.values(this.cards).filter(card =>
-          card.type === 'category' &&
-          card.category === null &&
-          card.sections.includes('Главная')
+          card.type === 'category' && card.category === null && card.sections.includes('Главная')
         );
-
-        categories.sort((a, b) => {
-          const aOrder = a.order || 50;
-          const bOrder = b.order || 50;
-          if (aOrder !== bOrder) {
-            return aOrder - bOrder;
-          }
-          return a.text.localeCompare(b.text);
-        });
-
+        categories.sort((a, b) => (a.order || 50) - (b.order || 50) || a.text.localeCompare(b.text));
         categories.forEach(category => {
-          const categoryElement = document.createElement('div');
-          categoryElement.className = 'category-card';
-          
-          if (category.color) {
-            categoryElement.style.backgroundColor = category.color;
-            categoryElement.style.borderColor = category.borderColor || category.color;
-          }
-          
-          categoryElement.innerHTML = `
-            <div class="card-emoji">${category.emoji}</div>
-            <div class="card-text">${category.text}</div>
-          `;
-
-          categoryElement.addEventListener('click', () => {
-            this.selectCategory(category.id);
-          });
-
-          container.appendChild(categoryElement);
+          const catDiv = document.createElement('div');
+          catDiv.className = 'category-card';
+          if (category.color) catDiv.style.backgroundColor = category.color;
+          catDiv.innerHTML = `<div class="card-emoji">${category.emoji}</div><div class="card-text">${category.text}</div>`;
+          catDiv.addEventListener('click', () => this.selectCategory(category.id));
+          container.appendChild(catDiv);
         });
       }
-
-      renderLearningTab() {
-        this.renderTabCategories('learning');
+      
+      selectCategory(categoryId) {
+        this.filterMode = null;
+        this.isQuickNavMode = false;
+        this.navigationStack.push(categoryId);
+        this.renderCards();
+        this.toggleBackButton();
+        this.showCardsView();
+        this.updateQuickNavigation();
+        this.hideDoneButton();
       }
-
-      renderDialogTab() {
-        this.renderTabCategories('dialog');
-      }
-
-      renderEmotionsTab() {
-        this.renderTabCategories('emotions');
-      }
-
-      renderTabCategories(tabId) {
-        const sectionsMap = {
-          'emotions': 'Эмоции',
-          'learning': 'Обучение',
-          'dialog': 'Диалог'
-        };
-
-        const sectionName = sectionsMap[tabId];
-        const categoriesContainerId = `${tabId}CategoriesContainer`;
-        const categoriesViewId = `${tabId}CategoriesView`;
-        const cardsViewId = `${tabId}CardsView`;
-        const cardsContainerId = `${tabId}CardsContainer`;
-        const backBtnId = `backBtn${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`;
-
-        document.getElementById(categoriesViewId).style.display = 'block';
-        document.getElementById(cardsViewId).style.display = 'none';
-        document.getElementById(backBtnId).style.display = 'none';
-
-        const container = document.getElementById(categoriesContainerId);
+      
+      renderCards() {
+        const container = document.getElementById('cardsContainer');
         container.innerHTML = '';
-
-        const categories = Object.values(this.cards).filter(card =>
-          card.type === 'category' &&
-          card.category === null &&
-          card.sections.includes(sectionName)
-        );
-
-        if (categories.length === 0) {
-          this.renderTabAllCards(tabId);
-          return;
-        }
-
-        categories.sort((a, b) => {
-          const aOrder = a.order || 50;
-          const bOrder = b.order || 50;
-          if (aOrder !== bOrder) {
-            return aOrder - bOrder;
-          }
-          return a.text.localeCompare(b.text);
-        });
-
-        categories.forEach(category => {
-          const categoryElement = document.createElement('div');
-          categoryElement.className = 'category-card';
-          
-          if (category.color) {
-            categoryElement.style.backgroundColor = category.color;
-            categoryElement.style.borderColor = category.borderColor || category.color;
-          }
-          
-          categoryElement.innerHTML = `
-            <div class="card-emoji">${category.emoji}</div>
-            <div class="card-text">${category.text}</div>
-          `;
-
-          categoryElement.addEventListener('click', () => {
-            this.tabNavigationStacks[tabId].push(category.id);
-            this.tabCurrentViews[tabId] = 'cards';
-            this.renderTabCards(tabId, category.id);
-          });
-
-          container.appendChild(categoryElement);
-        });
-      }
-
-      renderTabCards(tabId, categoryId) {
-        const sectionsMap = {
-          'emotions': 'Эмоции',
-          'learning': 'Обучение',
-          'dialog': 'Диалог'
-        };
-
-        const sectionName = sectionsMap[tabId];
-        const categoriesViewId = `${tabId}CategoriesView`;
-        const cardsViewId = `${tabId}CardsView`;
-        const cardsContainerId = `${tabId}CardsContainer`;
-        const backBtnId = `backBtn${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`;
-
-        document.getElementById(categoriesViewId).style.display = 'none';
-        document.getElementById(cardsViewId).style.display = 'block';
-        document.getElementById(backBtnId).style.display = 'block';
-
-        const container = document.getElementById(cardsContainerId);
-        container.innerHTML = '';
-
         let cardsToShow = [];
-        
-        if (categoryId === 'ALL') {
-          cardsToShow = Object.values(this.cards).filter(card =>
-            card.type !== 'category' && card.sections.includes(sectionName)
-          );
-        } else {
-          cardsToShow = Object.values(this.cards).filter(card =>
-            card.category === categoryId && card.sections.includes(sectionName)
-          );
+        const currentStack = this.navigationStack[this.navigationStack.length - 1];
+        if (currentStack === 'ALL-ACTIONS') cardsToShow = this.getAllActions();
+        else if (currentStack === 'FILTER-PEOPLE') cardsToShow = this.getFilteredPeople();
+        else if (currentStack === 'FILTER-PLACES') cardsToShow = this.getFilteredPlaces();
+        else if (currentStack === 'FILTER-OBJECTS') cardsToShow = this.getFilteredObjects();
+        else if (currentStack === 'FILTER-TIME') cardsToShow = this.getFilteredTime();
+        else if (this.navigationStack.length > 0 && currentStack.startsWith('CAT-')) {
+          if (currentStack === 'CAT-ALL') cardsToShow = Object.values(this.cards).filter(c => c.type !== 'category' && c.sections.includes('Главная'));
+          else cardsToShow = Object.values(this.cards).filter(c => c.category === currentStack && c.sections.includes('Главная'));
         }
-
         if (cardsToShow.length === 0) {
           container.innerHTML = '<div class="no-action-message">В этой категории пока нет карточек</div>';
           return;
         }
-
-        cardsToShow.sort((a, b) => a.text.localeCompare(b.text));
-        
+        this.renderCardList(container, cardsToShow, 'main');
+      }
+      
+      getAllActions() {
+        return Object.values(this.cards).filter(card =>
+          (card.type === 'action' || card.type === 'emotion' || card.type === 'learning' || card.type === 'help' || card.type === 'request' || card.type === 'dialog') &&
+          card.sections.includes('Главная')
+        );
+      }
+      
+      renderCardList(container, cardsToShow, tabId = 'main') {
+        cardsToShow.sort((a, b) => {
+          const order = { 'action':1,'emotion':1,'learning':1,'help':1,'request':1,'dialog':1,'person':2,'pet':3,'place':4,'object':5,'clothing':6,'book':7,'creative':8,'pain':9,'time':10 };
+          return (order[a.type]||10) - (order[b.type]||10);
+        });
         cardsToShow.forEach(card => {
-          const cardElement = document.createElement('div');
-          cardElement.className = `card ${card.type}`;
-          
-          if (card.color) {
-            cardElement.style.backgroundColor = card.color;
-            cardElement.style.borderColor = card.borderColor || card.color;
+          const cardDiv = document.createElement('div');
+          cardDiv.className = `card ${card.type}`;
+          if (card.color) cardDiv.style.backgroundColor = card.color;
+          const isSelected = (this.currentPhrase.action && card.id === this.currentPhrase.action.id) ||
+            this.currentPhrase.people.some(p => p.id === card.id) ||
+            this.currentPhrase.pets.some(p => p.id === card.id) ||
+            this.currentPhrase.places.some(p => p.id === card.id) ||
+            this.currentPhrase.objects.some(o => o.id === card.id) ||
+            (this.currentPhrase.time && card.id === this.currentPhrase.time.id);
+          if (isSelected) cardDiv.classList.add('selected');
+          let isDisabled = false;
+          if (this.currentPhrase.action && tabId === 'main') {
+            const actionGrammar = this.grammar.getActionGrammar(this.currentPhrase.action);
+            const allowedTypes = actionGrammar.allowedTypes || [];
+            if (card.type === 'person' && !allowedTypes.includes('people')) isDisabled = true;
+            if (card.type === 'pet' && !allowedTypes.includes('pets')) isDisabled = true;
+            if (card.type === 'place' && !allowedTypes.includes('places')) isDisabled = true;
+            if ((card.type === 'object' || card.type === 'clothing' || card.type === 'pain') && !allowedTypes.includes('objects')) isDisabled = true;
+            if ((card.type === 'object' || card.type === 'clothing') && allowedTypes.includes('objects')) {
+              const allowedObjects = actionGrammar.allowedObjects || [];
+              if (allowedObjects.length > 0 && !allowedObjects.includes(card.id)) isDisabled = true;
+            }
           }
-          
-          cardElement.innerHTML = `
-            <div class="card-emoji">${card.emoji}</div>
-            <div class="card-text">${card.text}</div>
-          `;
-
-          cardElement.addEventListener('click', () => {
-            this.selectCard(card.id, tabId);
-          });
-
-          container.appendChild(cardElement);
+          if (isDisabled && !isSelected) cardDiv.classList.add('disabled');
+          cardDiv.innerHTML = `<div class="card-emoji">${card.emoji}</div><div class="card-text">${card.text}</div>`;
+          if (!isDisabled || isSelected) cardDiv.addEventListener('click', () => this.selectCard(card.id, tabId));
+          container.appendChild(cardDiv);
         });
       }
-
-      renderTabAllCards(tabId) {
-        const sectionsMap = {
-          'emotions': 'Эмоции',
-          'learning': 'Обучение',
-          'dialog': 'Диалог'
-        };
-
-        const sectionName = sectionsMap[tabId];
-        const categoriesViewId = `${tabId}CategoriesView`;
-        const cardsViewId = `${tabId}CardsView`;
-        const cardsContainerId = `${tabId}CardsContainer`;
-        const backBtnId = `backBtn${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`;
-
-        document.getElementById(categoriesViewId).style.display = 'none';
-        document.getElementById(cardsViewId).style.display = 'block';
-        document.getElementById(backBtnId).style.display = 'none';
-
-        const container = document.getElementById(cardsContainerId);
-        container.innerHTML = '';
-
-        const cardsToShow = Object.values(this.cards).filter(card =>
-          card.type !== 'category' && card.sections.includes(sectionName)
-        );
-
-        if (cardsToShow.length === 0) {
-          container.innerHTML = '<div class="no-action-message">В этой вкладке пока нет карточек</div>';
+      
+      getFilteredPeople() { return Object.values(this.cards).filter(c => c.type === 'person' && c.sections.includes('Главная')); }
+      getFilteredPlaces() { return Object.values(this.cards).filter(c => c.type === 'place' && c.sections.includes('Главная')); }
+      getFilteredTime() { return Object.values(this.cards).filter(c => c.type === 'time' && c.sections.includes('Главная')); }
+      getFilteredObjects() {
+        if (!this.currentPhrase.action || !this.currentPhrase.action.metadata) return [];
+        const actionGrammar = this.grammar.getActionGrammar(this.currentPhrase.action);
+        const allowed = actionGrammar.allowedObjects || [];
+        if (allowed.length === 0) {
+          const cat = this.currentPhrase.action.category;
+          return Object.values(this.cards).filter(c => (c.type === 'object' || c.type === 'clothing') && c.category === cat && c.sections.includes('Главная'));
+        } else {
+          return Object.values(this.cards).filter(c => allowed.includes(c.id) && c.sections.includes('Главная'));
+        }
+      }
+      
+      updateQuickNavigation() {
+        const quickNav = document.getElementById('quickNavigation');
+        const peopleBtn = document.getElementById('quickPeopleBtn');
+        const placesBtn = document.getElementById('quickPlacesBtn');
+        const objectsBtn = document.getElementById('quickObjectsBtn');
+        const timeBtn = document.getElementById('quickTimeBtn');
+        const show = this.currentPhrase.action && this.currentPhrase.action.type !== 'emotion' && !this.grammar.getActionGrammar(this.currentPhrase.action).isStandalone;
+        if (show) {
+          quickNav.style.display = 'flex';
+          const grammar = this.grammar.getActionGrammar(this.currentPhrase.action);
+          const allowed = grammar.allowedTypes || [];
+          peopleBtn.disabled = !allowed.includes('people');
+          placesBtn.disabled = !allowed.includes('places');
+          objectsBtn.disabled = !allowed.includes('objects');
+          timeBtn.disabled = false;
+        } else {
+          quickNav.style.display = 'none';
+        }
+      }
+      
+      setSubject(subject) { this.currentPhrase.subject = subject; this.updateUI(); }
+      setDesire(desire) { this.currentPhrase.desire = desire; this.updateUI(); }
+      
+      selectCard(cardId, tabId = 'main') {
+        const card = this.cards[cardId];
+        if (!card) return;
+        if (tabId === 'learning' || tabId === 'dialog' || tabId === 'emotions') {
+          this.speakText(card.text);
           return;
         }
-
-        cardsToShow.sort((a, b) => a.text.localeCompare(b.text));
-        
-        cardsToShow.forEach(card => {
-          const cardElement = document.createElement('div');
-          cardElement.className = `card ${card.type}`;
-          
-          if (card.color) {
-            cardElement.style.backgroundColor = card.color;
-            cardElement.style.borderColor = card.borderColor || card.color;
-          }
-          
-          cardElement.innerHTML = `
-            <div class="card-emoji">${card.emoji}</div>
-            <div class="card-text">${card.text}</div>
-          `;
-
-          cardElement.addEventListener('click', () => {
-            this.selectCard(card.id, tabId);
+        if (this.navigationStack.includes('CAT-PAIN')) {
+          this.handlePainSelection(card);
+          this.updateUI();
+          return;
+        }
+        if (this.cardTypeHandlers[card.type]) this.cardTypeHandlers[card.type](card);
+        else this.currentPhrase.objects.push(card);
+        this.updateUI();
+        if (this.filterMode && !this.isQuickNavMode) this.navigateBack();
+      }
+      
+      renderLearningTab() { this.renderTabCategories('learning'); }
+      renderDialogTab() { this.renderTabCategories('dialog'); }
+      renderEmotionsTab() { this.renderTabCategories('emotions'); }
+      
+      renderTabCategories(tabId) {
+        const sectionMap = { emotions:'Эмоции', learning:'Обучение', dialog:'Диалог' };
+        const section = sectionMap[tabId];
+        const container = document.getElementById(`${tabId}CategoriesContainer`);
+        document.getElementById(`${tabId}CategoriesView`).style.display = 'block';
+        document.getElementById(`${tabId}CardsView`).style.display = 'none';
+        document.getElementById(`backBtn${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`).style.display = 'none';
+        container.innerHTML = '';
+        const categories = Object.values(this.cards).filter(c => c.type === 'category' && c.category === null && c.sections.includes(section));
+        if (categories.length === 0) { this.renderTabAllCards(tabId); return; }
+        categories.sort((a,b) => (a.order||50)-(b.order||50) || a.text.localeCompare(b.text));
+        categories.forEach(cat => {
+          const div = document.createElement('div');
+          div.className = 'category-card';
+          if (cat.color) div.style.backgroundColor = cat.color;
+          div.innerHTML = `<div class="card-emoji">${cat.emoji}</div><div class="card-text">${cat.text}</div>`;
+          div.addEventListener('click', () => {
+            this.tabNavigationStacks[tabId].push(cat.id);
+            this.tabCurrentViews[tabId] = 'cards';
+            this.renderTabCards(tabId, cat.id);
           });
-
-          container.appendChild(cardElement);
+          container.appendChild(div);
         });
       }
-
+      
+      renderTabCards(tabId, categoryId) {
+        const sectionMap = { emotions:'Эмоции', learning:'Обучение', dialog:'Диалог' };
+        const section = sectionMap[tabId];
+        const container = document.getElementById(`${tabId}CardsContainer`);
+        document.getElementById(`${tabId}CategoriesView`).style.display = 'none';
+        document.getElementById(`${tabId}CardsView`).style.display = 'block';
+        document.getElementById(`backBtn${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`).style.display = 'block';
+        container.innerHTML = '';
+        let cards = [];
+        if (categoryId === 'ALL') cards = Object.values(this.cards).filter(c => c.type !== 'category' && c.sections.includes(section));
+        else cards = Object.values(this.cards).filter(c => c.category === categoryId && c.sections.includes(section));
+        if (cards.length === 0) { container.innerHTML = '<div class="no-action-message">В этой категории пока нет карточек</div>'; return; }
+        cards.sort((a,b) => a.text.localeCompare(b.text));
+        cards.forEach(card => {
+          const div = document.createElement('div');
+          div.className = `card ${card.type}`;
+          if (card.color) div.style.backgroundColor = card.color;
+          div.innerHTML = `<div class="card-emoji">${card.emoji}</div><div class="card-text">${card.text}</div>`;
+          div.addEventListener('click', () => this.selectCard(card.id, tabId));
+          container.appendChild(div);
+        });
+      }
+      
+      renderTabAllCards(tabId) {
+        const sectionMap = { emotions:'Эмоции', learning:'Обучение', dialog:'Диалог' };
+        const section = sectionMap[tabId];
+        const container = document.getElementById(`${tabId}CardsContainer`);
+        document.getElementById(`${tabId}CategoriesView`).style.display = 'none';
+        document.getElementById(`${tabId}CardsView`).style.display = 'block';
+        document.getElementById(`backBtn${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`).style.display = 'none';
+        container.innerHTML = '';
+        const cards = Object.values(this.cards).filter(c => c.type !== 'category' && c.sections.includes(section));
+        if (cards.length === 0) { container.innerHTML = '<div class="no-action-message">В этой вкладке пока нет карточек</div>'; return; }
+        cards.sort((a,b) => a.text.localeCompare(b.text));
+        cards.forEach(card => {
+          const div = document.createElement('div');
+          div.className = `card ${card.type}`;
+          if (card.color) div.style.backgroundColor = card.color;
+          div.innerHTML = `<div class="card-emoji">${card.emoji}</div><div class="card-text">${card.text}</div>`;
+          div.addEventListener('click', () => this.selectCard(card.id, tabId));
+          container.appendChild(div);
+        });
+      }
+      
       handleEmergency(type) {
         const messages = {
-          'help': '🆘 ПОМОГИТЕ! Мне срочно нужна помощь!',
-          'pain': '🤕 У меня СИЛЬНАЯ БОЛЬ! Нужен врач!',
-          'scared': '😨 Мне ОЧЕНЬ СТРАШНО! Помогите!',
-          'sick': '🤢 Меня ТОШНИТ! Плохо!',
-          'lost': this.getLostMessage(),
-          'call': '📞 Позвоните моим родителям, пожалуйста!',
-          'stop': '🛑 СТОП! Немедленно остановитесь!'
+          help:'🆘 ПОМОГИТЕ! Мне срочно нужна помощь!',
+          pain:'🤕 У меня СИЛЬНАЯ БОЛЬ! Нужен врач!',
+          scared:'😨 Мне ОЧЕНЬ СТРАШНО! Помогите!',
+          sick:'🤢 Меня ТОШНИТ! Плохо!',
+          lost: this.getLostMessage(),
+          call:'📞 Позвоните моим родителям, пожалуйста!',
+          stop:'🛑 СТОП! Немедленно остановитесь!'
         };
-
-        const message = messages[type] || 'Тревога!';
-        this.speakEmergency(message);
-
-        if (type === 'call') {
-          setTimeout(() => {
-            this.callParents();
-          }, 1000);
-        } else {
-          this.showEmergencyAlert(message);
-        }
+        const msg = messages[type] || 'Тревога!';
+        this.speakEmergency(msg);
+        if (type === 'call') setTimeout(() => this.callParents(), 1000);
+        else this.showEmergencyAlert(msg);
       }
-
-      getLostMessage() {
-        const address = this.childInfo.address || 'адрес не указан';
-        return `🗺️ Я заблудился! Мой адрес: ${address}. Пожалуйста, помогите мне!`;
-      }
-
+      
+      getLostMessage() { return `🗺️ Я заблудился! Мой адрес: ${this.childInfo.address || 'адрес не указан'}. Пожалуйста, помогите мне!`; }
       callParents() {
-        const motherPhone = this.childInfo.motherPhone;
-        const fatherPhone = this.childInfo.fatherPhone;
-        let message = "Позвоните моим родителям, пожалуйста!\n\n";
-        
-        if (motherPhone && fatherPhone) {
-          message += `Телефон мамы: ${motherPhone}\nТелефон папы: ${fatherPhone}`;
-        } else if (motherPhone) {
-          message += `Телефон мамы: ${motherPhone}`;
-        } else if (fatherPhone) {
-          message += `Телефон папы: ${fatherPhone}`;
-        } else {
-          message += "Телефоны родителей не указаны в разделе 'Данные о ребенке'";
-        }
-        
-        this.showEmergencyAlertWithPhones(message);
-        
-        if (motherPhone || fatherPhone) {
-          console.log(`Вызов родителей... Мама: ${motherPhone}, Папа: ${fatherPhone}`);
-        }
+        const mother = this.childInfo.motherPhone, father = this.childInfo.fatherPhone;
+        let msg = "Позвоните моим родителям, пожалуйста!\n\n";
+        if (mother && father) msg += `Телефон мамы: ${mother}\nТелефон папы: ${father}`;
+        else if (mother) msg += `Телефон мамы: ${mother}`;
+        else if (father) msg += `Телефон папы: ${father}`;
+        else msg += "Телефоны родителей не указаны в разделе 'Данные о ребенке'";
+        this.showEmergencyAlertWithPhones(msg);
       }
-
+      
       speakEmergency(message) {
         if ('speechSynthesis' in window) {
           speechSynthesis.cancel();
-          const utterance = new SpeechSynthesisUtterance(message);
-          utterance.lang = 'ru-RU';
-          utterance.rate = 1.2;
-          utterance.pitch = 1.3;
-          utterance.volume = 1.0;
-          speechSynthesis.speak(utterance);
+          const u = new SpeechSynthesisUtterance(message);
+          u.lang = 'ru-RU'; u.rate = 1.2; u.pitch = 1.3; u.volume = 1;
+          speechSynthesis.speak(u);
         }
       }
-
+      
       showEmergencyAlert(message) {
-        const alertDiv = document.createElement('div');
-        alertDiv.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(231, 76, 60, 0.95);
-          color: white;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          z-index: 9999;
-          font-size: 2rem;
-          text-align: center;
-          padding: 20px;
-          animation: pulse 1s infinite;
-        `;
-        
+        const div = document.createElement('div');
+        div.style.cssText = `position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(231,76,60,0.95); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; font-size:2rem; text-align:center; padding:20px; animation:pulse 1s infinite;`;
         const style = document.createElement('style');
-        style.textContent = `
-          @keyframes pulse {
-            0% { background-color: rgba(231, 76, 60, 0.95); }
-            50% { background-color: rgba(192, 57, 43, 0.95); }
-            100% { background-color: rgba(231, 76, 60, 0.95); }
-          }
-        `;
-        
-        alertDiv.innerHTML = `
-          <div style="font-size: 4rem; margin-bottom: 20px;">⚠️</div>
-          <div style="font-weight: bold; margin-bottom: 20px;">${message}</div>
-          <div style="font-size: 1.5rem; margin-bottom: 30px;">Немедленная помощь!</div>
-          <button id="closeEmergency" style="
-            background: white;
-            color: #e74c3c;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.5rem;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-          ">Закрыть</button>
-        `;
-        
+        style.textContent = `@keyframes pulse{0%{background-color:rgba(231,76,60,0.95)}50%{background-color:rgba(192,57,43,0.95)}100%{background-color:rgba(231,76,60,0.95)}}`;
+        div.innerHTML = `<div style="font-size:4rem; margin-bottom:20px;">⚠️</div><div style="font-weight:bold; margin-bottom:20px;">${message}</div><div style="font-size:1.5rem; margin-bottom:30px;">Немедленная помощь!</div><button id="closeEmergency" style="background:white; color:#e74c3c; border:none; padding:15px 30px; font-size:1.5rem; border-radius:10px; cursor:pointer; font-weight:bold;">Закрыть</button>`;
         document.body.appendChild(style);
-        document.body.appendChild(alertDiv);
-        
-        document.getElementById('closeEmergency').addEventListener('click', () => {
-          document.body.removeChild(alertDiv);
-          document.head.removeChild(style);
-          speechSynthesis.cancel();
-        });
-        
-        setTimeout(() => {
-          if (document.body.contains(alertDiv)) {
-            document.body.removeChild(alertDiv);
-            document.head.removeChild(style);
-          }
-        }, 30000);
+        document.body.appendChild(div);
+        document.getElementById('closeEmergency').addEventListener('click', () => { div.remove(); style.remove(); speechSynthesis.cancel(); });
+        setTimeout(() => { if (div.parentNode) { div.remove(); style.remove(); } }, 30000);
       }
-
+      
       showEmergencyAlertWithPhones(message) {
-        const alertDiv = document.createElement('div');
-        alertDiv.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(52, 152, 219, 0.95);
-          color: white;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          z-index: 9999;
-          font-size: 1.5rem;
-          text-align: center;
-          padding: 20px;
-        `;
-        
-        alertDiv.innerHTML = `
-          <div style="font-size: 4rem; margin-bottom: 20px;">📞</div>
-          <div style="font-weight: bold; margin-bottom: 20px;">Позвоните моим родителям!</div>
-          <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: left; font-size: 1.2rem;">
-            ${message.split('\n').map(line => `<div style="margin-bottom: 10px;">${line}</div>`).join('')}
-          </div>
-          <button id="closeEmergency" style="
-            background: white;
-            color: #3498db;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.5rem;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 20px;
-          ">Закрыть</button>
-        `;
-        
-        document.body.appendChild(alertDiv);
-        
-        document.getElementById('closeEmergency').addEventListener('click', () => {
-          document.body.removeChild(alertDiv);
-          speechSynthesis.cancel();
-        });
-        
-        setTimeout(() => {
-          if (document.body.contains(alertDiv)) {
-            document.body.removeChild(alertDiv);
-          }
-        }, 30000);
+        const div = document.createElement('div');
+        div.style.cssText = `position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(52,152,219,0.95); color:white; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; font-size:1.5rem; text-align:center; padding:20px;`;
+        div.innerHTML = `<div style="font-size:4rem; margin-bottom:20px;">📞</div><div style="font-weight:bold; margin-bottom:20px;">Позвоните моим родителям!</div><div style="background:rgba(255,255,255,0.2); padding:20px; border-radius:10px; margin-bottom:20px; text-align:left; font-size:1.2rem;">${message.split('\n').map(l=>`<div style="margin-bottom:10px;">${l}</div>`).join('')}</div><button id="closeEmergency" style="background:white; color:#3498db; border:none; padding:15px 30px; font-size:1.5rem; border-radius:10px; cursor:pointer; font-weight:bold; margin-top:20px;">Закрыть</button>`;
+        document.body.appendChild(div);
+        document.getElementById('closeEmergency').addEventListener('click', () => { div.remove(); speechSynthesis.cancel(); });
+        setTimeout(() => { if (div.parentNode) div.remove(); }, 30000);
       }
-
+      
       renderChildInfo(editable = false) {
         const container = document.getElementById('childInfoGrid');
         const info = this.childInfo;
-
         container.innerHTML = `
-          <div class="child-card">
-            <h3>Основная информация</h3>
-            <div class="form-group">
-              <label>Имя ребенка</label>
-              <input type="text" id="childName" value="${info.name || ''}" 
-                     placeholder="Введите имя" ${editable ? '' : 'disabled class="view-only"'}>
-            </div>
-            <div class="form-group">
-              <label>Возраст</label>
-              <input type="number" id="childAge" value="${info.age || ''}" 
-                     placeholder="Введите возраст" ${editable ? '' : 'disabled class="view-only"'}>
-            </div>
-            <div class="form-group">
-              <label>Пол</label>
-              <select id="childGender" ${editable ? '' : 'disabled class="view-only"'}>
-                <option value="">Выберите</option>
-                <option value="male" ${info.gender === 'male' ? 'selected' : ''}>Мальчик</option>
-                <option value="female" ${info.gender === 'female' ? 'selected' : ''}>Девочка</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Адрес</label>
-              <input type="text" id="childAddress" value="${info.address || ''}" 
-                     placeholder="Введите адрес" ${editable ? '' : 'disabled class="view-only"'}>
-            </div>
-            ${editable ? '<button class="save-btn" onclick="window.communicator.saveChildInfo()">Сохранить</button>' : ''}
+          <div class="child-card"><h3>Основная информация</h3>
+            <div class="form-group"><label>Имя ребенка</label><input type="text" id="childName" value="${info.name||''}" ${editable?'':'disabled class="view-only"'}></div>
+            <div class="form-group"><label>Возраст</label><input type="number" id="childAge" value="${info.age||''}" ${editable?'':'disabled class="view-only"'}></div>
+            <div class="form-group"><label>Пол</label><select id="childGender" ${editable?'':'disabled class="view-only"'}><option value="">Выберите</option><option value="male" ${info.gender==='male'?'selected':''}>Мальчик</option><option value="female" ${info.gender==='female'?'selected':''}>Девочка</option></select></div>
+            <div class="form-group"><label>Адрес</label><input type="text" id="childAddress" value="${info.address||''}" ${editable?'':'disabled class="view-only"'}></div>
+            ${editable?'<button class="save-btn" onclick="window.communicator.saveChildInfo()">Сохранить</button>':''}
           </div>
-
-          <div class="child-card">
-            <h3>Контакты</h3>
-            <div class="form-group">
-              <label>Телефон мамы</label>
-              <input type="tel" id="motherPhone" value="${info.motherPhone || ''}" 
-                     placeholder="+7 (___) ___-__-__" ${editable ? '' : 'disabled class="view-only"'}>
-            </div>
-            <div class="form-group">
-              <label>Телефон папы</label>
-              <input type="tel" id="fatherPhone" value="${info.fatherPhone || ''}" 
-                     placeholder="+7 (___) ___-__-__" ${editable ? '' : 'disabled class="view-only"'}>
-            </div>
-            <div class="form-group">
-              <label>Телефон врача</label>
-              <input type="tel" id="doctorPhone" value="${info.doctorPhone || ''}" 
-                     placeholder="+7 (___) ___-__-__" ${editable ? '' : 'disabled class="view-only"'}>
-            </div>
-            ${editable ? '<button class="save-btn" onclick="window.communicator.saveContacts()">Сохранить</button>' : ''}
+          <div class="child-card"><h3>Контакты</h3>
+            <div class="form-group"><label>Телефон мамы</label><input type="tel" id="motherPhone" value="${info.motherPhone||''}" ${editable?'':'disabled class="view-only"'}></div>
+            <div class="form-group"><label>Телефон папы</label><input type="tel" id="fatherPhone" value="${info.fatherPhone||''}" ${editable?'':'disabled class="view-only"'}></div>
+            <div class="form-group"><label>Телефон врача</label><input type="tel" id="doctorPhone" value="${info.doctorPhone||''}" ${editable?'':'disabled class="view-only"'}></div>
+            ${editable?'<button class="save-btn" onclick="window.communicator.saveContacts()">Сохранить</button>':''}
           </div>
-
-          <div class="child-card">
-            <h3>Медицинская информация</h3>
-            <div class="form-group">
-              <label>Диагноз</label>
-              <textarea id="childDiagnosis" ${editable ? '' : 'disabled class="view-only"'}>${info.diagnosis || ''}</textarea>
-            </div>
-            <div class="form-group">
-              <label>Аллергии</label>
-              <textarea id="childAllergies" ${editable ? '' : 'disabled class="view-only"'}>${info.allergies || ''}</textarea>
-            </div>
-            ${editable ? '<button class="save-btn" onclick="window.communicator.saveMedicalInfo()">Сохранить</button>' : ''}
+          <div class="child-card"><h3>Медицинская информация</h3>
+            <div class="form-group"><label>Диагноз</label><textarea id="childDiagnosis" ${editable?'':'disabled class="view-only"'}">${info.diagnosis||''}</textarea></div>
+            <div class="form-group"><label>Аллергии</label><textarea id="childAllergies" ${editable?'':'disabled class="view-only"'}">${info.allergies||''}</textarea></div>
+            ${editable?'<button class="save-btn" onclick="window.communicator.saveMedicalInfo()">Сохранить</button>':''}
           </div>
-
-          <div class="child-card">
-            <h3>Навыки и предпочтения</h3>
-            <div class="form-group">
-              <label>Любимые занятия</label>
-              <textarea id="childInterests" ${editable ? '' : 'disabled class="view-only"'}>${info.interests || ''}</textarea>
-            </div>
-            <div class="form-group">
-              <label>Не любит/Боится</label>
-              <textarea id="childDislikes" ${editable ? '' : 'disabled class="view-only"'}>${info.dislikes || ''}</textarea>
-            </div>
-            ${editable ? '<button class="save-btn" onclick="window.communicator.saveSkillsInfo()">Сохранить</button>' : ''}
+          <div class="child-card"><h3>Навыки и предпочтения</h3>
+            <div class="form-group"><label>Любимые занятия</label><textarea id="childInterests" ${editable?'':'disabled class="view-only"'}">${info.interests||''}</textarea></div>
+            <div class="form-group"><label>Не любит/Боится</label><textarea id="childDislikes" ${editable?'':'disabled class="view-only"'}">${info.dislikes||''}</textarea></div>
+            ${editable?'<button class="save-btn" onclick="window.communicator.saveSkillsInfo()">Сохранить</button>':''}
           </div>
         `;
       }
-
-      enableChildEditing() {
-        this.renderChildInfo(true);
-        document.getElementById('editChildBtn').style.display = 'none';
-      }
-
+      
+      enableChildEditing() { this.renderChildInfo(true); document.getElementById('editChildBtn').style.display = 'none'; }
       saveChildInfo() {
         this.childInfo.name = document.getElementById('childName').value;
         this.childInfo.age = document.getElementById('childAge').value;
@@ -4263,7 +3039,6 @@ isObjectAllowed(card) {
         document.getElementById('editChildBtn').style.display = 'block';
         isEditingEnabled = false;
       }
-
       saveContacts() {
         this.childInfo.motherPhone = document.getElementById('motherPhone').value;
         this.childInfo.fatherPhone = document.getElementById('fatherPhone').value;
@@ -4271,75 +3046,41 @@ isObjectAllowed(card) {
         localStorage.setItem('childInfo', JSON.stringify(this.childInfo));
         alert('Контакты сохранены');
       }
-
       saveMedicalInfo() {
         this.childInfo.diagnosis = document.getElementById('childDiagnosis').value;
         this.childInfo.allergies = document.getElementById('childAllergies').value;
         localStorage.setItem('childInfo', JSON.stringify(this.childInfo));
-        alert('Медицинская информация сохранены');
+        alert('Медицинская информация сохранена');
       }
-
       saveSkillsInfo() {
         this.childInfo.interests = document.getElementById('childInterests').value;
         this.childInfo.dislikes = document.getElementById('childDislikes').value;
         localStorage.setItem('childInfo', JSON.stringify(this.childInfo));
-        alert('Информация о навыках сохранены');
+        alert('Информация о навыках сохранена');
       }
-
+      
       addToHistory(text) {
         const now = new Date();
-        const historyItem = {
-          text: text,
-          timestamp: now.toISOString(),
-          timeString: now.toLocaleTimeString('ru-RU', { 
-            hour: '2-digit', 
-            minute: '2-digit',
-            second: '2-digit' 
-          }),
-          dateString: now.toLocaleDateString('ru-RU')
-        };
-        
-        history.unshift(historyItem);
-        
-        if (history.length > 100) {
-          history = history.slice(0, 100);
-        }
-        
+        const item = { text, timestamp: now.toISOString(), timeString: now.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit',second:'2-digit'}), dateString: now.toLocaleDateString('ru-RU') };
+        history.unshift(item);
+        if (history.length > 100) history = history.slice(0,100);
         localStorage.setItem('communicator_history', JSON.stringify(history));
-        
-        if (this.currentTab === 'history') {
-          this.renderHistory();
-        }
+        if (this.currentTab === 'history') this.renderHistory();
       }
-
+      
       renderHistory() {
         const container = document.getElementById('historyContainer');
         container.innerHTML = '';
-        
-        if (history.length === 0) {
-          container.innerHTML = '<div class="no-action-message">История пуста</div>';
-          return;
-        }
-        
-        history.forEach((item, index) => {
-          const historyItem = document.createElement('div');
-          historyItem.className = 'history-item';
-          
-          historyItem.innerHTML = `
-            <div class="history-text">${item.text}</div>
-            <div class="history-time" title="${item.dateString}">
-              ${item.timeString}
-            </div>
-          `;
-          
-          historyItem.addEventListener('click', () => {
-            this.speakText(item.text);
-          });
-          
-          container.appendChild(historyItem);
+        if (history.length === 0) { container.innerHTML = '<div class="no-action-message">История пуста</div>'; return; }
+        history.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'history-item';
+          div.innerHTML = `<div class="history-text">${item.text}</div><div class="history-time" title="${item.dateString}">${item.timeString}</div>`;
+          div.addEventListener('click', () => this.speakText(item.text));
+          container.appendChild(div);
         });
       }
-
+      
       clearHistory() {
         if (confirm("Очистить всю историю запросов?")) {
           history = [];
@@ -4348,82 +3089,61 @@ isObjectAllowed(card) {
           alert('История очищена');
         }
       }
-
+      
       exportHistory() {
         const dataStr = JSON.stringify(history, null, 2);
-        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const blob = new Blob([dataStr], {type:'application/json'});
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(dataBlob);
+        link.href = URL.createObjectURL(blob);
         link.download = 'communicator_history_' + new Date().toISOString().slice(0,10) + '.json';
         link.click();
       }
-
+      
       updateSystemInfo() {
         const container = document.getElementById('systemInfo');
-        const cardCount = Object.keys(this.cards).length;
-        const cardsJson = JSON.stringify({ cards: this.cards });
-        const dataSize = (new Blob([cardsJson]).size / 1024).toFixed(2);
-        
+        const count = Object.keys(this.cards).length;
+        const size = (new Blob([JSON.stringify({cards:this.cards})]).size / 1024).toFixed(2);
         const info = {
-          'Версия приложения': '4.5.2',
-          'Количество карточек': cardCount,
-          'Размер данных': `${dataSize} КБ`,
-          'Последнее обновление': new Date().toLocaleString(),
-          'Скорость чтения': speechRate,
-          'Размер шрифта': `${(fontSizeScale * 100).toFixed(0)}%`,
-          'PIN-код установлен': currentPin !== DEFAULT_PIN ? 'Да' : 'Нет (по умолчанию 0000)',
-          'Всего фраз в истории': history.length
+          'Версия приложения':'4.6.0 (грамматика в карточках)',
+          'Количество карточек':count,
+          'Размер данных':`${size} КБ`,
+          'Последнее обновление':new Date().toLocaleString(),
+          'Скорость чтения':speechRate,
+          'Размер шрифта':`${(fontSizeScale*100).toFixed(0)}%`,
+          'PIN-код установлен':currentPin!==DEFAULT_PIN?'Да':'Нет (по умолчанию 0000)',
+          'Всего фраз в истории':history.length
         };
-        
         let html = '';
-        for (const [key, value] of Object.entries(info)) {
-          html += `
-            <div class="settings-info-item">
-              <span class="settings-info-label">${key}:</span>
-              <span class="settings-info-value">${value}</span>
-            </div>
-          `;
-        }
-        
+        for (let [k,v] of Object.entries(info)) html += `<div class="settings-info-item"><span class="settings-info-label">${k}:</span> <span class="settings-info-value">${v}</span></div>`;
         container.innerHTML = html;
       }
     }
-	
+    
     function loadVoices() {
       voices = speechSynthesis.getVoices();
-      const voiceSelect = document.getElementById('voiceSelect');
-      voiceSelect.innerHTML = '<option value="">Системный голос</option>';
-      
+      const select = document.getElementById('voiceSelect');
+      select.innerHTML = '<option value="">Системный голос</option>';
       voices.forEach(voice => {
         if (voice.lang.includes('ru') || voice.lang.includes('RU')) {
-          const option = document.createElement('option');
-          option.value = voice.name;
-          option.textContent = `${voice.name} (${voice.lang})`;
-          voiceSelect.appendChild(option);
+          const opt = document.createElement('option');
+          opt.value = voice.name;
+          opt.textContent = `${voice.name} (${voice.lang})`;
+          select.appendChild(opt);
         }
       });
-      
-      const savedVoice = localStorage.getItem('selected_voice');
-      if (savedVoice) {
-        voiceSelect.value = savedVoice;
-        selectedVoice = voices.find(v => v.name === savedVoice);
-      }
+      const saved = localStorage.getItem('selected_voice');
+      if (saved) { select.value = saved; selectedVoice = voices.find(v=>v.name===saved); }
     }
-
-document.addEventListener('DOMContentLoaded', async () => {
-  const communicator = new Communicator();
-  window.communicator = communicator;
-  
-  document.getElementById('speedSlider').value = speechRate;
-  document.getElementById('speedValue').textContent = speechRate;
-  document.getElementById('fontSizeSlider').value = fontSizeScale * 100;
-  document.getElementById('fontSizeValue').textContent = (fontSizeScale * 100).toFixed(0) + '%';
-  
-  // Инициализируем голоса
-  loadVoices();
-  
-  // Удаляем кнопку быстрого теста грамматики
-});
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+      const communicator = new Communicator();
+      window.communicator = communicator;
+      document.getElementById('speedSlider').value = speechRate;
+      document.getElementById('speedValue').textContent = speechRate;
+      document.getElementById('fontSizeSlider').value = fontSizeScale * 100;
+      document.getElementById('fontSizeValue').textContent = (fontSizeScale * 100).toFixed(0) + '%';
+      loadVoices();
+    });
   </script>
 </body>
 </html>
