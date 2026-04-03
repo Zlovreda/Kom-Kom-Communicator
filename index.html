@@ -1566,14 +1566,20 @@
       }
 
       isObjectCompatible(actionCard, objectCard) {
-        const g = this.getActionGrammar(actionCard);
-        if (g.allowedObjects && g.allowedObjects.length > 0) return g.allowedObjects.includes(objectCard.id);
-        if (g.allowedTypes && g.allowedTypes.length > 0) {
-          const typeMap = { 'person':'people', 'pet':'pets', 'place':'places', 'object':'objects', 'clothing':'objects', 'pain':'objects', 'time':'time' };
-          const category = typeMap[objectCard.type];
-          return g.allowedTypes.includes(category);
+        const g = this.phraseBuilder.getActionGrammar(actionCard);
+        // 1. Если есть точный список ID – только из него
+        if (g.allowedObjects && g.allowedObjects.length > 0) {
+          return g.allowedObjects.includes(objectCard.id);
         }
-        return true;
+        // 2. Если есть allowedTypes – проверяем соответствие типа карточки
+        const allowedTypes = g.allowedTypes || [];
+        const typeMap = {
+          'person':'people', 'pet':'pets', 'place':'places',
+          'object':'objects', 'clothing':'objects', 'food':'objects',
+          'drink':'objects', 'pain':'objects', 'time':'time'
+        };
+        const category = typeMap[objectCard.type];
+        return allowedTypes.includes(category);
       }
 
       buildPhrase(phrase) {
@@ -1585,54 +1591,42 @@
           if (phrase.subject && g.requiresSubject) return `${phrase.subject} ${actionCard.text}`;
           return actionCard.text;
         }
-        const parts = [];
-        if (g.requiresSubject && phrase.subject) parts.push(phrase.subject);
-        else if (g.requiresSubject && !phrase.subject) parts.push('Я');
-        if (g.requiresDesire && phrase.desire) parts.push(phrase.desire);
-        else if (g.requiresDesire && !phrase.desire) parts.push('хочу');
-        parts.push(actionCard.text);
-        // объекты
-        if (phrase.objects && phrase.objects.length) {
-          const items = phrase.objects.map(obj => {
-            const ctx = {};
-            if (g.objectPreposition) ctx.preposition = g.objectPreposition;
-            if (g.directObject) ctx.directObject = true;
-            if (g.objectCase) ctx.case = g.objectCase;
-            return this.getWordForm(obj, ctx);
-          });
-          parts.push(this.joinElements(items));
-        }
-        // питомцы
-        if (phrase.pets && phrase.pets.length) {
-          const pets = phrase.pets.map(pet => {
-            const ctx = {};
-            if (g.directObject) ctx.directObject = true;
-            return this.getWordForm(pet, ctx);
-          });
-          parts.push(this.joinElements(pets));
-        }
-        // люди
-        if (phrase.people && phrase.people.length) {
-          const people = phrase.people.map(person => {
-            const ctx = {};
-            if (g.personPreposition) ctx.preposition = g.personPreposition;
-            if (g.personCase) ctx.case = g.personCase;
-            return this.getWordForm(person, ctx);
-          });
-          parts.push(this.joinElements(people));
-        }
-        // места
-        if (phrase.places && phrase.places.length) {
-          const place = phrase.places[0];
-          const ctx = {};
-          if (g.placePreposition) ctx.preposition = g.placePreposition;
-          else ctx.case = 'locative';
-          parts.push(this.getWordForm(place, ctx));
-        }
-        // время
-        if (phrase.time) parts.push(this.getWordForm(phrase.time));
-        return parts.join(' ');
-      }
+const parts = [];
+  if (g.requiresSubject && phrase.subject) parts.push(phrase.subject);
+  else if (g.requiresSubject && !phrase.subject) parts.push('Я');
+  if (g.requiresDesire && phrase.desire) parts.push(phrase.desire);
+  else if (g.requiresDesire && !phrase.desire) parts.push('хочу');
+  parts.push(actionCard.text);
+
+  // Прямые дополнения (винительный падеж)
+  if (phrase.objects && phrase.objects.length && g.directObject) {
+    const directObjs = phrase.objects.map(obj => this.getWordForm(obj, { directObject: true }));
+    parts.push(this.joinElements(directObjs));
+  }
+
+  // Дополнения с предлогом "с" (люди, питомцы)
+  const withPeople = [];
+  if (phrase.people && phrase.people.length) {
+    withPeople.push(...phrase.people.map(p => this.getWordForm(p, { preposition: 'с', case: 'instrumental' })));
+  }
+  if (phrase.pets && phrase.pets.length) {
+    withPeople.push(...phrase.pets.map(p => this.getWordForm(p, { preposition: 'с', case: 'instrumental' })));
+  }
+  if (withPeople.length) {
+    parts.push('с ' + this.joinElements(withPeople));
+  }
+
+  // Места (предложный падеж)
+  if (phrase.places && phrase.places.length) {
+    const place = phrase.places[0];
+    parts.push(this.getWordForm(place, { case: 'locative' }));
+  }
+
+  // Время
+  if (phrase.time) parts.push(this.getWordForm(phrase.time));
+
+  return parts.join(' ');
+}
 
       buildPainPhrase(phrase) {
         const parts = [];
@@ -2172,11 +2166,19 @@
       getFilteredTime() { return Object.values(this.cards).filter(c => c.type==='time' && c.sections.includes('Главная')); }
       getFilteredObjects() {
         if (!this.currentPhrase.action) return [];
-        const g = this.phraseBuilder.getActionGrammar(this.currentPhrase.action);
-        const allowed = g.allowedObjects || [];
-        if (allowed.length) return Object.values(this.cards).filter(c => allowed.includes(c.id) && c.sections.includes('Главная'));
-        const cat = this.currentPhrase.action.category;
-        return Object.values(this.cards).filter(c => (c.type==='object'||c.type==='clothing') && c.category===cat && c.sections.includes('Главная'));
+        const action = this.currentPhrase.action;
+        const grammar = this.phraseBuilder.getActionGrammar(action);
+        const allowed = grammar.allowedObjects || [];
+        if (allowed.length) {
+          return Object.values(this.cards).filter(c => allowed.includes(c.id));
+        }
+        const allowedTypes = grammar.allowedTypes || [];
+        const objectLikeTypes = ['object', 'clothing', 'food', 'drink', 'pain'];
+        const effectiveTypes = allowedTypes.filter(t => objectLikeTypes.includes(t));
+        if (effectiveTypes.length) {
+          return Object.values(this.cards).filter(c => effectiveTypes.includes(c.type) && c.sections.includes('Главная'));
+        }
+        return [];
       }
 
       selectCard(cardId, tabId='main') {
@@ -2263,7 +2265,8 @@
 
       handleObjectSelection(card) {
         if (!this.currentPhrase.action) return;
-        const g = this.phraseBuilder.getActionGrammar(this.currentPhrase.action);
+        if (!this.phraseBuilder.isObjectCompatible(this.currentPhrase.action, card)) return;
+		const g = this.phraseBuilder.getActionGrammar(this.currentPhrase.action);
         if (!(g.allowedTypes || []).includes('objects')) return;
         if (!this.phraseBuilder.isObjectCompatible(this.currentPhrase.action, card)) return;
         const max = g.maxCounts?.objects || 0;
