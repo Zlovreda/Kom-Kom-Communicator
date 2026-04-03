@@ -579,7 +579,7 @@
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      max-width: 400px;
+      max-width: 500px;
       width: 90%;
     }
 
@@ -900,7 +900,7 @@
       color: #2980b9;
     }
 	
-	/* Стили для модального окна загрузки */
+	/* Стили для модальных окон загрузки/импорта */
 .pin-modal input[type="radio"],
 .pin-modal input[type="checkbox"] {
   margin-right: 8px;
@@ -1378,9 +1378,77 @@
   </div>
 </div>
 
+<!-- Новое модальное окно для импорта из файла -->
+<div id="importModal" class="pin-overlay" style="display: none;">
+  <div class="pin-modal" style="max-width: 500px;">
+    <h3>Импорт карточек из файла</h3>
+    
+    <div class="form-group">
+      <label><strong>Выберите стратегию импорта:</strong></label>
+      <div style="margin: 15px 0;">
+        <label style="display: block; margin-bottom: 10px;">
+          <input type="radio" name="importStrategy" value="replace" checked>
+          <strong>ЗАМЕНИТЬ ВСЕ</strong> - Полная замена всех карточек (текущие будут удалены)
+        </label>
+        <label style="display: block; margin-bottom: 10px;">
+          <input type="radio" name="importStrategy" value="merge">
+          <strong>ОБЪЕДИНИТЬ</strong> - Добавить новые и обновить существующие карточки
+        </label>
+        <label style="display: block; margin-bottom: 10px;">
+          <input type="radio" name="importStrategy" value="sections">
+          <strong>ВЫБОРОЧНАЯ</strong> - Импортировать только выбранные разделы
+        </label>
+      </div>
+    </div>
+
+    <div id="importSectionsSelection" style="display: none; margin-top: 15px;">
+      <label><strong>Выберите разделы для импорта:</strong></label>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+        <label style="display: flex; align-items: center;">
+          <input type="checkbox" name="importSection" value="Главная" checked>
+          📱 Главная
+        </label>
+        <label style="display: flex; align-items: center;">
+          <input type="checkbox" name="importSection" value="Обучение">
+          🎓 Обучение
+        </label>
+        <label style="display: flex; align-items: center;">
+          <input type="checkbox" name="importSection" value="Диалог">
+          💬 Диалог
+        </label>
+        <label style="display: flex; align-items: center;">
+          <input type="checkbox" name="importSection" value="Эмоции">
+          😊 Эмоции
+        </label>
+      </div>
+      
+      <div style="margin-top: 15px; padding: 10px; background: #f0f8ff; border-radius: 5px;">
+        <label style="display: block; margin-bottom: 5px;">
+          <input type="checkbox" id="importSkipCategories">
+          Не импортировать категории (только карточки)
+        </label>
+        <label style="display: block;">
+          <input type="checkbox" id="importPreserveExisting">
+          Сохранить существующие карточки в невыбранных разделах
+        </label>
+      </div>
+    </div>
+
+    <div id="importSummaryInfo" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; display: none;">
+      <div style="font-weight: bold; margin-bottom: 5px;">Будет импортировано:</div>
+      <div id="importSectionCounts">0 карточек из 0 разделов</div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <button id="selectFileBtn" class="control-btn" style="background: #27ae60;">Выбрать файл и импортировать</button>
+      <button id="cancelImportBtn" class="control-btn" style="background: #e74c3c; margin-left: 10px;">Отмена</button>
+    </div>
+  </div>
+</div>
+
   <script>
     // ================= МОДУЛИ =================
-    // 1. CardManager – управление карточками (загрузка, сохранение, миграция, импорт/экспорт)
+    // 1. CardManager – управление карточками (загрузка, сохранение, миграция, импорт/экспорт, слияние)
     class CardManager {
       constructor() {
         this.cards = {};
@@ -1416,23 +1484,63 @@
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         if (!data.cards) throw new Error('Некорректный формат данных: отсутствует ключ "cards"');
-        this.cards = data.cards;
-        this.migrateOldCards();
-        this.saveToLocalStorage();
-        return this.cards;
+        return data.cards;
       }
 
       saveToLocalStorage() {
         localStorage.setItem('communicatorCards', JSON.stringify({ cards: this.cards }));
       }
 
-      importCards(jsonData) {
+      // Новый метод: применение данных с учётом стратегии
+      applyCardsData(newCards, strategy, options = {}) {
+        const { selectedSections = [], skipCategories = false, preserveExisting = false } = options;
+        
+        if (strategy === 'replace') {
+          this.cards = newCards;
+          this.migrateOldCards();
+          this.saveToLocalStorage();
+          return;
+        }
+        
+        if (strategy === 'merge') {
+          // Объединение: новые карточки добавляются/перезаписывают существующие
+          for (const [id, card] of Object.entries(newCards)) {
+            this.cards[id] = card;
+          }
+          this.migrateOldCards();
+          this.saveToLocalStorage();
+          return;
+        }
+        
+        if (strategy === 'sections') {
+          // Выборочная загрузка разделов
+          const finalCards = preserveExisting ? { ...this.cards } : {};
+          for (const [id, card] of Object.entries(newCards)) {
+            // Если карточка не имеет разделов, она попадает во все? Нет, по логике – пропускаем
+            if (!card.sections || !card.sections.length) continue;
+            // Определяем, принадлежит ли карточка хотя бы одному выбранному разделу
+            const belongs = selectedSections.some(s => card.sections.includes(s));
+            if (!belongs) {
+              if (preserveExisting && this.cards[id]) finalCards[id] = this.cards[id];
+              continue;
+            }
+            // Если нужно пропустить категории
+            if (skipCategories && card.type === 'category') continue;
+            finalCards[id] = card;
+          }
+          this.cards = finalCards;
+          this.migrateOldCards();
+          this.saveToLocalStorage();
+          return;
+        }
+        
+        throw new Error('Неизвестная стратегия');
+      }
+
+      importCards(jsonData, strategy, options) {
         const parsed = JSON.parse(jsonData);
         if (!parsed.cards) throw new Error('Формат файла не поддерживается');
-        this.cards = parsed.cards;
-        this.migrateOldCards();
-        this.saveToLocalStorage();
-        return this.cards;
+        this.applyCardsData(parsed.cards, strategy, options);
       }
 
       exportCards() {
@@ -1566,7 +1674,7 @@
       }
 
       isObjectCompatible(actionCard, objectCard) {
-        const g = this.phraseBuilder.getActionGrammar(actionCard);
+        const g = this.getActionGrammar(actionCard);
         // 1. Если есть точный список ID – только из него
         if (g.allowedObjects && g.allowedObjects.length > 0) {
           return g.allowedObjects.includes(objectCard.id);
@@ -2532,7 +2640,7 @@ const parts = [];
         this.updateSystemInfo();
       }
 
-      // --- Загрузка с сервера, импорт/экспорт карточек ---
+      // --- Загрузка с сервера и импорт с выбором стратегии ---
       async loadCardsWithOptions() {
         const modal = document.getElementById('remoteLoadModal');
         modal.style.display = 'flex';
@@ -2556,9 +2664,9 @@ const parts = [];
         }
         modal.style.display = 'none';
         try {
-          await this.cardManager.loadFromRemote(REMOTE_CARDS_URL);
+          const remoteCards = await this.cardManager.loadFromRemote(REMOTE_CARDS_URL);
+          this.cardManager.applyCardsData(remoteCards, strategy, { selectedSections, skipCategories, preserveExisting });
           this.cards = this.cardManager.cards;
-          // Применяем стратегию (упрощённо – полная замена, так как loadFromRemote уже заменил)
           this.navigateToHome();
           this.renderCategories();
           this.updateUI();
@@ -2570,6 +2678,54 @@ const parts = [];
         }
       }
 
+      // Импорт из файла с выбором стратегии
+      importWithOptions() {
+        const modal = document.getElementById('importModal');
+        modal.style.display = 'flex';
+        document.querySelector('input[name="importStrategy"][value="replace"]').checked = true;
+        document.querySelectorAll('input[name="importSection"]').forEach(cb => cb.checked = cb.value === 'Главная');
+        document.getElementById('importSkipCategories').checked = false;
+        document.getElementById('importPreserveExisting').checked = false;
+        document.getElementById('importSectionsSelection').style.display = 'none';
+        document.getElementById('importSummaryInfo').style.display = 'none';
+      }
+
+      async confirmImportFromFile() {
+        const strategy = document.querySelector('input[name="importStrategy"]:checked').value;
+        const selectedSections = Array.from(document.querySelectorAll('input[name="importSection"]:checked')).map(cb => cb.value);
+        const skipCategories = document.getElementById('importSkipCategories').checked;
+        const preserveExisting = document.getElementById('importPreserveExisting').checked;
+        if (strategy === 'sections' && selectedSections.length === 0) {
+          alert('Выберите хотя бы один раздел для импорта!');
+          return;
+        }
+        // Открыть выбор файла
+        const input = document.getElementById('fileInput');
+        input.onchange = (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            try {
+              this.cardManager.importCards(ev.target.result, strategy, { selectedSections, skipCategories, preserveExisting });
+              this.cards = this.cardManager.cards;
+              this.navigateToHome();
+              this.renderCategories();
+              this.updateUI();
+              this.updateSystemInfo();
+              alert("Импорт карточек выполнен успешно!");
+            } catch (error) {
+              alert("Ошибка при импорте: " + error.message);
+            }
+            input.onchange = null; // сброс
+            input.value = '';
+          };
+          reader.readAsText(file);
+        };
+        input.click();
+        document.getElementById('importModal').style.display = 'none';
+      }
+
       exportCards() {
         const dataStr = this.cardManager.exportCards();
         const blob = new Blob([dataStr], {type:'application/json'});
@@ -2577,27 +2733,6 @@ const parts = [];
         link.href = URL.createObjectURL(blob);
         link.download = 'communicator_cards_' + new Date().toISOString().slice(0,10) + '.json';
         link.click();
-      }
-
-      importCards(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          try {
-            this.cardManager.importCards(e.target.result);
-            this.cards = this.cardManager.cards;
-            this.navigateToHome();
-            this.renderCategories();
-            this.updateUI();
-            this.updateSystemInfo();
-            alert("Карточки успешно импортированы!");
-          } catch (error) {
-            alert("Ошибка при импорте карточек: " + error.message);
-          }
-        };
-        reader.readAsText(file);
-        event.target.value = '';
       }
 
       resetCards() {
@@ -2635,12 +2770,14 @@ const parts = [];
         document.getElementById('backBtnDialog').addEventListener('click', () => this.navigateBackTab('dialog'));
         document.getElementById('homeBtnDialog').addEventListener('click', () => this.navigateToHomeTab('dialog'));
         document.getElementById('exportBtn').addEventListener('click', () => this.exportCards());
-        document.getElementById('importBtn').addEventListener('click', () => document.getElementById('fileInput').click());
-        document.getElementById('fileInput').addEventListener('change', (e) => this.importCards(e));
+        document.getElementById('importBtn').addEventListener('click', () => this.importWithOptions()); // изменено
         document.getElementById('resetBtn').addEventListener('click', () => this.resetCards());
         document.getElementById('remoteLoadBtn').addEventListener('click', () => this.loadCardsWithOptions());
         document.getElementById('confirmRemoteLoad').addEventListener('click', () => this.confirmRemoteLoad());
         document.getElementById('cancelRemoteLoad').addEventListener('click', () => document.getElementById('remoteLoadModal').style.display = 'none');
+        document.getElementById('selectFileBtn').addEventListener('click', () => this.confirmImportFromFile());
+        document.getElementById('cancelImportBtn').addEventListener('click', () => document.getElementById('importModal').style.display = 'none');
+        // Динамическое отображение выбора разделов в модальных окнах
         document.querySelectorAll('input[name="loadStrategy"]').forEach(radio => {
           radio.addEventListener('change', () => {
             const div = document.getElementById('sectionsSelection');
@@ -2648,9 +2785,17 @@ const parts = [];
             else { div.style.display = 'none'; document.getElementById('summaryInfo').style.display = 'none'; }
           });
         });
+        document.querySelectorAll('input[name="importStrategy"]').forEach(radio => {
+          radio.addEventListener('change', () => {
+            const div = document.getElementById('importSectionsSelection');
+            if (radio.value === 'sections') div.style.display = 'block';
+            else div.style.display = 'none';
+          });
+        });
         document.querySelectorAll('input[name="section"], #skipCategories, #preserveExisting').forEach(input => input.addEventListener('change', () => this.previewRemoteLoad()));
         document.getElementById('remoteLoadModal').addEventListener('click', (e) => { if (e.target.id === 'remoteLoadModal') document.getElementById('remoteLoadModal').style.display = 'none'; });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && document.getElementById('remoteLoadModal').style.display === 'flex') document.getElementById('remoteLoadModal').style.display = 'none'; });
+        document.getElementById('importModal').addEventListener('click', (e) => { if (e.target.id === 'importModal') document.getElementById('importModal').style.display = 'none'; });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (document.getElementById('remoteLoadModal').style.display === 'flex') document.getElementById('remoteLoadModal').style.display = 'none'; if (document.getElementById('importModal').style.display === 'flex') document.getElementById('importModal').style.display = 'none'; } });
         document.getElementById('speakBtn').addEventListener('click', () => this.speakPhrase());
         document.getElementById('quickPeopleBtn').addEventListener('click', () => this.showFilteredPeople());
         document.getElementById('quickPlacesBtn').addEventListener('click', () => this.showFilteredPlaces());
@@ -2707,6 +2852,7 @@ const parts = [];
 
     // Запуск приложения
     window.app = null;
+    const REMOTE_CARDS_URL = 'https://raw.githubusercontent.com/Zlovreda/communicator/main/cards.json';
     document.addEventListener('DOMContentLoaded', async () => {
       window.app = new App();
       await window.app.init();
